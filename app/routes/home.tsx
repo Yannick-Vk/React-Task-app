@@ -13,7 +13,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-    const [data, setData] = useState<Task[]>([
+    const [tasks, setTasks] = useState<Task[]>([
         {id: 1, title: "Feed the cats", status: TaskType.READY},
         {id: 2, title: "Do the dishes", status: TaskType.COMPLETED},
         {id: 3, title: "Do Homework", status: TaskType.IN_PROGRESS},
@@ -24,7 +24,7 @@ export default function Home() {
         const name = taskName?.toString().trim();
         if (!name) return; // ignore empty submissions
 
-        setData(prev => {
+        setTasks(prev => {
             const maxId = prev.length ? Math.max(...prev.map(p => p.id)) : 0;
             const newTask: Task = {
                 id: maxId + 1,
@@ -37,12 +37,12 @@ export default function Home() {
 
     // Remove a task by its id
     const removeTask = (id: number) => {
-        setData(prev => prev.filter(task => task.id !== id));
+        setTasks(prev => prev.filter(task => task.id !== id));
     }
 
     // Change a given task's status
     const changeStatus = (id: number, status: string) => {
-        setData(prev => prev.map(task => {
+        setTasks(prev => prev.map(task => {
             if (task.id === id) {
                 return {...task, status: status as TaskType};
             }
@@ -56,7 +56,7 @@ export default function Home() {
                 <h1>Task board</h1>
 
                 <CreateTask createNewTask={addNewTask}/>
-                <TaskTable data={data} removeTask={removeTask} changeStatus={changeStatus}/>
+                <TaskTable data={tasks} removeTask={removeTask} changeStatus={changeStatus}/>
             </div>
         </main>
     );
