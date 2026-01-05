@@ -15,14 +15,14 @@ export type Column<T> = {
 };
 
 export interface Props<T> {
-    data: T[];
     columns: Column<T>[];
     // optional function to get a stable row key; falls back to item.id or index
     rowKey?: (item: T, index: number) => string | number;
+    children?: React.ReactNode;
 }
 
 export default function Table<T extends Record<string, any>>(props: Props<T>) {
-    const {data, columns, rowKey} = props;
+    const {columns, rowKey} = props;
 
     const getRowKey = (item: T, index: number) => {
         if (rowKey) return rowKey(item, index);
@@ -42,21 +42,7 @@ export default function Table<T extends Record<string, any>>(props: Props<T>) {
                 </tr>
                 </thead>
                 <tbody>
-                {data.map((item, rowIndex) => (
-                    <tr key={String(getRowKey(item, rowIndex))}
-                        className={"bg-gray-200 even:bg-gray-300 text-black hover:bg-pink-200"}>
-                        {columns.map((col, colIndex) => {
-                            const raw = col.accessor ? col.accessor(item) : (item as any)[String(col.key)];
-                            const content = col.render ? col.render(raw, item) : raw;
-                            return (
-                                <td key={`${String(getRowKey(item, rowIndex))}-${colIndex}`}
-                                    className={"p-3 text-center " + (col.cellClassName ?? "")}>
-                                    {content as React.ReactNode}
-                                </td>
-                            );
-                        })}
-                    </tr>
-                ))}
+                {props.children}
                 </tbody>
             </table>
         </>

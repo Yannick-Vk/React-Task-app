@@ -12,7 +12,15 @@ export default function TaskTable(props: Props) {
                 {key: "id", header: "Id"},
                 {key: "title", header: "Title"},
                 {key: "status", header: "Status"},
-            ]} data={props.data}/>
+            ]}>
+                {props.data.map((item) => (
+                    <tr className={"bg-gray-200 even:bg-gray-300 text-black hover:bg-pink-200"}>
+                        <td className={"p-3 text-center"}> {item.id} </td>
+                        <td className={"p-3 text-center"}> {item.title} </td>
+                        <td className={"p-3 text-center"}> {item.status} </td>
+                    </tr>
+                ))}
+            </Table>
         </>
     );
 }
