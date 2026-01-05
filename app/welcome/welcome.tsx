@@ -12,7 +12,7 @@ export function Welcome() {
         {id: 3, title: "Do Homework", status: TaskType.IN_PROGRESS},
     ]);
 
-    const addNewTask = (taskName: string) => {
+    const addNewTask = (taskName: string, status?: TaskType) => {
         const name = taskName?.toString().trim();
         if (!name) return; // ignore empty submissions
 
@@ -21,7 +21,7 @@ export function Welcome() {
             const newTask: Task = {
                 id: maxId + 1,
                 title: name,
-                status: TaskType.READY
+                status: status ?? TaskType.READY
             };
             return [...prev, newTask];
         });
