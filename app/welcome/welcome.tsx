@@ -12,6 +12,7 @@ export function Welcome() {
         {id: 3, title: "Do Homework", status: TaskType.IN_PROGRESS},
     ]);
 
+    // Create a new task
     const addNewTask = (taskName: string, status?: TaskType) => {
         const name = taskName?.toString().trim();
         if (!name) return; // ignore empty submissions
@@ -27,8 +28,19 @@ export function Welcome() {
         });
     }
 
+    // Remove a task by its id
     const removeTask = (id: number) => {
         setData(prev => prev.filter(task => task.id !== id));
+    }
+
+    // Change a given task's status
+    const changeStatus = (id: number, status: string) => {
+        setData(prev => prev.map(task => {
+            if (task.id === id) {
+                return {...task, status: status as TaskType};
+            }
+            return task;
+        }));
     }
 
     return (
@@ -37,7 +49,7 @@ export function Welcome() {
                 <h1>Task board</h1>
 
                 <CreateTask createNewTask={addNewTask}/>
-                <TaskTable data={data} removeTask={removeTask}/>
+                <TaskTable data={data} removeTask={removeTask} changeStatus={changeStatus}/>
             </div>
         </main>
     );
