@@ -22,10 +22,17 @@ export default function CreateTask(props: Props) {
         <>
             <form className="pt-8 pb-4">
                 <h2 className={"text-xl"}>Create a new task</h2>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Task Name</label>
-                <input onChange={handleNameChange} type="text" name="name" id="name"
-                       className={"rounded-sm border border-gray-300 text-gray-300 p-3"}/>
-                <TaskTypesSelectBox/>
+                <div className={"flex flex-col gap-4 mt-4"}>
+                    <div>
+                        <label htmlFor="name" className="block font-medium text-gray-300 mb-2">Task Name</label>
+                        <input onChange={handleNameChange} type="text" name="name" id="name"
+                               className={"rounded-sm border-2 border-slate-300 text-gray-300 p-3"}/>
+                    </div>
+                    <div>
+                        <label htmlFor="status" className="">Task status</label>
+                        <TaskTypesSelectBox className={""} for="status"/>
+                    </div>
+                </div>
                 <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-3"></Button>
             </form>
         </>

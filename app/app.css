@@ -17,3 +17,11 @@ body {
 h1 {
     @apply text-3xl;
 }
+
+
+select:before {
+    content: "▼";
+    position: absolute;
+    right: 1rem;
+    pointer-events: none;
+}
