@@ -7,9 +7,9 @@ import {useState} from "react";
 export function Welcome() {
 
     const [data, setData] = useState<Task[]>([
-        {id: 1, title: "Alice", status: TaskType.READY},
-        {id: 2, title: "Bob", status: TaskType.READY},
-        {id: 3, title: "Charlie", status: TaskType.READY},
+        {id: 1, title: "Feed the cats", status: TaskType.READY},
+        {id: 2, title: "Do the dishes", status: TaskType.COMPLETED},
+        {id: 3, title: "Do Homework", status: TaskType.IN_PROGRESS},
     ]);
 
     const addNewTask = (taskName: string) => {
@@ -30,7 +30,7 @@ export function Welcome() {
     return (
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
-                <h1>React Task's example!</h1>
+                <h1>Task board</h1>
 
                 <CreateTask createNewTask={addNewTask}/>
                 <TaskTable data={data}
