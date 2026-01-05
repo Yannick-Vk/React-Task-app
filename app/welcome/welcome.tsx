@@ -1,4 +1,5 @@
 import {useState} from "react";
+import Button from "~/components/Button";
 
 export function Welcome() {
 
@@ -13,7 +14,7 @@ export function Welcome() {
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Hello!</h1>
                 <p>Count: {clicks}</p>
-                <button onClick={increment} className={"border-2 border-amber-200"}>Increase count</button>
+                <Button onClick={increment} name="Increase count"/>
                 <button onClick={decrement} className={"border-2 border-cyan-300"}>Decrease count</button>
             </div>
         </main>
