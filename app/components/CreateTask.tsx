@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import Button from "~/components/Button";
 import TaskTypesSelectBox from "~/components/TaskTypesSelectBox";
-import {TaskType} from "../../types/Task";
+import {TaskType} from "~/types/Task";
 
 export interface Props {
     createNewTask: (taskName: string, status?: TaskType) => void;
@@ -19,7 +19,7 @@ export default function CreateTask(props: Props) {
         // reset form?
     }
 
-    const handleNameChange = (e: { target: { value: React.SetStateAction<string>; }; }) =>
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
         setName(e.target.value);
 
     return (
@@ -34,10 +34,10 @@ export default function CreateTask(props: Props) {
                     </div>
                     <div>
                         <label htmlFor="status" className="">Task status</label>
-                        <TaskTypesSelectBox className={""} for="status" value={status} onChange={setStatus}/>
+                        <TaskTypesSelectBox className={""} name="status" value={status} onChange={setStatus}/>
                     </div>
                 </div>
-                <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-3"></Button>
+                <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-3" type="submit"/>
             </form>
         </>
     );

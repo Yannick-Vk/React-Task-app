@@ -2,8 +2,9 @@
 
 export interface Props {
     name: string;
-    onClick?: (e: React.FormEvent<Element>) => void;
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     className?: string;
+    type?: "button" | "submit" | "reset";
 }
 
 export default function Button(props: Props) {
@@ -13,6 +14,7 @@ export default function Button(props: Props) {
                 " dark:bg-pink-300 dark:text-black " +
                 " dark:hover:bg-pink-400 "
             }
+                    type={props.type ?? "button"}
             >{props.name}</button>
         </>
     )

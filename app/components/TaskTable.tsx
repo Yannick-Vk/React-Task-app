@@ -1,6 +1,6 @@
-﻿import Table from "./Table";
-import type Task from "../../types/Task";
+﻿import Table from "~/components/Table";
 import Button from "~/components/Button";
+import type Task from "~/types/Task";
 import React from "react";
 
 export interface Props {
@@ -23,7 +23,7 @@ export default function TaskTable(props: Props) {
                         <td className={"p-3 text-center"}> {item.title} </td>
                         <td className={"p-3 text-center"}> {item.status} </td>
                         <td className={"p-3 text-center"}>
-                            <Button name="Remove task" onClick={(e) => props.removeTask(item.id)}/>
+                            <Button name="Remove task" onClick={() => props.removeTask(item.id)}/>
                         </td>
                     </tr>
                 ))}
