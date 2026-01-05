@@ -12,7 +12,7 @@ export function Welcome() {
     return (
         <main className="flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
-                <h1 className={"text-3xl"}>React counter example!</h1>
+                <h1>React counter example!</h1>
                 <p className={"text-xl"}>Count: {clicks}</p>
                 <div className="flex flex-row items-center gap-16 min-h-0">
                     <Button onClick={increment} name="Increase count"/>
