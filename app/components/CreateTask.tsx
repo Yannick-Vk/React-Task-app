@@ -2,6 +2,7 @@
 import Button from "~/components/Button";
 
 export interface Props {
+    createNewTask: (taskName: string) => void;
 }
 
 export default function CreateTask(props: Props) {
@@ -10,7 +11,7 @@ export default function CreateTask(props: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log(name);
+        props.createNewTask(name);
     }
 
     const handleNameChange = (e: { target: { value: React.SetStateAction<string>; }; }) =>
@@ -18,7 +19,7 @@ export default function CreateTask(props: Props) {
 
     return (
         <>
-            <form>
+            <form className="pt-8 pb-4">
                 <h2 className={"text-xl"}>Create a new task</h2>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Task Name</label>
                 <input onChange={handleNameChange} type="text" name="name" id="name"

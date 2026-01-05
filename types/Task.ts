@@ -1,10 +1,10 @@
-﻿export default interface Todo {
+﻿export default interface Task {
     id: number;
     title: string;
-    status: TodoType;
+    status: TaskType;
 }
 
-export enum TodoType {
+export enum TaskType {
     READY = "ready",
     IN_PROGRESS = "in progress",
     COMPLETED = "completed"

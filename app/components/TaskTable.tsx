@@ -1,8 +1,8 @@
 ﻿import Table from "./Table";
-import type Todo from "../../types/Todo";
+import type Task from "../../types/Task";
 
 export interface Props {
-    data: Todo[];
+    data: Task[];
 }
 
 export default function TaskTable(props: Props) {
