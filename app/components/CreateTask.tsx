@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import Button from "~/components/Button";
+import TaskTypesSelectBox from "~/components/TaskTypesSelectBox";
 
 export interface Props {
     createNewTask: (taskName: string) => void;
@@ -24,6 +25,7 @@ export default function CreateTask(props: Props) {
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Task Name</label>
                 <input onChange={handleNameChange} type="text" name="name" id="name"
                        className={"rounded-sm border border-gray-300 text-gray-300 p-3"}/>
+                <TaskTypesSelectBox/>
                 <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-3"></Button>
             </form>
         </>
