@@ -27,14 +27,17 @@ export function Welcome() {
         });
     }
 
+    const removeTask = (id: number) => {
+        setData(prev => prev.filter(task => task.id !== id));
+    }
+
     return (
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Task board</h1>
 
                 <CreateTask createNewTask={addNewTask}/>
-                <TaskTable data={data}
-                />
+                <TaskTable data={data} removeTask={removeTask}/>
             </div>
         </main>
     );

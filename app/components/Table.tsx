@@ -5,10 +5,6 @@ export type Column<T> = {
     key: keyof T | string;
     // header label to display in the table head
     header: string;
-    // optional accessor to compute the cell value from the row item
-    accessor?: (item: T) => React.ReactNode;
-    // optional renderer receives the resolved cell value and the whole item
-    render?: (value: any, item: T) => React.ReactNode;
     // optional classes
     headerClassName?: string;
     cellClassName?: string;
@@ -16,20 +12,11 @@ export type Column<T> = {
 
 export interface Props<T> {
     columns: Column<T>[];
-    // optional function to get a stable row key; falls back to item.id or index
-    rowKey?: (item: T, index: number) => string | number;
     children?: React.ReactNode;
 }
 
 export default function Table<T extends Record<string, any>>(props: Props<T>) {
-    const {columns, rowKey} = props;
-
-    const getRowKey = (item: T, index: number) => {
-        if (rowKey) return rowKey(item, index);
-        // try id if present
-        if ((item as any).id !== undefined) return (item as any).id;
-        return index;
-    };
+    const {columns, children} = props;
 
     return (
         <>
@@ -42,7 +29,7 @@ export default function Table<T extends Record<string, any>>(props: Props<T>) {
                 </tr>
                 </thead>
                 <tbody>
-                {props.children}
+                {children}
                 </tbody>
             </table>
         </>
