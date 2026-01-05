@@ -1,6 +1,7 @@
 import {useState} from "react";
 import Button from "~/components/Button";
-import Table from "~/components/Table";
+import ToDoTable from "~/components/ToDoTable";
+import {TodoType} from "../../types/Todo";
 
 export function Welcome() {
 
@@ -19,18 +20,14 @@ export function Welcome() {
                     <Button onClick={increment} name="Increase count"/>
                     <Button onClick={decrement} name="Decrease count"/>
                 </div>
-                <Table
-                    columns={[
-                        {key: "id", header: "Id"},
-                        {key: "name", header: "Name"},
-                        {key: "age", header: "Age"}]}
+                <ToDoTable
                     data={[
-                        {id: 1, name: "Alice", age: 30},
-                        {id: 2, name: "Bob", age: 25},
-                        {id: 3, name: "Charlie", age: 35},
-                        {id: 4, name: "Alice", age: 20},
-                        {id: 5, name: "Bob", age: 39},
-                        {id: 6, name: "Charlie", age: 51},
+                        {id: 1, title: "Alice", status: TodoType.READY},
+                        {id: 2, title: "Bob", status: TodoType.READY},
+                        {id: 3, title: "Charlie", status: TodoType.READY},
+                        {id: 4, title: "Alice", status: TodoType.READY},
+                        {id: 5, title: "Bob", status: TodoType.READY},
+                        {id: 6, title: "Charlie", status: TodoType.READY},
                     ]}/>
             </div>
         </main>
