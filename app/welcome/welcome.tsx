@@ -13,7 +13,18 @@ export function Welcome() {
     ]);
 
     const addNewTask = (taskName: string) => {
+        const name = taskName?.toString().trim();
+        if (!name) return; // ignore empty submissions
 
+        setData(prev => {
+            const maxId = prev.length ? Math.max(...prev.map(p => p.id)) : 0;
+            const newTask: Task = {
+                id: maxId + 1,
+                title: name,
+                status: TaskType.READY
+            };
+            return [...prev, newTask];
+        });
     }
 
     return (
