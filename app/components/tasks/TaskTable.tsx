@@ -2,7 +2,7 @@
 import Button from "~/components/Button";
 import type Task from "~/types/Task";
 import React from "react";
-import TaskTypesSelectBox from "~/components/TaskTypesSelectBox";
+import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 
 export interface Props {
     data: Task[];

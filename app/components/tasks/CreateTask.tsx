@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import Button from "~/components/Button";
-import TaskTypesSelectBox from "~/components/TaskTypesSelectBox";
+import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import {TaskType} from "~/types/Task";
 
 export interface Props {

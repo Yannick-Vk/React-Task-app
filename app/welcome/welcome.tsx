@@ -1,7 +1,7 @@
-import TaskTable from "~/components/TaskTable";
+import TaskTable from "~/components/tasks/TaskTable";
 import type Task from "~/types/Task";
 import {TaskType} from "~/types/Task";
-import CreateTask from "~/components/CreateTask";
+import CreateTask from "~/components/tasks/CreateTask";
 import {useState} from "react";
 
 export function Welcome() {
