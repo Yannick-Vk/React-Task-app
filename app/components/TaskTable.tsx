@@ -5,7 +5,7 @@ export interface Props {
     data: Todo[];
 }
 
-export default function ToDoTable(props: Props) {
+export default function TaskTable(props: Props) {
     return (
         <>
             <Table columns={[
