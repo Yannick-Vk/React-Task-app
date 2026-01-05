@@ -14,7 +14,7 @@ export default function TaskTable(props: Props) {
                 {key: "status", header: "Status"},
             ]}>
                 {props.data.map((item) => (
-                    <tr className={"bg-gray-200 even:bg-gray-300 text-black hover:bg-pink-200"}>
+                    <tr className={"bg-gray-200 even:bg-gray-300 text-black hover:bg-pink-200"} key={item.id}>
                         <td className={"p-3 text-center"}> {item.id} </td>
                         <td className={"p-3 text-center"}> {item.title} </td>
                         <td className={"p-3 text-center"}> {item.status} </td>
