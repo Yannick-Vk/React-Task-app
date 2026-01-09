@@ -15,7 +15,7 @@ public class Mutation {
     private IDbContextFactory<ApplicationDbContext> _contextFactory { get; }
 
     public async Task<Task> AddTask(string name, Status status) {
-        await using var context = _contextFactory.CreateDbContext();
+        await using var context = await _contextFactory.CreateDbContextAsync();
         var task = new Task {
             Id = Guid.NewGuid(),
             Name = name,
@@ -29,7 +29,7 @@ public class Mutation {
     }
 
     public async Task<Task?> RemoveTask(Guid id) {
-        await using var context = _contextFactory.CreateDbContext();
+        await using var context = await _contextFactory.CreateDbContextAsync();
         var task = await context.Tasks.FindAsync(id);
         if (task == null) {
             return null;
