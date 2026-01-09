@@ -1,5 +1,6 @@
 using GraphQLTasks.Data;
 using GraphQLTasks.Models;
+using Microsoft.EntityFrameworkCore;
 using Task = GraphQLTasks.Models.Task;
 
 namespace GraphQLTasks.GraphQL;
@@ -7,7 +8,14 @@ namespace GraphQLTasks.GraphQL;
 // ReSharper disable once ClassNeverInstantiated.Global
 // Disabled since setting to abstract breaks the query
 public class Mutation {
-    public async Task<Task> AddTask(string name, Status status, [Service] ApplicationDbContext context) {
+    public Mutation(IDbContextFactory<ApplicationDbContext> contextFactory) {
+        _contextFactory = contextFactory;
+    }
+
+    private IDbContextFactory<ApplicationDbContext> _contextFactory { get; }
+
+    public async Task<Task> AddTask(string name, Status status) {
+        await using var context = _contextFactory.CreateDbContext();
         var task = new Task {
             Id = Guid.NewGuid(),
             Name = name,
@@ -20,7 +28,8 @@ public class Mutation {
         return task;
     }
 
-    public async Task<Task?> RemoveTask(Guid id, [Service] ApplicationDbContext context) {
+    public async Task<Task?> RemoveTask(Guid id) {
+        await using var context = _contextFactory.CreateDbContext();
         var task = await context.Tasks.FindAsync(id);
         if (task == null) {
             return null;
