@@ -7,26 +7,28 @@ namespace GraphQLTasks.GraphQL;
 // ReSharper disable once ClassNeverInstantiated.Global
 // Disabled since setting to abstract breaks the query
 public class Mutation {
-    public Mutation(ApplicationDbContext context) {
-        _context = context;
-    }
-
-    private ApplicationDbContext _context { get; }
-
-    public async Task<Task> AddTask(string name, Status status) {
+    public async Task<Task> AddTask(string name, Status status, [Service] ApplicationDbContext context) {
         var task = new Task {
             Id = Guid.NewGuid(),
             Name = name,
             Status = status,
         };
 
-        _context.Tasks.Add(task);
-        await _context.SaveChangesAsync();
+        context.Tasks.Add(task);
+        await context.SaveChangesAsync();
 
         return task;
     }
 
-    public async Task<Task?> RemoveTask(Guid id) {
-        return null;
+    public async Task<Task?> RemoveTask(Guid id, [Service] ApplicationDbContext context) {
+        var task = await context.Tasks.FindAsync(id);
+        if (task == null) {
+            return null;
+        }
+
+        context.Remove(task);
+        await context.SaveChangesAsync();
+
+        return task;
     }
 }
