@@ -11,7 +11,7 @@ public class Mutation {
         var task = new Task {
             Id = Guid.NewGuid(),
             Name = name,
-            Status = status
+            Status = status,
         };
 
         context.Tasks.Add(task);
