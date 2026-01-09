@@ -2,6 +2,6 @@ namespace GraphQLTasks.Types;
 
 [QueryType]
 public static class Query {
-    public static Book GetBook()
-        => new Book("C# in depth.", new Author("Jon Skeet"));
+    public static Task GetTask()
+        => new Task("Feed my cats!", Status.Done);
 }
