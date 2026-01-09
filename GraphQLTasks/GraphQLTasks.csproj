@@ -8,12 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(ImplicitUsings)' == 'enable'">
-        <Using Include="GraphQLTasks"/>
+        <Using Include="GraphQLTasks" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.11"/>
-        <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.11"/>
+        <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.11" />
+        <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.11" />
+        <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.11" />
         <PackageReference Include="HotChocolate.Types.Analyzers" Version="15.1.11">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
