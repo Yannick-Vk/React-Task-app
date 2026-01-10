@@ -1,24 +1,24 @@
 # GraphQL Tasks API
 
-This repository contains the backend API for a modern Tasks/TODO application. It's built with .NET 10, ASP.NET Core, 
-and GraphQL (using Hot Chocolate). It is designed to be consumed by a frontend application, 
-such as one written in React.
+This repository contains the backend API for a modern Tasks/TODO application. It's built with .NET, ASP.NET Core, and GraphQL (using Hot Chocolate). The entire application is containerized, allowing it to run with a single command. It is designed to be consumed by a frontend application, such as one written in React.
 
 ## Features
 
+- **Fully Containerized:** The entire application (API and database) runs in Docker.
 - **GraphQL API:** A complete and strongly-typed GraphQL API for all task management operations.
+- **Automatic Database Migrations:** The database schema is automatically created and updated on application startup.
 - **Create Tasks:** Add new tasks with a name and status.
 - **Read Tasks:** Fetch a list of all existing tasks.
 - **Update Tasks:** Modify a task's name and/or status.
 - **Delete Tasks:** Remove tasks from the database.
 - **Database Persistence:** Uses Entity Framework Core with a PostgreSQL database.
-- **Containerized Database:** The development database is easily managed with Docker Compose.
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [Docker](https://www.docker.com/products/docker-desktop)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+*Note: To develop and add new migrations, you will also need the [.NET SDK](https://dotnet.microsoft.com/download).*
 
 ## Getting Started
 
@@ -28,23 +28,12 @@ Before you begin, ensure you have the following installed:
     cd <repository-folder>
     ```
 
-2.  **Start the database:**
-    Launch the PostgreSQL database using Docker Compose. This will start a container and create the necessary database and volumes.
+2.  **Launch the application:**
+    Use Docker Compose to build the API image, start the containers, and automatically apply database migrations.
     ```bash
-    docker-compose up -d
+    docker-compose up --build
     ```
-
-3.  **Apply Database Migrations:**
-    You'll need to apply the Entity Framework migrations to set up the database schema.
-    ```bash
-    dotnet ef database update --project GraphQLTasks
-    ```
-
-4.  **Run the application:**
-    ```bash
-    dotnet run --project GraphQLTasks
-    ```
-    The API will be running and accessible at `http://localhost:5095`.
+    The API will be running and accessible at `http://localhost:5095`. The first time you run this, it will take a few minutes to download the .NET images and build the application.
 
 ## GraphQL Endpoint
 

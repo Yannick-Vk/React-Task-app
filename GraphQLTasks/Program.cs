@@ -20,6 +20,14 @@ builder.Services.AddGraphQLServer()
 
 var app = builder.Build();
 
+// Automatically apply database migrations on startup
+using (var scope = app.Services.CreateScope()) {
+    var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+    await using (var dbContext = await dbContextFactory.CreateDbContextAsync()) {
+        await dbContext.Database.MigrateAsync();
+    }
+}
+
 app.MapGraphQL();
 
 app.RunWithGraphQLCommands(args);
