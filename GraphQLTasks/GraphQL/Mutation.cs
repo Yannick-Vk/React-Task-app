@@ -41,13 +41,13 @@ public class Mutation {
         return task;
     }
 
-    public async Task<Task?> UpdateTask(Task updatedTask) {
+    public async Task<Task?> UpdateTask(UpdateTaskDto updatedTask) {
         await using var context = await _contextFactory.CreateDbContextAsync();
         var task = await context.Tasks.FindAsync(updatedTask.Id);
         if (task is null) return null;
 
-        task.Name = updatedTask.Name;
-        task.Status = updatedTask.Status;
+        task.Name = updatedTask.Name ?? task.Name;
+        task.Status = updatedTask.Status ?? task.Status;
 
         await context.SaveChangesAsync();
         return task;
