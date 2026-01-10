@@ -14,12 +14,12 @@ public class Mutation {
 
     private IDbContextFactory<ApplicationDbContext> _contextFactory { get; }
 
-    public async Task<Task> AddTask(string name, Status status = Status.Ready) {
+    public async Task<Task> AddTask(string name, Status? status) {
         await using var context = await _contextFactory.CreateDbContextAsync();
         var task = new Task {
             Id = Guid.NewGuid(),
             Name = name,
-            Status = status,
+            Status = status ?? Status.Ready,
         };
 
         context.Tasks.Add(task);
