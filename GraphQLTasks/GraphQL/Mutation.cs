@@ -14,7 +14,7 @@ public class Mutation {
 
     private IDbContextFactory<ApplicationDbContext> _contextFactory { get; }
 
-    public async Task<Task> AddTask(string name, Status status) {
+    public async Task<Task> AddTask(string name, Status status = Status.Ready) {
         await using var context = await _contextFactory.CreateDbContextAsync();
         var task = new Task {
             Id = Guid.NewGuid(),
