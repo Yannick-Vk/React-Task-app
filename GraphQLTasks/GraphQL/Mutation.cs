@@ -46,8 +46,7 @@ public class Mutation {
         var task = await context.Tasks.FindAsync(updatedTask.Id);
         if (task is null) return null;
 
-        task.Name = updatedTask.Name ?? task.Name;
-        task.Status = updatedTask.Status ?? task.Status;
+        task.Update(updatedTask.Name, updatedTask.Status);
 
         await context.SaveChangesAsync();
         return task;

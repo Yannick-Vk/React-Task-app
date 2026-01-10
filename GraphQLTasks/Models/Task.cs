@@ -8,6 +8,11 @@ public class Task {
     [StringLength(255)] public required string Name { get; set; }
 
     public Status Status { get; set; } = Status.Ready;
+
+    public void Update(string? name, Status? status) {
+        Name = name ?? Name;
+        Status = status ?? Status;
+    }
 }
 
 public enum Status {
