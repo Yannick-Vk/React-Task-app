@@ -31,13 +31,23 @@ public class Mutation {
     public async Task<Task?> RemoveTask(Guid id) {
         await using var context = await _contextFactory.CreateDbContextAsync();
         var task = await context.Tasks.FindAsync(id);
-        if (task == null) {
+        if (task is null) {
             return null;
         }
 
         context.Remove(task);
         await context.SaveChangesAsync();
 
+        return task;
+    }
+
+    public async Task<Task?> UpdateTask(Task updatedTask) {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        var task = await context.Tasks.FindAsync(updatedTask.Id);
+        if (task is null) return null;
+
+        context.Update(updatedTask);
+        await context.SaveChangesAsync();
         return task;
     }
 }
