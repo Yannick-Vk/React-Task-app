@@ -30,11 +30,12 @@ export default function CreateTask(props: Props) {
                     <div>
                         <label htmlFor="name" className="block font-medium text-gray-300 mb-2">Task Name</label>
                         <input value={name} onChange={handleNameChange} type="text" name="name" id="name"
-                               className={"rounded-sm border-2 border-slate-300 text-gray-300 p-3"}/>
+                               className={"rounded-sm border-2 border-slate-300 text-gray-300 p-3 w-full focus:outline-none focus:shadow-outline focus:border-pink-300"} />
                     </div>
                     <div>
                         <label htmlFor="status" className="">Task status</label>
-                        <TaskTypesSelectBox className={""} name="status" value={status} onChange={setStatus}/>
+                        <TaskTypesSelectBox className={"focus:border-pink-300"} name="status" value={status}
+                                            onChange={setStatus} />
                     </div>
                 </div>
                 <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-3" type="submit"/>

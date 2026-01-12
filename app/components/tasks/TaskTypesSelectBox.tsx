@@ -25,7 +25,7 @@ export default function TaskTypesSelectBox(props: Props) {
         <>
             <select
                 className={(props.className ?? "") +
-                    " block p-3 mt-2 border-2 border-slate-200 rounded-sm w-full bg-black "}
+                    " block p-3 mt-2 border-2 border-slate-200 rounded-sm w-full bg-slate-800 focus:outline-none "}
                 name={props.name} id={props.name} onChange={changeStatus} value={selectedKeyFromValue}>
                 {Object.keys(TaskType).map(
                     (key) => (

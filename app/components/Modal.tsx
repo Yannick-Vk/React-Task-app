@@ -20,7 +20,7 @@ export default function Modal(props: Props) {
 
                     {/* Modal content container */}
                     <div className="flex items-center justify-center min-h-screen">
-                        <div className="bg-slate-800 p-5 rounded-lg shadow-lg relative z-50">
+                        <div className="w-11/12 md:w-1/2 bg-slate-800 p-5 rounded-lg shadow-lg relative z-50">
                             <div className="flex items-center gap-5 justify-between mb-3">
                                 <span className="font-bold text-lg">{props.title}</span>
                                 <ButtonRaw onClick={props.onClose}
