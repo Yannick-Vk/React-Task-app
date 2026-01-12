@@ -1,11 +1,11 @@
 ﻿import React from "react";
 import Button from "~/components/Button";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
-import {TaskType} from "~/types/Task";
 import {z, ZodError} from "zod";
+import {Status} from "~/GraphQL/generated";
 
 export interface Props {
-    createNewTask: (taskName: string, status?: TaskType) => ZodError | undefined;
+    createNewTask: (taskName: string, status?: Status) => ZodError | undefined;
 }
 
 type FormErrors = {
@@ -15,7 +15,7 @@ type FormErrors = {
 
 export default function CreateTask(props: Props) {
     const [name, setName] = React.useState("");
-    const [status, setStatus] = React.useState<TaskType>(TaskType.READY);
+    const [status, setStatus] = React.useState<Status>(Status.Ready);
     const [errors, setErrors] = React.useState<FormErrors | null>(null);
 
     const handleSubmit = (e: React.FormEvent) => {
