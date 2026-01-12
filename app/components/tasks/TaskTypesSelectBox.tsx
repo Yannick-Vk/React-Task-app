@@ -1,5 +1,6 @@
 ﻿import {Status} from "~/GraphQL/generated"
 import React from "react";
+import {MapStatusEnum} from "~/lib/util";
 
 export interface Props {
     name: string;
@@ -29,7 +30,8 @@ export default function TaskTypesSelectBox(props: Props) {
                 name={props.name} id={props.name} onChange={changeStatus} value={selectedKeyFromValue}>
                 {Object.keys(Status).map(
                     (key) => (
-                        <option key={key} value={key} className={""}>{Status[key as keyof typeof Status]}</option>)
+                        <option key={key} value={key}
+                                className={""}>{MapStatusEnum(Status[key as keyof typeof Status])}</option>)
                 )}
             </select>
         </>
