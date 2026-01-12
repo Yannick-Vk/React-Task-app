@@ -36,8 +36,7 @@ export default function Home() {
                 setLoading(false);
             }
         };
-
-        const _ = fetchTasks();
+        fetchTasks();
     }, []);
 
     const addTask = (taskName: string, status?: Status) => {
