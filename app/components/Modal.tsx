@@ -1,9 +1,11 @@
 ﻿import React from "react";
 import Button from "~/components/Button";
+import ButtonRaw from "~/components/ButtonRaw";
 
 export interface Props {
     className?: string;
-    children?: React.ReactNode;
+    children: React.ReactNode;
+    title: string;
 }
 
 export default function Modal(props: Props) {
@@ -28,12 +30,12 @@ export default function Modal(props: Props) {
                 <div className="flex items-center justify-center min-h-screen">
                     <div className="bg-slate-800 p-5 rounded-lg shadow-lg relative z-50">
                         <div className="flex items-center gap-5 justify-between mb-3">
-                            <span>Title: </span>
-                            <Button name={"Close"} onClick={changeState}></Button>
+                            <span className="font-bold text-lg">{props.title}</span>
+                            <ButtonRaw onClick={changeState}
+                                       className={"rounded-sm hover:text-fuchsia-200 hover:cursor-pointer"}>X</ButtonRaw>
                         </div>
-                        <div>
+                        <div className={props.className}>
                             {props.children}
-
                         </div>
                     </div>
                 </div>

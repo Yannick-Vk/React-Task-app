@@ -5,7 +5,6 @@ import {TaskType} from "~/types/Task";
 import CreateTask from "~/components/tasks/CreateTask";
 import {useState} from "react";
 import Modal from "~/components/Modal";
-import Button from "~/components/Button";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -56,14 +55,12 @@ export default function Home() {
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Task board</h1>
-                <Modal>
+                <Modal title="Create a new task">
                     <div className="flex flex-col gap-3">
-                        <span>Hello there! Want to add a task?</span>
-                        <Button name={"Hello!"} />
+                        <CreateTask createNewTask={addNewTask} />
                     </div>
                 </Modal>
-                <CreateTask createNewTask={addNewTask}/>
-                <TaskTable data={tasks} removeTask={removeTask} changeStatus={changeStatus}/>
+                <TaskTable data={tasks} removeTask={removeTask} changeStatus={changeStatus} />
             </div>
         </main>
     );
