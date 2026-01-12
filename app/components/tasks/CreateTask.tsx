@@ -25,8 +25,7 @@ export default function CreateTask(props: Props) {
     return (
         <>
             <form className="pt-8 pb-4">
-                <h2 className={"text-xl"}>Create a new task</h2>
-                <div className={"flex flex-col gap-4 mt-4"}>
+                <div className={"flex flex-col gap-4"}>
                     <div>
                         <label htmlFor="name" className="block font-medium text-gray-300 mb-2">Task Name</label>
                         <input value={name} onChange={handleNameChange} type="text" name="name" id="name"
@@ -34,11 +33,12 @@ export default function CreateTask(props: Props) {
                     </div>
                     <div>
                         <label htmlFor="status" className="">Task status</label>
-                        <TaskTypesSelectBox className={"focus:border-pink-300"} name="status" value={status}
+                        <TaskTypesSelectBox className={"focus:border-pink-300 bg-slate-800"} name="status"
+                                            value={status}
                                             onChange={setStatus} />
                     </div>
                 </div>
-                <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-3" type="submit" />
+                <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-5" type="submit" />
             </form>
         </>
     );
