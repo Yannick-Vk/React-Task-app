@@ -1,0 +1,8 @@
+﻿schema: "http://localhost:5095/graphql"
+documents:
+  - 'app/**/*.graphql'
+generates:
+  app/GraphQL/generated/:
+    preset: client
+    presetConfig:
+      useTypeImports: true
