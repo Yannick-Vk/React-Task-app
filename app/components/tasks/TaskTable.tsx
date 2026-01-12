@@ -1,5 +1,5 @@
-﻿import Table from "~/components/Table";
-import Button from "~/components/Button";
+﻿import Table from "~/components/ui/Table";
+import Button from "~/components/ui/Button";
 import type {Task} from "~/GraphQL/generated"
 import React from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";

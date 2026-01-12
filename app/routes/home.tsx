@@ -2,8 +2,8 @@ import type {Route} from "./+types/home";
 import TaskTable from "~/components/tasks/TaskTable";
 import CreateTask from "~/components/tasks/CreateTask";
 import {useEffect, useState} from "react";
-import Modal from "~/components/Modal";
-import Button from "~/components/Button"; // Import Button component
+import Modal from "~/components/ui/Modal";
+import Button from "~/components/ui/Button"; // Import Button component
 import {getTasks} from "~/services/TaskService";
 import {Status, type Task} from "~/GraphQL/generated";
 

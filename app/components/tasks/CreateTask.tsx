@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import Button from "~/components/Button";
+import Button from "~/components/ui/Button";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import {z, ZodError} from "zod";
 import {Status} from "~/GraphQL/generated";

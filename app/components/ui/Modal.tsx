@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import ButtonRaw from "~/components/ButtonRaw";
+import ButtonRaw from "~/components/ui/raw/ButtonRaw";
 
 export interface Props {
     className?: string;
