@@ -49,8 +49,6 @@ export const getTasks = async (): Promise<Task[]> => {
         const {data} = await client.query<GetTasksQuery>({
             query: GetTasksDocument,
         });
-        // TODO: Fix Cors Error
-        console.log("Fetched tasks from GraphQL:", data?.tasks);
         return data?.tasks || [];
     } catch (error) {
         console.error("Error fetching tasks:", error);
