@@ -57,7 +57,8 @@ export default function Home() {
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Task board</h1>
                 <Modal>
-                    <div>
+                    <div className="flex flex-col gap-3">
+                        <span>Hello there! Want to add a task?</span>
                         <Button name={"Hello!"} />
                     </div>
                 </Modal>
