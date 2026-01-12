@@ -5,6 +5,7 @@ import {TaskType} from "~/types/Task";
 import CreateTask from "~/components/tasks/CreateTask";
 import {useState} from "react";
 import Modal from "~/components/Modal";
+import Button from "~/components/Button"; // Import Button component
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -20,6 +21,11 @@ export default function Home() {
         {id: 3, title: "Do Homework", status: TaskType.IN_PROGRESS},
     ]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
     // Create a new task
     const addNewTask = (taskName: string, status?: TaskType) => {
         const name = taskName?.toString().trim();
@@ -34,6 +40,7 @@ export default function Home() {
             };
             return [...prev, newTask];
         });
+        closeModal(); // Close modal after adding task
     }
 
     // Remove a task by its id
@@ -55,7 +62,8 @@ export default function Home() {
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Task board</h1>
-                <Modal title="Create a new task">
+                <Button name={"Open task creator"} onClick={openModal} /> {/* Button to open modal */}
+                <Modal title="Create a new task" isOpen={isModalOpen} onClose={closeModal}>
                     <div className="flex flex-col gap-3">
                         <CreateTask createNewTask={addNewTask} />
                     </div>

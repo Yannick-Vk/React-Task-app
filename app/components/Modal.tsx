@@ -1,23 +1,18 @@
 ﻿import React from "react";
-import Button from "~/components/Button";
 import ButtonRaw from "~/components/ButtonRaw";
 
 export interface Props {
     className?: string;
     children: React.ReactNode;
     title: string;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
 export default function Modal(props: Props) {
 
-    const [isOpen, setIsOpen] = React.useState(false);
-
-    const changeState = () => {
-        setIsOpen(!isOpen);
-    }
-
     const showContent = () => {
-        if (!isOpen) {
+        if (!props.isOpen) {
             return null;
         }
 
@@ -31,7 +26,7 @@ export default function Modal(props: Props) {
                     <div className="bg-slate-800 p-5 rounded-lg shadow-lg relative z-50">
                         <div className="flex items-center gap-5 justify-between mb-3">
                             <span className="font-bold text-lg">{props.title}</span>
-                            <ButtonRaw onClick={changeState}
+                            <ButtonRaw onClick={props.onClose}
                                        className={"rounded-sm hover:text-fuchsia-200 hover:cursor-pointer"}>X</ButtonRaw>
                         </div>
                         <div className={props.className}>
@@ -45,9 +40,7 @@ export default function Modal(props: Props) {
 
     return (
         <>
-            <Button name={"Open modal"} onClick={changeState}></Button>
             {showContent()}
-
         </>
     );
 }
