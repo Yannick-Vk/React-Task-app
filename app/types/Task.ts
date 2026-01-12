@@ -5,7 +5,7 @@
 }
 
 export enum TaskType {
-    READY = "ready",
-    IN_PROGRESS = "in progress",
-    COMPLETED = "completed"
+    READY = "Ready",
+    IN_PROGRESS = "In Progress",
+    COMPLETED = "Completed"
 }
