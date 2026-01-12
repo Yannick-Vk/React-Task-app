@@ -7,6 +7,7 @@ import CreateTask from "~/components/tasks/CreateTask";
 import {useState} from "react";
 import Modal from "~/components/Modal";
 import Button from "~/components/Button"; // Import Button component
+import {ZodError} from "zod";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -23,12 +24,14 @@ export default function Home() {
     const closeModal = () => setIsModalOpen(false);
 
     // Create a new task
-    const addTask = (taskName: string, status?: TaskType) => {
-        const newTasks = addNewTask(tasks, taskName, status);
-        if (newTasks) {
-            setTasks(newTasks);
+    const addTask = (taskName: string, status?: TaskType): ZodError | undefined => {
+        const result = addNewTask(tasks, taskName, status);
+        if (result.success) {
+            setTasks(result.data);
             closeModal();
+            return;
         }
+        return result.error;
     }
 
     // Remove a task by its id

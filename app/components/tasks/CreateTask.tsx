@@ -2,25 +2,40 @@
 import Button from "~/components/Button";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import {TaskType} from "~/types/Task";
+import {ZodError} from "zod";
 
 export interface Props {
-    createNewTask: (taskName: string, status?: TaskType) => void;
+    createNewTask: (taskName: string, status?: TaskType) => ZodError | undefined;
+}
+
+type FormErrors = {
+    title?: string[];
+    status?: string[];
 }
 
 export default function CreateTask(props: Props) {
-
     const [name, setName] = React.useState("");
     const [status, setStatus] = React.useState<TaskType>(TaskType.READY);
+    const [errors, setErrors] = React.useState<FormErrors | null>(null);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        props.createNewTask(name, status);
-        // reset form?
+        const result = props.createNewTask(name, status);
+        if (result) {
+            setErrors(result.flatten().fieldErrors as FormErrors);
+        } else {
+            setName("");
+            setErrors(null);
+            // reset form?
+        }
     }
 
-    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value);
+        if (errors?.title) {
+            setErrors({...errors, title: undefined});
+        }
+    }
 
     return (
         <>
@@ -30,6 +45,7 @@ export default function CreateTask(props: Props) {
                         <label htmlFor="name" className="block font-medium text-gray-300 mb-2">Task Name</label>
                         <input value={name} onChange={handleNameChange} type="text" name="name" id="name"
                                className={"rounded-sm border-2 border-slate-300 text-gray-300 p-3 w-full focus:outline-none focus:shadow-outline focus:border-pink-300"} />
+                        {errors?.title && <span className="text-red-500 text-sm">{errors.title[0]}</span>}
                     </div>
                     <div>
                         <label htmlFor="status" className="">Task status</label>

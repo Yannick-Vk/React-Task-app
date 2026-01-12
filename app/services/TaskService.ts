@@ -1,9 +1,9 @@
 ﻿import {type Task, TaskType} from "~/types/Task";
-import {z} from "zod";
+import {z, ZodError} from "zod";
 
 const TaskSchema = z.object({
     id: z.number().int().positive(),
-    title: z.string().min(1, "Title cannot be empty"),
+    title: z.string().min(1, "Task name cannot be empty"),
     status: z.enum(TaskType),
 });
 
@@ -13,23 +13,26 @@ export const initialTasks: Task[] = [
     {id: 3, title: "Do Homework", status: TaskType.IN_PROGRESS},
 ];
 
+// A result type either has the updated list of taks or an error
+type AddTaskResult = { success: true; data: Task[] } | { success: false; error: ZodError };
+
 // Add a new task to the list, returns the list or null when the new task was invalid
-export const addNewTask = (tasks: Task[], taskName?: string, status?: TaskType): Task[] | null => {
+export const addNewTask = (tasks: Task[], taskName?: string, status?: TaskType): AddTaskResult => {
+
     const maxId = tasks.length ? Math.max(...tasks.map(p => p.id)) : 0;
     const newTaskDraft = {
         id: maxId + 1,
-        title: taskName,
+        title: taskName?.toString().trim(),
         status: status ?? TaskType.READY,
     };
 
     const result = TaskSchema.safeParse(newTaskDraft);
 
     if (!result.success) {
-        console.error("Task validation failed:", result.error);
-        return null;
+        return {success: false, error: result.error};
     }
 
-    return [...tasks, result.data];
+    return {success: true, data: [...tasks, result.data]};
 }
 
 // Remove a task by its id
