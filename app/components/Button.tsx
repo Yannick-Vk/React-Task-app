@@ -15,7 +15,7 @@ export default function Button(props: Props) {
                 " dark:bg-pink-300 dark:text-black " +
                 " dark:hover:bg-pink-400 "
             }
-                    type={props.type ?? "button"}
+                       type={props.type ?? "button"}
             >{props.name}</ButtonRaw>
         </>
     )
