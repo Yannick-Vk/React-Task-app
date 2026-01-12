@@ -9,6 +9,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddCors(options => { });
+
 builder.Services.AddGraphQLServer()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
@@ -19,6 +21,12 @@ builder.Services.AddGraphQLServer()
     .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = builder.Environment.IsDevelopment());
 
 var app = builder.Build();
+
+app.UseCors(policyBuilder => {
+    policyBuilder.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
 
 // Automatically apply database migrations on startup
 using (var scope = app.Services.CreateScope()) {
