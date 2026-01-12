@@ -9,7 +9,7 @@ export interface Props {
 }
 
 type FormErrors = {
-    title?: string[];
+    name?: string[];
     status?: string[];
 }
 
@@ -32,8 +32,8 @@ export default function CreateTask(props: Props) {
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value);
-        if (errors?.title) {
-            setErrors({...errors, title: undefined});
+        if (errors?.name) {
+            setErrors({...errors, name: undefined});
         }
     }
 
@@ -45,7 +45,7 @@ export default function CreateTask(props: Props) {
                         <label htmlFor="name" className="block font-medium text-gray-300 mb-2">Task Name</label>
                         <input value={name} onChange={handleNameChange} type="text" name="name" id="name"
                                className={"rounded-sm border-2 border-slate-300 text-gray-300 p-3 w-full focus:outline-none focus:shadow-outline focus:border-pink-300"} />
-                        {errors?.title && <span className="text-red-500 text-sm">{errors.title[0]}</span>}
+                        {errors?.name && <span className="text-red-500 text-sm">{errors.name[0]}</span>}
                     </div>
                     <div>
                         <label htmlFor="status" className="">Task status</label>

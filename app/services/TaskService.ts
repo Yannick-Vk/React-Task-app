@@ -3,14 +3,14 @@ import {z, ZodError} from "zod";
 
 const TaskSchema = z.object({
     id: z.number().int().positive(),
-    title: z.string().min(1, "Task name cannot be empty"),
+    name: z.string().min(1, "Task name cannot be empty"),
     status: z.enum(TaskType),
 });
 
 export const initialTasks: Task[] = [
-    {id: 1, title: "Feed the cats", status: TaskType.READY},
-    {id: 2, title: "Do the dishes", status: TaskType.COMPLETED},
-    {id: 3, title: "Do Homework", status: TaskType.IN_PROGRESS},
+    {id: 1, name: "Feed the cats", status: TaskType.READY},
+    {id: 2, name: "Do the dishes", status: TaskType.COMPLETED},
+    {id: 3, name: "Do Homework", status: TaskType.IN_PROGRESS},
 ];
 
 // A result type either has the updated list of taks or an error
@@ -22,7 +22,7 @@ export const addNewTask = (tasks: Task[], taskName?: string, status?: TaskType):
     const maxId = tasks.length ? Math.max(...tasks.map(p => p.id)) : 0;
     const newTaskDraft = {
         id: maxId + 1,
-        title: taskName?.toString().trim(),
+        name: taskName?.toString().trim(),
         status: status ?? TaskType.READY,
     };
 
