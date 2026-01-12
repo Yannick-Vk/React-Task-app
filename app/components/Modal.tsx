@@ -8,14 +8,14 @@ export interface Props {
 
 export default function Modal(props: Props) {
 
-    const [state, setState] = React.useState(false);
+    const [isOpen, setIsOpen] = React.useState(false);
 
     const changeState = () => {
-        setState(!state);
+        setIsOpen(!isOpen);
     }
 
     const showContent = () => {
-        if (state) {
+        if (isOpen) {
             return props.children;
         } else {
             return null;
