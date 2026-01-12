@@ -2,7 +2,7 @@
 import Button from "~/components/Button";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import {TaskType} from "~/types/Task";
-import {ZodError} from "zod";
+import {z, ZodError} from "zod";
 
 export interface Props {
     createNewTask: (taskName: string, status?: TaskType) => ZodError | undefined;
@@ -22,7 +22,7 @@ export default function CreateTask(props: Props) {
         e.preventDefault();
         const result = props.createNewTask(name, status);
         if (result) {
-            setErrors(result.flatten().fieldErrors as FormErrors);
+            setErrors(z.flattenError(result).fieldErrors as FormErrors);
         } else {
             setName("");
             setErrors(null);
