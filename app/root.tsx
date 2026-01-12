@@ -3,6 +3,8 @@ import {isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration,} 
 import type {Route} from "./+types/root";
 import "./app.css";
 import React from "react";
+import {ApolloProvider} from "@apollo/client/react";
+import {client} from "~/lib/apollo";
 
 export const links: Route.LinksFunction = () => [
     {rel: "preconnect", href: "https://fonts.googleapis.com"},
@@ -37,7 +39,11 @@ export function Layout({children}: { children: React.ReactNode }) {
 }
 
 export default function App() {
-    return <Outlet />;
+    return (
+        <ApolloProvider client={client}>
+            <Outlet />
+        </ApolloProvider>
+    );
 }
 
 export function ErrorBoundary({error}: Route.ErrorBoundaryProps) {

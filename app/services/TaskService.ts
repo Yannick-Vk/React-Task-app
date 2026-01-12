@@ -7,12 +7,6 @@ const TaskSchema = z.object({
     status: z.enum(TaskType),
 });
 
-export const initialTasks: Task[] = [
-    {id: 1, name: "Feed the cats", status: TaskType.READY},
-    {id: 2, name: "Do the dishes", status: TaskType.COMPLETED},
-    {id: 3, name: "Do Homework", status: TaskType.IN_PROGRESS},
-];
-
 // A result type either has the updated list of taks or an error
 type AddTaskResult = { success: true; data: Task[] } | { success: false; error: ZodError };
 

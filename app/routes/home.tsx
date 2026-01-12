@@ -1,13 +1,10 @@
 import type {Route} from "./+types/home";
 import TaskTable from "~/components/tasks/TaskTable";
-import {addNewTask, changeStatus, initialTasks, removeTask} from "~/services/TaskService";
-import type {Task} from "~/types/Task";
-import {TaskType} from "~/types/Task";
 import CreateTask from "~/components/tasks/CreateTask";
 import {useState} from "react";
 import Modal from "~/components/Modal";
 import Button from "~/components/Button"; // Import Button component
-import {ZodError} from "zod";
+import {TaskType} from "~/types/Task";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -17,33 +14,24 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-    const [tasks, setTasks] = useState<Task[]>(initialTasks);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    // Create a new task
-    const addTask = (taskName: string, status?: TaskType): ZodError | undefined => {
-        const result = addNewTask(tasks, taskName, status);
-        if (result.success) {
-            setTasks(result.data);
-            closeModal();
-            return;
-        }
-        return result.error;
+    const addTask = (taskName: string, status?: TaskType) => {
+        if (!taskName) return;
+
+        closeModal();
+        return undefined; // Return undefined to satisfy the CreateTask prop type
     }
 
-    // Remove a task by its id
-    const removeTaskHandler = (id: number) => {
-        const newTasks = removeTask(tasks, id);
-        setTasks(newTasks);
+    const removeTaskHandler = async (id: number) => {
+
     }
 
-    // Change a given task's status
-    const changeStatusHandler = (id: number, status: string) => {
-        const newTasks = changeStatus(tasks, id, status);
-        setTasks(newTasks);
+    const changeStatusHandler = async (id: number, status: string) => {
+
     }
 
     return (
@@ -56,7 +44,7 @@ export default function Home() {
                         <CreateTask createNewTask={addTask} />
                     </div>
                 </Modal>
-                <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler} />
+                <TaskTable data={[]} removeTask={removeTaskHandler} changeStatus={changeStatusHandler} />
             </div>
         </main>
     );
