@@ -7,7 +7,7 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "gql:codegen": "graphql-codegen --config app/GraphQL/graphql.config.yml"
+    "gql:codegen": "graphql-codegen --config app/GraphQL/graphql.config.yml && npm run typecheck"
   },
   "dependencies": {
     "@apollo/client": "^4.0.12",
