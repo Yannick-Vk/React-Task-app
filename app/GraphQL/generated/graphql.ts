@@ -1,4 +1,5 @@
-import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+import type {TypedDocumentNode as DocumentNode} from '@graphql-typed-document-node/core';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -71,13 +72,6 @@ export type AddTaskMutationVariables = Exact<{
 
 export type AddTaskMutation = { __typename?: 'Mutation', addTask: { __typename?: 'Task', id: any, name: string, status: Status } };
 
-export type ChangeStatusMutationVariables = Exact<{
-  task: UpdateTaskDtoInput;
-}>;
-
-
-export type ChangeStatusMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'Task', id: any, name: string, status: Status } | null };
-
 export type DeleteTaskMutationVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -90,8 +84,52 @@ export type GetTasksQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetTasksQuery = { __typename?: 'Query', tasks: Array<{ __typename?: 'Task', id: any, name: string, status: Status }> };
 
+export type UpdateTaskMutationVariables = Exact<{
+    task: UpdateTaskDtoInput;
+}>;
+
+
+export type UpdateTaskMutation = {
+    __typename?: 'Mutation',
+    updateTask?: { __typename?: 'Task', id: any, name: string, status: Status } | null
+};
+
 
 export const AddTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"status"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Status"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"status"},"value":{"kind":"Variable","name":{"kind":"Name","value":"status"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<AddTaskMutation, AddTaskMutationVariables>;
-export const ChangeStatusDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"changeStatus"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"task"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateTaskDtoInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updatedTask"},"value":{"kind":"Variable","name":{"kind":"Name","value":"task"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<ChangeStatusMutation, ChangeStatusMutationVariables>;
 export const DeleteTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<DeleteTaskMutation, DeleteTaskMutationVariables>;
 export const GetTasksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<GetTasksQuery, GetTasksQueryVariables>;
+export const UpdateTaskDocument = {
+    "kind": "Document",
+    "definitions": [{
+        "kind": "OperationDefinition",
+        "operation": "mutation",
+        "name": {"kind": "Name", "value": "updateTask"},
+        "variableDefinitions": [{
+            "kind": "VariableDefinition",
+            "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "task"}},
+            "type": {
+                "kind": "NonNullType",
+                "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "UpdateTaskDtoInput"}}
+            }
+        }],
+        "selectionSet": {
+            "kind": "SelectionSet",
+            "selections": [{
+                "kind": "Field",
+                "name": {"kind": "Name", "value": "updateTask"},
+                "arguments": [{
+                    "kind": "Argument",
+                    "name": {"kind": "Name", "value": "updatedTask"},
+                    "value": {"kind": "Variable", "name": {"kind": "Name", "value": "task"}}
+                }],
+                "selectionSet": {
+                    "kind": "SelectionSet",
+                    "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {
+                        "kind": "Field",
+                        "name": {"kind": "Name", "value": "name"}
+                    }, {"kind": "Field", "name": {"kind": "Name", "value": "status"}}]
+                }
+            }]
+        }
+    }]
+} as unknown as DocumentNode<UpdateTaskMutation, UpdateTaskMutationVariables>;

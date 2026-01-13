@@ -1,4 +1,4 @@
-﻿mutation changeStatus($task: UpdateTaskDtoInput!) {
+﻿mutation updateTask($task: UpdateTaskDtoInput!) {
     updateTask(updatedTask: $task) {
         id name status
     }

@@ -1,14 +1,14 @@
 ﻿import {
     AddTaskDocument,
     type AddTaskMutation,
-    ChangeStatusDocument,
-    type ChangeStatusMutation,
     DeleteTaskDocument,
     type DeleteTaskMutation,
     GetTasksDocument,
     type GetTasksQuery,
     Status,
-    type Task
+    type Task,
+    UpdateTaskDocument,
+    type UpdateTaskMutation
 } from "~/GraphQL/generated";
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
@@ -94,9 +94,8 @@ export const changeStatus = async (tasks: Task[], id: string, newStatus: Status,
             return undefined; // Return original tasks if not found
         }
 
-        console.log(`Updating ${id}`);
-        const {data} = await client.mutate<ChangeStatusMutation>({
-            mutation: ChangeStatusDocument,
+        const {data} = await client.mutate<UpdateTaskMutation>({
+            mutation: UpdateTaskDocument,
             variables: { // Pass variables to the mutation
                 task: {
                     id: id,
@@ -105,7 +104,6 @@ export const changeStatus = async (tasks: Task[], id: string, newStatus: Status,
                 }
             },
         });
-        console.log("Update mutation successful.");
 
         return data?.updateTask || undefined;
 
