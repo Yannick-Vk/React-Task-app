@@ -93,8 +93,6 @@ export default function Home() {
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Task board</h1>
-                <Button name={"test"} onClick={() => {
-                }} disabled={true}></Button>
                 <Button name={"Create a new task"} onClick={openModal} />
                 <Modal title="Create a new task" isOpen={isModalOpen} onClose={closeModal}>
                     <div className="flex flex-col gap-3">
