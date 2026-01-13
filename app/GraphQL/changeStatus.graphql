@@ -1,0 +1,5 @@
+﻿mutation changeStatus($task: UpdateTaskDtoInput!) {
+    updateTask(updatedTask: $task) {
+        id name status
+    }
+}

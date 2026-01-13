@@ -1,8 +1,14 @@
 ﻿schema: "http://localhost:5095/graphql"
-documents:
-  - 'app/**/*.graphql'
+documents: 'app/**/*.graphql'
 generates:
-  app/GraphQL/generated/:
-    preset: client
-    presetConfig:
+  app/GraphQL/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node
+    config:
       useTypeImports: true
+  app/GraphQL/generated/index.ts:
+    plugins:
+      - add:
+          content: 'export * from "./graphql";'

@@ -1,13 +1,4 @@
-﻿import {
-    AddTaskDocument,
-    type AddTaskMutation,
-    DeleteTaskDocument,
-    type DeleteTaskMutation,
-    GetTasksDocument,
-    type GetTasksQuery,
-    Status,
-    type Task
-} from "~/GraphQL/generated";
+﻿import {Status, type Task, type AddTaskMutation, type DeleteTaskMutation, type GetTasksQuery, AddTaskDocument, DeleteTaskDocument, GetTasksDocument} from "~/GraphQL/generated";
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
 
