@@ -62,18 +62,23 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
 // Remove a task by its id
 export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => {
     try {
-        console.log("sending mutation")
+        console.log("sending mutation");
         const {data} = await client.mutate<DeleteTaskMutation>({
             mutation: DeleteTaskDocument,
             variables: { // Pass variables to the mutation
                 id: id
             },
         });
+        console.log("Delete mutation successful, fetching updated tasks.");
 
-        return await getTasks();
+        const fetchedTasks = await client.query<GetTasksQuery>({
+            query: GetTasksDocument,
+            fetchPolicy: 'network-only', // Ensure fresh data after deletion
+        });
+        return fetchedTasks.data?.tasks || [];
 
     } catch (error) {
-        console.error("Error adding task:", error);
+        console.error("Error removing task:", error);
         // Return the tasks without the deletion
         return tasks;
     }
