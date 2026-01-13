@@ -1,6 +1,8 @@
 ﻿import {
     AddTaskDocument,
     type AddTaskMutation,
+    ChangeStatusDocument,
+    type ChangeStatusMutation,
     DeleteTaskDocument,
     type DeleteTaskMutation,
     GetTasksDocument,
@@ -84,24 +86,32 @@ export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => 
 }
 
 // Change a given task's status
-export const changeStatus = async (tasks: Task[], id: string, newStatus: Status, newName?: string): Promise<Task[]> => {
+export const changeStatus = async (tasks: Task[], id: string, newStatus: Status, newName?: string): Promise<Task | undefined> => {
     try {
         const taskToUpdate = tasks.find(task => task.id === id);
         if (!taskToUpdate) {
             console.error(`Task with id ${id} not found.`);
-            return tasks; // Return original tasks if not found
+            return undefined; // Return original tasks if not found
         }
 
-        const fetchedTasks = await client.query<GetTasksQuery>({
-            query: GetTasksDocument,
-            fetchPolicy: 'network-only', // Ensure fresh data after deletion
+        console.log(`Updating ${id}`);
+        const {data} = await client.mutate<ChangeStatusMutation>({
+            mutation: ChangeStatusDocument,
+            variables: { // Pass variables to the mutation
+                task: {
+                    id: id,
+                    name: newName !== undefined ? newName : taskToUpdate.name, // Use newName if provided, otherwise keep existing name
+                    status: newStatus, // Use the newStatus
+                }
+            },
         });
+        console.log("Update mutation successful.");
 
-        return fetchedTasks.data?.tasks || [];
+        return data?.updateTask || undefined;
 
     } catch (error) {
         console.error("Error updating task:", error);
-        return tasks; // Return original tasks on error
+        return undefined; // Return undefined on error
     }
 }
 

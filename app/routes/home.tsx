@@ -71,10 +71,44 @@ export default function Home() {
         setTasks(result);
     }
 
+    // Change the status of a given task, Optimistically update the UI then do an API request
     const changeStatusHandler = async (id: string, newStatusValue: Status) => {
-        // newStatusValue is already the correct Status enum value (e.g., Status.Done)
-        const result = await changeStatus(tasks, id, newStatusValue);
-        setTasks(result);
+        // Find the task to update
+        const taskIndex = tasks.findIndex(task => task.id === id);
+        if (taskIndex === -1) {
+            console.error(`Task with id ${id} not found.`);
+            return;
+        }
+        const originalTask = tasks[taskIndex]; // Capture original task for rollback
+
+        // Optimistically update the UI
+        const optimisticTasks = tasks.map(task =>
+            task.id === id ? {...task, status: newStatusValue} : task
+        );
+        setTasks(optimisticTasks); // Immediate update
+
+        try {
+            const updatedTask = await changeStatus(tasks, id, newStatusValue); // Returns updated task or undefined
+
+            if (updatedTask) {
+                // If update was successful, integrate the updated task into the state
+                setTasks(prevTasks =>
+                    prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
+                );
+            } else {
+                // If update failed (updatedTask is undefined), revert to original task
+                setTasks(prevTasks =>
+                    prevTasks.map(task => (task.id === id ? originalTask : task))
+                );
+            }
+        } catch (error) {
+            console.error("Failed to update task status:", error);
+            // Revert to original task on error
+            setTasks(prevTasks =>
+                prevTasks.map(task => (task.id === id ? originalTask : task))
+            );
+            // Optionally, show an error message to the user
+        }
     }
 
     if (loading) {
