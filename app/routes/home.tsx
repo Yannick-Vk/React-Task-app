@@ -4,8 +4,9 @@ import CreateTask from "~/components/tasks/CreateTask";
 import {useEffect, useState} from "react";
 import Modal from "~/components/ui/Modal";
 import Button from "~/components/ui/Button"; // Import Button component
-import {getTasks} from "~/services/TaskService";
+import {addNewTask, getTasks} from "~/services/TaskService";
 import {Status, type Task} from "~/GraphQL/generated";
+import {ZodError} from "zod";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -39,11 +40,26 @@ export default function Home() {
         fetchTasks();
     }, []);
 
-    const addTask = (taskName: string, status?: Status) => {
-        if (!taskName) return;
+    const addTask = async (taskName: string, status?: Status): Promise<ZodError | undefined> => {
+        const result = await addNewTask(tasks, taskName, status);
 
-        closeModal();
-        return undefined; // Return undefined to satisfy the CreateTask prop type
+        if (result.success) {
+            closeModal();
+            setTasks(result.data);
+            return undefined;
+        }
+
+        if (result.error instanceof ZodError) {
+            return result.error;
+        } else {
+            // Convert generic Error to ZodError for CreateTask to display
+            const genericError = new ZodError([{
+                code: "custom",
+                path: ["name"], // Assuming it's a general form error, attach to 'name' for display
+                message: result.error.message || "An unknown error occurred while adding the task."
+            }]);
+            return genericError;
+        }
     }
 
     const removeTaskHandler = async (id: number) => {

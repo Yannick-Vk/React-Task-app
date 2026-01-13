@@ -9,7 +9,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
     ID: { input: string; output: string; }
@@ -67,6 +66,17 @@ export type UpdateTaskDtoInput = {
     status?: InputMaybe<Status>;
 };
 
+export type AddTaskMutationVariables = Exact<{
+    name: Scalars['String']['input'];
+    status?: InputMaybe<Status>;
+}>;
+
+
+export type AddTaskMutation = {
+    __typename?: 'Mutation',
+    addTask: { __typename?: 'Task', id: any, name: string, status: Status }
+};
+
 export type GetTasksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -76,6 +86,45 @@ export type GetTasksQuery = {
 };
 
 
+export const AddTaskDocument = {
+    "kind": "Document", "definitions": [{
+        "kind": "OperationDefinition",
+        "operation": "mutation",
+        "name": {"kind": "Name", "value": "AddTask"},
+        "variableDefinitions": [{
+            "kind": "VariableDefinition",
+            "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}},
+            "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "String"}}}
+        }, {
+            "kind": "VariableDefinition",
+            "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "status"}},
+            "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "Status"}}
+        }],
+        "selectionSet": {
+            "kind": "SelectionSet",
+            "selections": [{
+                "kind": "Field",
+                "name": {"kind": "Name", "value": "addTask"},
+                "arguments": [{
+                    "kind": "Argument",
+                    "name": {"kind": "Name", "value": "name"},
+                    "value": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}}
+                }, {
+                    "kind": "Argument",
+                    "name": {"kind": "Name", "value": "status"},
+                    "value": {"kind": "Variable", "name": {"kind": "Name", "value": "status"}}
+                }],
+                "selectionSet": {
+                    "kind": "SelectionSet",
+                    "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {
+                        "kind": "Field",
+                        "name": {"kind": "Name", "value": "name"}
+                    }, {"kind": "Field", "name": {"kind": "Name", "value": "status"}}]
+                }
+            }]
+        }
+    }]
+} as unknown as DocumentNode<AddTaskMutation, AddTaskMutationVariables>;
 export const GetTasksDocument = {
     "kind": "Document",
     "definitions": [{

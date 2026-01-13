@@ -6,12 +6,14 @@ export interface Props {
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     className?: string;
     type?: "button" | "submit" | "reset";
+    disabled?: boolean;
 }
 
 export default function Button(props: Props) {
     return (
         <>
-            <ButtonRaw onClick={props.onClick} className={(props.className ?? "") + " p-3 rounded-sm " +
+            <ButtonRaw disabled={props.disabled} onClick={props.onClick}
+                       className={(props.className ?? "") + " p-3 rounded-sm " +
                 " dark:bg-pink-300 dark:text-black " +
                 " dark:hover:bg-pink-400 "
             }

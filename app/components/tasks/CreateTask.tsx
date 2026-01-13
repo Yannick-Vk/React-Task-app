@@ -5,7 +5,7 @@ import {z, ZodError} from "zod";
 import {Status} from "~/GraphQL/generated";
 
 export interface Props {
-    createNewTask: (taskName: string, status?: Status) => ZodError | undefined;
+    createNewTask: (taskName: string, status?: Status) => Promise<ZodError | undefined>;
 }
 
 type FormErrors = {
@@ -17,10 +17,13 @@ export default function CreateTask(props: Props) {
     const [name, setName] = React.useState("");
     const [status, setStatus] = React.useState<Status>(Status.Ready);
     const [errors, setErrors] = React.useState<FormErrors | null>(null);
+    const [isLoading, setIsLoading] = React.useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const result = props.createNewTask(name, status);
+        setIsLoading(true);
+        const result = await props.createNewTask(name, status);
+        setIsLoading(false);
         if (result) {
             setErrors(z.flattenError(result).fieldErrors as FormErrors);
         } else {
@@ -54,7 +57,8 @@ export default function CreateTask(props: Props) {
                                             onChange={setStatus} />
                     </div>
                 </div>
-                <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-5" type="submit" />
+                <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-5" type="submit"
+                        disabled={isLoading} />
             </form>
         </>
     );

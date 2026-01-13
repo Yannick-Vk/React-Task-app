@@ -5,12 +5,13 @@ export interface Props {
     className?: string;
     type?: "button" | "submit" | "reset";
     children: React.ReactNode;
+    disabled?: boolean;
 }
 
 export default function ButtonRaw(props: Props) {
     return (
         <>
-            <button onClick={props.onClick} className={(props.className ?? "")}
+            <button disabled={props.disabled ?? false} onClick={props.onClick} className={(props.className ?? "")}
                     type={props.type ?? "button"}
             >{props.children}</button>
         </>

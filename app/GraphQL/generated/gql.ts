@@ -14,9 +14,11 @@ import type {TypedDocumentNode as DocumentNode} from '@graphql-typed-document-no
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "mutation AddTask($name: String!, $status: Status) {\n  addTask(name: $name, status: $status) {\n    id\n    name\n    status\n  }\n}": typeof types.AddTaskDocument,
     "query GetTasks {\n  tasks {\n    id\n    name\n    status\n  }\n}": typeof types.GetTasksDocument,
 };
 const documents: Documents = {
+    "mutation AddTask($name: String!, $status: Status) {\n  addTask(name: $name, status: $status) {\n    id\n    name\n    status\n  }\n}": types.AddTaskDocument,
     "query GetTasks {\n  tasks {\n    id\n    name\n    status\n  }\n}": types.GetTasksDocument,
 };
 
@@ -34,6 +36,10 @@ const documents: Documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation AddTask($name: String!, $status: Status) {\n  addTask(name: $name, status: $status) {\n    id\n    name\n    status\n  }\n}"): (typeof documents)["mutation AddTask($name: String!, $status: Status) {\n  addTask(name: $name, status: $status) {\n    id\n    name\n    status\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
