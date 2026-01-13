@@ -4,7 +4,7 @@ import CreateTask from "~/components/tasks/CreateTask";
 import {useEffect, useState} from "react";
 import Modal from "~/components/ui/Modal";
 import Button from "~/components/ui/Button"; // Import Button component
-import {addNewTask, getTasks, removeTask} from "~/services/TaskService";
+import {addNewTask, changeStatus, getTasks, removeTask} from "~/services/TaskService";
 import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 
@@ -71,8 +71,10 @@ export default function Home() {
         setTasks(result);
     }
 
-    const changeStatusHandler = async (id: string, status: string) => {
-
+    const changeStatusHandler = async (id: string, newStatusValue: Status) => {
+        // newStatusValue is already the correct Status enum value (e.g., Status.Done)
+        const result = await changeStatus(tasks, id, newStatusValue);
+        setTasks(result);
     }
 
     if (loading) {

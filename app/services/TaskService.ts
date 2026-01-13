@@ -1,4 +1,13 @@
-﻿import {Status, type Task, type AddTaskMutation, type DeleteTaskMutation, type GetTasksQuery, AddTaskDocument, DeleteTaskDocument, GetTasksDocument} from "~/GraphQL/generated";
+﻿import {
+    AddTaskDocument,
+    type AddTaskMutation,
+    DeleteTaskDocument,
+    type DeleteTaskMutation,
+    GetTasksDocument,
+    type GetTasksQuery,
+    Status,
+    type Task
+} from "~/GraphQL/generated";
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
 
@@ -53,19 +62,18 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
 // Remove a task by its id
 export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => {
     try {
-        console.log("sending mutation");
-        const {data} = await client.mutate<DeleteTaskMutation>({
+        await client.mutate<DeleteTaskMutation>({
             mutation: DeleteTaskDocument,
             variables: { // Pass variables to the mutation
                 id: id
             },
         });
-        console.log("Delete mutation successful, fetching updated tasks.");
 
         const fetchedTasks = await client.query<GetTasksQuery>({
             query: GetTasksDocument,
             fetchPolicy: 'network-only', // Ensure fresh data after deletion
         });
+
         return fetchedTasks.data?.tasks || [];
 
     } catch (error) {
@@ -76,13 +84,25 @@ export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => 
 }
 
 // Change a given task's status
-export const changeStatus = (tasks: Task[], id: string, status: Status): Task[] => {
-    return tasks.map(task => {
-        if (task.id === id) {
-            return {...task, status: status};
+export const changeStatus = async (tasks: Task[], id: string, newStatus: Status, newName?: string): Promise<Task[]> => {
+    try {
+        const taskToUpdate = tasks.find(task => task.id === id);
+        if (!taskToUpdate) {
+            console.error(`Task with id ${id} not found.`);
+            return tasks; // Return original tasks if not found
         }
-        return task;
-    })
+
+        const fetchedTasks = await client.query<GetTasksQuery>({
+            query: GetTasksDocument,
+            fetchPolicy: 'network-only', // Ensure fresh data after deletion
+        });
+
+        return fetchedTasks.data?.tasks || [];
+
+    } catch (error) {
+        console.error("Error updating task:", error);
+        return tasks; // Return original tasks on error
+    }
 }
 
 // Get all tasks

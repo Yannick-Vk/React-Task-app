@@ -1,18 +1,18 @@
 ﻿import Table from "~/components/ui/Table";
 import Button from "~/components/ui/Button";
-import type {Task} from "~/GraphQL/generated"
+import type {Status, Task} from "~/GraphQL/generated"
 import React from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 
 export interface Props {
     data: Task[];
     removeTask: (id: string) => void;
-    changeStatus: (id: string, status: string) => void;
+    changeStatus: (id: string, status: Status) => void;
 }
 
 export default function TaskTable(props: Props) {
 
-    const changeStatus = (id: string, status: string) => {
+    const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
     }
 
