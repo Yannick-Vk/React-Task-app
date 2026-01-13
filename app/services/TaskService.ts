@@ -11,7 +11,7 @@ import {client} from "~/lib/apollo";
 
 const TaskSchema = z.object({
     id: z.string(),
-    name: z.string().min(1, "Task name cannot be empty"),
+    name: z.string().min(1, "Task name cannot be empty").trim(),
     status: z.enum(Status), // DO NOT CHANGE THIS - user instruction
 });
 
@@ -20,22 +20,27 @@ type AddTaskResult = { success: true; data: Task[] } | { success: false; error: 
 
 // Add a new task to the list, returns the list or an error
 export const addNewTask = async (tasks: Task[], taskName: string, status?: Status): Promise<AddTaskResult> => {
-    // Basic validation for taskName since it's required by GraphQL and Zod schema
-    const nameSchema = z.string().min(1, "Task name cannot be empty");
-    const nameValidationResult = nameSchema.safeParse(taskName.trim());
+    // Validate Task
+    console.log("Validating task");
 
-    if (!nameValidationResult.success) {
-        return {success: false, error: nameValidationResult.error};
+    const schemaResult = TaskSchema.safeParse({
+        id: "",
+        name: taskName,
+        status: status,
+    });
+
+    if (!schemaResult.success) {
+        return {success: false, error: schemaResult.error};
     }
 
-    const trimmedTaskName = nameValidationResult.data; // Use the validated and trimmed name
-
+    // Task validated, send to api
     try {
+        console.log("sending mutation")
         const {data} = await client.mutate<AddTaskMutation>({
             mutation: AddTaskDocument,
             variables: { // Pass variables to the mutation
-                name: trimmedTaskName,
-                status: status ?? Status.Ready, // Default to Ready if not provided
+                name: schemaResult.data.name,
+                status: schemaResult.data.status
             },
         });
 
@@ -44,15 +49,7 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
             return {success: false, error: new Error("Failed to add task: No data returned from mutation.")};
         }
 
-        // Validate the received task from GraphQL against TaskSchema
-        const validatedNewTask = TaskSchema.safeParse(data.addTask);
-        if (!validatedNewTask.success) {
-            // This would indicate a mismatch between frontend schema and backend response
-            console.error("Received task from backend failed Zod validation:", validatedNewTask.error);
-            return {success: false, error: validatedNewTask.error};
-        }
-
-        return {success: true, data: [...tasks, validatedNewTask.data]};
+        return {success: true, data: [...tasks, data.addTask]};
     } catch (error) {
         console.error("Error adding task:", error);
         // Return a generic Error object for mutation failures

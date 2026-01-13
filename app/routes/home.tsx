@@ -40,25 +40,28 @@ export default function Home() {
         fetchTasks();
     }, []);
 
+    /// Add a task to the list of tasks async
+    /// Returns either an error or undefined when there are no errors
     const addTask = async (taskName: string, status?: Status): Promise<ZodError | undefined> => {
         const result = await addNewTask(tasks, taskName, status);
 
+        // On a successful addition, close the modal and update the tasks with the data property
         if (result.success) {
             closeModal();
             setTasks(result.data);
-            return undefined;
+            return undefined; // Return undefined/no error
         }
 
+        // When there is an error, use the ZodError or create a new one
         if (result.error instanceof ZodError) {
             return result.error;
         } else {
             // Convert generic Error to ZodError for CreateTask to display
-            const genericError = new ZodError([{
+            return new ZodError([{
                 code: "custom",
                 path: ["name"], // Assuming it's a general form error, attach to 'name' for display
                 message: result.error.message || "An unknown error occurred while adding the task."
             }]);
-            return genericError;
         }
     }
 
@@ -90,6 +93,8 @@ export default function Home() {
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Task board</h1>
+                <Button name={"test"} onClick={() => {
+                }} disabled={true}></Button>
                 <Button name={"Create a new task"} onClick={openModal} />
                 <Modal title="Create a new task" isOpen={isModalOpen} onClose={closeModal}>
                     <div className="flex flex-col gap-3">
