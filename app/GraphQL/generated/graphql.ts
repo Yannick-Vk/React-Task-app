@@ -1,5 +1,4 @@
 /* eslint-disable */
-/* eslint-disable */
 import type {TypedDocumentNode as DocumentNode} from '@graphql-typed-document-node/core';
 
 export type Maybe<T> = T | null;
@@ -77,6 +76,16 @@ export type AddTaskMutation = {
     addTask: { __typename?: 'Task', id: any, name: string, status: Status }
 };
 
+export type DeleteTaskMutationVariables = Exact<{
+    id: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteTaskMutation = {
+    __typename?: 'Mutation',
+    removeTask?: { __typename?: 'Task', id: any, name: string, status: Status } | null
+};
+
 export type GetTasksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -125,6 +134,38 @@ export const AddTaskDocument = {
         }
     }]
 } as unknown as DocumentNode<AddTaskMutation, AddTaskMutationVariables>;
+export const DeleteTaskDocument = {
+    "kind": "Document",
+    "definitions": [{
+        "kind": "OperationDefinition",
+        "operation": "mutation",
+        "name": {"kind": "Name", "value": "deleteTask"},
+        "variableDefinitions": [{
+            "kind": "VariableDefinition",
+            "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "id"}},
+            "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "UUID"}}}
+        }],
+        "selectionSet": {
+            "kind": "SelectionSet",
+            "selections": [{
+                "kind": "Field",
+                "name": {"kind": "Name", "value": "removeTask"},
+                "arguments": [{
+                    "kind": "Argument",
+                    "name": {"kind": "Name", "value": "id"},
+                    "value": {"kind": "Variable", "name": {"kind": "Name", "value": "id"}}
+                }],
+                "selectionSet": {
+                    "kind": "SelectionSet",
+                    "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {
+                        "kind": "Field",
+                        "name": {"kind": "Name", "value": "name"}
+                    }, {"kind": "Field", "name": {"kind": "Name", "value": "status"}}]
+                }
+            }]
+        }
+    }]
+} as unknown as DocumentNode<DeleteTaskMutation, DeleteTaskMutationVariables>;
 export const GetTasksDocument = {
     "kind": "Document",
     "definitions": [{

@@ -1,0 +1,5 @@
+﻿mutation deleteTask($id: UUID!) {
+    removeTask(id: $id) {
+        id name status
+    }
+}
