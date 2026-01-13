@@ -11,7 +11,8 @@ export interface Props {
 export default function ButtonRaw(props: Props) {
     return (
         <>
-            <button disabled={props.disabled ?? false} onClick={props.onClick} className={(props.className ?? "")}
+            <button disabled={props.disabled ?? false} onClick={props.onClick}
+                    className={(props.className ?? "") + "disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-300"}
                     type={props.type ?? "button"}
             >{props.children}</button>
         </>
