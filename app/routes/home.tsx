@@ -4,7 +4,7 @@ import CreateTask from "~/components/tasks/CreateTask";
 import {useEffect, useState} from "react";
 import Modal from "~/components/ui/Modal";
 import Button from "~/components/ui/Button"; // Import Button component
-import {addNewTask, getTasks} from "~/services/TaskService";
+import {addNewTask, getTasks, removeTask} from "~/services/TaskService";
 import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 
@@ -65,11 +65,13 @@ export default function Home() {
         }
     }
 
-    const removeTaskHandler = async (id: number) => {
+    const removeTaskHandler = async (id: string) => {
+        const result = await removeTask(tasks, id);
 
+        setTasks(result);
     }
 
-    const changeStatusHandler = async (id: number, status: string) => {
+    const changeStatusHandler = async (id: string, status: string) => {
 
     }
 

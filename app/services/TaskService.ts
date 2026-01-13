@@ -1,6 +1,8 @@
 ﻿import {
     AddTaskDocument,
     type AddTaskMutation,
+    DeleteTaskDocument,
+    type DeleteTaskMutation,
     GetTasksDocument,
     type GetTasksQuery,
     Status,
@@ -21,8 +23,6 @@ type AddTaskResult = { success: true; data: Task[] } | { success: false; error: 
 // Add a new task to the list, returns the list or an error
 export const addNewTask = async (tasks: Task[], taskName: string, status?: Status): Promise<AddTaskResult> => {
     // Validate Task
-    console.log("Validating task");
-
     const schemaResult = TaskSchema.safeParse({
         id: "",
         name: taskName,
@@ -35,7 +35,6 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
 
     // Task validated, send to api
     try {
-        console.log("sending mutation")
         const {data} = await client.mutate<AddTaskMutation>({
             mutation: AddTaskDocument,
             variables: { // Pass variables to the mutation
@@ -61,8 +60,23 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
 }
 
 // Remove a task by its id
-export const removeTask = (tasks: Task[], id: string): Task[] => {
-    return tasks.filter((task) => task.id !== id);
+export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => {
+    try {
+        console.log("sending mutation")
+        const {data} = await client.mutate<DeleteTaskMutation>({
+            mutation: DeleteTaskDocument,
+            variables: { // Pass variables to the mutation
+                id: id
+            },
+        });
+
+        return await getTasks();
+
+    } catch (error) {
+        console.error("Error adding task:", error);
+        // Return the tasks without the deletion
+        return tasks;
+    }
 }
 
 // Change a given task's status

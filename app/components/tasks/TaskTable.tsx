@@ -6,13 +6,13 @@ import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 
 export interface Props {
     data: Task[];
-    removeTask: (id: number) => void;
-    changeStatus: (id: number, status: string) => void;
+    removeTask: (id: string) => void;
+    changeStatus: (id: string, status: string) => void;
 }
 
 export default function TaskTable(props: Props) {
 
-    const changeStatus = (id: number, status: string) => {
+    const changeStatus = (id: string, status: string) => {
         props.changeStatus(id, status);
     }
 
