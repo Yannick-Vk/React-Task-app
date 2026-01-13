@@ -19,14 +19,12 @@ export default function TaskTable(props: Props) {
     return (
         <>
             <Table columns={[
-                {key: "id", header: "Id"},
                 {key: "title", header: "Title"},
                 {key: "status", header: "Status"},
                 {key: "actions", header: "Actions"},
             ]}>
                 {props.data.map((item) => (
                     <tr className={"bg-gray-200 even:bg-gray-300 text-black hover:bg-pink-200"} key={item.id}>
-                        <td className={"p-3 text-center"}> {item.id} </td>
                         <td className={"p-3 text-center"}> {item.name} </td>
                         <td className={"p-3 text-center"}>
                             <TaskTypesSelectBox name="" value={item.status} className={"bg-slate-200"}
