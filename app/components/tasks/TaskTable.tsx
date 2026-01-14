@@ -1,7 +1,7 @@
 ﻿import Table from "~/components/ui/Table";
 import Button from "~/components/ui/Button";
 import type {Status, Task} from "~/GraphQL/generated"
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import Modal from "~/components/ui/Modal";
 import InputField from "~/components/ui/InputField";
@@ -18,7 +18,10 @@ export default function TaskTable(props: Props) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-    const [originalTask, setOriginalTask] = useState<Task | null>(null);
+    // Use ref instead  which is better for storing a value that persists across renders but does not need to trigger a re-render when it changes.
+    // Since you're setting the original title only once when the modal opens and never changing it again,
+    // useRef is a slightly better semantic fit. It signals to future developers (including yourself) that this value is a reference, not a reactive piece of state.
+    const originalTask = useRef<Task | null>(null);
 
     const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
@@ -26,13 +29,13 @@ export default function TaskTable(props: Props) {
 
     const openModal = (task: Task) => {
         setSelectedTask(task);
-        setOriginalTask(task);
+        originalTask.current = task;
         setIsModalOpen(true);
     };
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedTask(null);
-        setOriginalTask(null);
+        originalTask.current = null;
     };
 
     const updateTask = async () => {
@@ -67,7 +70,7 @@ export default function TaskTable(props: Props) {
     };
 
     const reset = () => {
-        setSelectedTask(originalTask);
+        setSelectedTask(originalTask.current);
     };
 
     return (
@@ -91,7 +94,7 @@ export default function TaskTable(props: Props) {
                     </tr>
                 ))}
             </Table>
-            <Modal title={`Edit task: '${originalTask?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
+            <Modal title={`Edit task: '${originalTask?.current?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
                     <p>Update the task, click 'esc' or the close button to cancel. Press reset to go back to the
                         original state.</p>
