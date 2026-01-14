@@ -107,11 +107,8 @@ export const updateTask = async (tasks: Task[], id: string, newStatus: Status, n
             },
         });
 
-        if (!data) {
-            return {success: false, error: new Error("No data was given.")};
-        }
-
-        return {success: true, data: data.updateTask!};
+        return data ? Ok(data.updateTask!)
+            : Err(new Error("No data was given."));
 
     } catch (error) {
         console.error("Error updating task:", error);
