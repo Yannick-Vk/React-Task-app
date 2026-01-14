@@ -96,13 +96,15 @@ export default function TaskTable(props: Props) {
             </Table>
             <Modal title={`Edit task: '${title}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
+                    <p>Update the task, click 'esc' or the close button to cancel. Press reset to go back to the
+                        original state.</p>
                     <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""}
                                 onChange={onNameChange} />
                     <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
                                         className={"bg-slate-800 text-white focus:border-pink-300"}
                                         onChange={onStatusChange} />
                     <div className={"mt-5 flex flex-row gap-5"}>
-                        <Button onClick={updateTask}>Update task</Button>
+                        <Button onClick={updateTask}>Save changes</Button>
                         <Button onClick={reset}>Reset</Button>
                     </div>
                 </div>
