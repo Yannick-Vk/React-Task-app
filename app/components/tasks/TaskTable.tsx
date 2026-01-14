@@ -19,6 +19,7 @@ export default function TaskTable(props: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [title, setTitle] = useState("");
+    const [originalTask, setOriginalTask] = useState<Task | null>(null);
 
     const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
@@ -26,6 +27,7 @@ export default function TaskTable(props: Props) {
 
     const openModal = (task: Task) => {
         setSelectedTask(task);
+        setOriginalTask(task);
         setTitle(task.name);
         setIsModalOpen(true);
     };
@@ -33,6 +35,7 @@ export default function TaskTable(props: Props) {
         setIsModalOpen(false);
         setTitle("");
         setSelectedTask(null);
+        setOriginalTask(null);
     };
 
     const updateTask = async () => {
@@ -67,7 +70,7 @@ export default function TaskTable(props: Props) {
     };
 
     const reset = () => {
-
+        setSelectedTask(originalTask);
     };
 
     return (
@@ -98,7 +101,7 @@ export default function TaskTable(props: Props) {
                     <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
                                         className={"bg-slate-800 text-white focus:border-pink-300"}
                                         onChange={onStatusChange} />
-                    <div className={"mt-5"}>
+                    <div className={"mt-5 flex flex-row gap-5"}>
                         <Button onClick={updateTask}>Update task</Button>
                         <Button onClick={reset}>Reset</Button>
                     </div>
