@@ -158,8 +158,10 @@ export default function Home() {
 
     return (
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
-            <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
+            <div className="flex-1 flex flex-col items-center gap-5 min-h-0">
                 <h1>Task board</h1>
+                <p>Press the create task button to create a new task or press
+                    '{openModalKeyboardButton.toUpperCase()}'.</p>
 
                 <Button onClick={openModal} className={"flex items-center gap-3 justify-center p-2"}>
                     Create a new Task
