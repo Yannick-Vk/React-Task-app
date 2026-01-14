@@ -12,7 +12,7 @@
 } from "~/GraphQL/generated";
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
-import type {Result} from "~/lib/util";
+import {Err, Ok, type Result} from "~/lib/util";
 
 const TaskSchema = z.object({
     id: z.string(),
@@ -32,7 +32,7 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
     });
 
     if (!schemaResult.success) {
-        return {success: false, error: schemaResult.error};
+        return Err(schemaResult.error);
     }
 
     // Task validated, send to api
@@ -47,17 +47,16 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
 
         // Ensure data and data.addTask exist
         if (!data || !data.addTask) {
-            return {success: false, error: new Error("Failed to add task: No data returned from mutation.")};
+            return Err(new Error("Failed to add task: No data returned from mutation."));
         }
 
-        return {success: true, data: [...tasks, data.addTask]};
+        return Ok([...tasks, data.addTask]);
     } catch (error) {
         console.error("Error adding task:", error);
         // Return a generic Error object for mutation failures
-        return {
-            success: false,
-            error: error instanceof Error ? error : new Error("An unknown error occurred during task creation.")
-        };
+        return Err(
+            error instanceof Error ? error : new Error("An unknown error occurred during task creation.")
+        );
     }
 }
 
@@ -126,9 +125,9 @@ export const getTasks = async (): Promise<Result<Task[], Error>> => {
         const {data} = await client.query<GetTasksQuery>({
             query: GetTasksDocument,
         });
-        return {success: true, data: data?.tasks || []};
+        return Ok(data?.tasks || []);
     } catch (error) {
         console.error("Error fetching tasks:", error);
-        return {success: false, error: error as Error};
+        return Err(error as Error);
     }
 }

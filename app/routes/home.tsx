@@ -9,7 +9,7 @@ import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
-import {type Result} from "~/lib/util";
+import {Err, Ok, type Result} from "~/lib/util";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -131,12 +131,10 @@ export default function Home() {
                 prevTasks.map(task => (task.id === updatedTask.data!.id ? updatedTask.data! : task))
             );
 
-
-            return {success: true, data: task};
-
+            return Ok(task);
         } catch (error) {
             console.error("Failed to update task status:", error);
-            return {success: false, error: error as Error};
+            return Err(error as Error);
         }
     };
 
