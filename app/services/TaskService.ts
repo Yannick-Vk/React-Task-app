@@ -112,7 +112,7 @@ export const updateTask = async (tasks: Task[], id: string, newStatus: Status, n
 
     } catch (error) {
         console.error("Error updating task:", error);
-        return {success: false, error: error as Error};
+        return Err(error as Error);
     }
 }
 

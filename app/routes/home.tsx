@@ -9,7 +9,7 @@ import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
-import {Err, None, Ok, type Option, type Result, Some} from "~/lib/util";
+import {Err, matchResult, None, Ok, type Option, type Result, Some} from "~/lib/util";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -32,11 +32,11 @@ export default function Home() {
             try {
                 setLoading(true);
                 const result = await getTasks();
-                if (result.success) {
-                    setTasks(result.data);
-                } else {
-                    setError(result.error.message);
-                }
+
+                matchResult(result,
+                    (tasks) => setTasks(tasks),
+                    (err) => setError(err.message)
+                );
             } catch (err) {
                 setError("Failed to load tasks.");
                 console.error(err);
@@ -53,23 +53,23 @@ export default function Home() {
         const result = await addNewTask(tasks, taskName, status);
 
         // On a successful addition, close the modal and update the tasks with the data property
-        if (result.success) {
-            closeModal();
-            setTasks(result.data);
-            return None; // Return undefined/no error
-        }
-
-        // When there is an error, use the ZodError or create a new one
-        if (result.error instanceof ZodError) {
-            return Some(result.error);
-        } else {
-            // Convert generic Error to ZodError for CreateTask to display
-            return Some(new ZodError([{
-                code: "custom",
-                path: ["name"], // Assuming it's a general form error, attach to 'name' for display
-                message: result.error.message || "An unknown error occurred while adding the task."
-            }]));
-        }
+        return matchResult(result,
+            (tasks) => {
+                closeModal();
+                setTasks(tasks)
+                return None;
+            },
+            (error) => {
+                // When there is an error, use the ZodError or create a new one
+                return error instanceof ZodError ?
+                    Some(error) :
+                    Some(new ZodError([{
+                        code: "custom",
+                        path: ["name"], // Assuming it's a general form error, attach to 'name' for display
+                        message: error.message || "An unknown error occurred while adding the task."
+                    }]))
+            }
+        );
     }
 
     const removeTaskHandler = async (id: string) => {
@@ -78,7 +78,7 @@ export default function Home() {
         setTasks(result);
     }
 
-    // Change the status of a given task, Optimistically update the UI then do an API request
+// Change the status of a given task, Optimistically update the UI then do an API request
     const changeStatusHandler = async (id: string, newStatusValue: Status) => {
         // Find the task to update
         const taskIndex = tasks.findIndex(task => task.id === id);
@@ -95,19 +95,18 @@ export default function Home() {
         setTasks(optimisticTasks); // Immediate update
 
         try {
-            const updatedTask = await updateTask(tasks, id, newStatusValue, originalTask.name); // Returns updated task or undefined
+            const result = await updateTask(tasks, id, newStatusValue, originalTask.name); // Returns updated task or undefined
 
-            if (updatedTask.success && updatedTask.data !== undefined && updatedTask.data !== null) {
-                // If update was successful, integrate the updated task into the state
-                setTasks(prevTasks =>
-                    prevTasks.map(task => (task.id === updatedTask.data!.id ? updatedTask.data! : task))
-                );
-            } else {
-                // If update failed (updatedTask is undefined), revert to original task
-                setTasks(prevTasks =>
-                    prevTasks.map(task => (task.id === id ? originalTask : task))
-                );
-            }
+            matchResult(result,
+                (updatedTask) => setTasks(prevTasks =>
+                    prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
+                ),
+                () => { // Revert changes
+                    setTasks(prevTasks =>
+                        prevTasks.map(task => (task.id === id ? originalTask : task))
+                    );
+                }
+            );
         } catch (error) {
             console.error("Failed to update task status:", error);
             // Revert to original task on error
