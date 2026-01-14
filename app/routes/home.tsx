@@ -128,6 +128,7 @@ export default function Home() {
 
             // Open modal on 'n' key press, if not already open
             if (event.key === openModalKeyboardButton) {
+                event.preventDefault();
                 isModalOpen ? closeModal() : openModal();
             }
         };
