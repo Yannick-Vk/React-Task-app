@@ -2,11 +2,11 @@
 import ButtonRaw from "~/components/ui/raw/ButtonRaw";
 
 export interface Props {
-    name: string;
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     className?: string;
     type?: "button" | "submit" | "reset";
     disabled?: boolean;
+    children?: React.ReactNode;
 }
 
 export default function Button(props: Props) {
@@ -18,7 +18,9 @@ export default function Button(props: Props) {
                            " dark:hover:bg-pink-400 "
                        }
                        type={props.type ?? "button"}
-            >{props.name}</ButtonRaw>
+            >
+                {props.children ?? ""}
+            </ButtonRaw>
         </>
     )
 }

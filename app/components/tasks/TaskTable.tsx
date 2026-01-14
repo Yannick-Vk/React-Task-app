@@ -31,7 +31,7 @@ export default function TaskTable(props: Props) {
                                                 onChange={(e) => changeStatus(item.id, e)}></TaskTypesSelectBox>
                         </td>
                         <td className={"p-3 text-center"}>
-                            <Button name="Remove task" onClick={() => props.removeTask(item.id)} />
+                            <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
                         </td>
                     </tr>
                 ))}

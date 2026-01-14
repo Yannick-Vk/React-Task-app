@@ -8,6 +8,7 @@ import {addNewTask, changeStatus, getTasks, removeTask} from "~/services/TaskSer
 import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
+import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -116,6 +117,8 @@ export default function Home() {
         }
     }
 
+    const openModalKeyboardButton = "n";
+
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             // Do not trigger while typing in an input
@@ -124,7 +127,7 @@ export default function Home() {
             }
 
             // Open modal on 'n' key press, if not already open
-            if (event.key === 'n') {
+            if (event.key === openModalKeyboardButton) {
                 isModalOpen ? closeModal() : openModal();
             }
         };
@@ -157,7 +160,12 @@ export default function Home() {
         <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                 <h1>Task board</h1>
-                <Button name={"Create a new task"} onClick={openModal} />
+
+                <Button onClick={openModal} className={"flex items-center gap-3 justify-center p-2"}>
+                    Create a new Task
+                    <KeyboardButtonIcon kb={openModalKeyboardButton.toUpperCase()} />
+                </Button>
+
                 <Modal title="Create a new task" isOpen={isModalOpen} onClose={closeModal}>
                     <div className="flex flex-col gap-3">
                         <CreateTask createNewTask={addTask} />

@@ -57,8 +57,8 @@ export default function CreateTask(props: Props) {
                                             onChange={setStatus} />
                     </div>
                 </div>
-                <Button onClick={handleSubmit} name={"Create new Task"} className="block mt-5" type="submit"
-                        disabled={isLoading} />
+                <Button onClick={handleSubmit} className="block mt-5" type="submit"
+                        disabled={isLoading}>Create new Task</Button>
             </form>
         </>
     );
