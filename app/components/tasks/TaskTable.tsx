@@ -1,8 +1,9 @@
 ﻿import Table from "~/components/ui/Table";
 import Button from "~/components/ui/Button";
 import type {Status, Task} from "~/GraphQL/generated"
-import React from "react";
+import React, {useState} from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
+import Modal from "~/components/ui/Modal";
 
 export interface Props {
     data: Task[];
@@ -17,8 +18,13 @@ export default function TaskTable(props: Props) {
     }
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = () => setIsModalOpen(true);
+    const openModal = () => {
+        setTitle("");
+        setIsModalOpen(true);
+    }
     const closeModal = () => setIsModalOpen(false);
+
+    const [title, setTitle] = useState("");
 
     return (
         <>
@@ -36,12 +42,18 @@ export default function TaskTable(props: Props) {
                         </td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
-                            <Button onClick={() => {
-                            }}>Edit task</Button>
+                            <Button onClick={openModal}>Edit task</Button>
                         </td>
                     </tr>
                 ))}
             </Table>
+            <Modal title={`Edit task: '${title}'`} isOpen={isModalOpen} onClose={closeModal}>
+                <div className="flex flex-col gap-3">
+                    <TaskTypesSelectBox name={"Status"} />
+                    <Button onClick={() => {
+                    }}>Change status</Button>
+                </div>
+            </Modal>
         </>
     );
 }
