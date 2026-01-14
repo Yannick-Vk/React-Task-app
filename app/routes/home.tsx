@@ -116,6 +116,27 @@ export default function Home() {
         }
     }
 
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            // Do not trigger while typing in an input
+            if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+                return;
+            }
+
+            // Open modal on 'n' key press, if not already open
+            if (event.key === 'n') {
+                isModalOpen ? closeModal() : openModal();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyPress);
+
+        // Cleanup the event listener on component unmount
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [isModalOpen]); // Rerun effect if isModalOpen changes
+
     if (loading) {
         return (
             <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
