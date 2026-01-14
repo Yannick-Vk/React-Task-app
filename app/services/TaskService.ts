@@ -90,10 +90,10 @@ export const updateTask = async (tasks: Task[], id: string, newStatus: Status, n
         const taskToUpdate = tasks.find(task => task.id === id);
         if (!taskToUpdate) {
             console.error(`Task with id ${id} not found.`);
-            return {success: false, error: new Error(`Task with id ${id} not found.`)};
+            return Err(new Error(`Task with id ${id} not found.`));
         }
         if (newName.trim().length == 0) {
-            return {success: false, error: new Error(`The task's new name cannot be empty`)};
+            return Err(new Error(`The task's new name cannot be empty`));
         }
 
         const {data} = await client.mutate<UpdateTaskMutation>({
