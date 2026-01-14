@@ -12,7 +12,7 @@
 } from "~/GraphQL/generated";
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
-import {Err, Ok, type Result} from "~/lib/util";
+import {Err, Ok, type Result, strToErr, toErr} from "~/lib/util";
 
 const TaskSchema = z.object({
     id: z.string(),
@@ -46,17 +46,14 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
         });
 
         // Ensure data and data.addTask exist
-        if (!data || !data.addTask) {
-            return Err(new Error("Failed to add task: No data returned from mutation."));
-        }
+        return (!data || !data.addTask) ?
+            strToErr("Failed to add task: No data returned from mutation.")
+            : Ok([...tasks, data.addTask]);
 
-        return Ok([...tasks, data.addTask]);
     } catch (error) {
         console.error("Error adding task:", error);
         // Return a generic Error object for mutation failures
-        return Err(
-            error instanceof Error ? error : new Error("An unknown error occurred during task creation.")
-        );
+        return toErr(error);
     }
 }
 
@@ -90,10 +87,10 @@ export const updateTask = async (tasks: Task[], id: string, newStatus: Status, n
         const taskToUpdate = tasks.find(task => task.id === id);
         if (!taskToUpdate) {
             console.error(`Task with id ${id} not found.`);
-            return Err(new Error(`Task with id ${id} not found.`));
+            return strToErr(`Task with id ${id} not found.`);
         }
         if (newName.trim().length == 0) {
-            return Err(new Error(`The task's new name cannot be empty`));
+            return strToErr(`The task's new name cannot be empty`);
         }
 
         const {data} = await client.mutate<UpdateTaskMutation>({
@@ -108,11 +105,11 @@ export const updateTask = async (tasks: Task[], id: string, newStatus: Status, n
         });
 
         return data ? Ok(data.updateTask!)
-            : Err(new Error("No data was given."));
+            : strToErr("No data was given.");
 
     } catch (error) {
         console.error("Error updating task:", error);
-        return Err(error as Error);
+        return toErr(error);
     }
 }
 
@@ -125,6 +122,6 @@ export const getTasks = async (): Promise<Result<Task[], Error>> => {
         return Ok(data?.tasks || []);
     } catch (error) {
         console.error("Error fetching tasks:", error);
-        return Err(error as Error);
+        return toErr(error);
     }
 }

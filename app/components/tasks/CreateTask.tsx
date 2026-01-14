@@ -3,7 +3,7 @@ import Button from "~/components/ui/Button";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import {z, ZodError} from "zod";
 import {Status} from "~/GraphQL/generated";
-import type {Option} from "~/lib/util";
+import {matchOption, type Option} from "~/lib/util";
 
 export interface Props {
     createNewTask: (taskName: string, status?: Status) => Promise<Option<ZodError>>;
@@ -25,13 +25,14 @@ export default function CreateTask(props: Props) {
         setIsLoading(true);
         const result = await props.createNewTask(name, status);
         setIsLoading(false);
-        if (result.some) {
-            setErrors(z.flattenError(result.value).fieldErrors as FormErrors);
-        } else {
-            setName("");
-            setErrors(null);
-            // reset form?
-        }
+
+        matchOption(result,
+            (val) => setErrors(z.flattenError(val).fieldErrors as FormErrors),
+            () => {
+                setName("");
+                setErrors(null)
+            }
+        );
     }
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

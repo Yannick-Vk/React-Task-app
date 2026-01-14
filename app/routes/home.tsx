@@ -95,13 +95,12 @@ export default function Home() {
         setTasks(optimisticTasks); // Immediate update
 
         try {
-            const result = await updateTask(tasks, id, newStatusValue, originalTask.name); // Returns updated task or undefined
-
-            matchResult(result,
+            matchResult(await updateTask(tasks, id, newStatusValue, originalTask.name), // Returns updated task or undefined,
                 (updatedTask) => setTasks(prevTasks =>
                     prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
                 ),
-                () => { // Revert changes
+                (error) => { // Revert changes
+                    console.error("Failed to update task status:", error)
                     setTasks(prevTasks =>
                         prevTasks.map(task => (task.id === id ? originalTask : task))
                     );
@@ -118,23 +117,19 @@ export default function Home() {
     }
 
     const updateTaskHandler = async (task: Task): Promise<Result<Task, Error>> => {
-        try {
-            const updatedTask = await updateTask(tasks, task.id, task.status, task.name);
-
-            if (!updatedTask.success || updatedTask.data === undefined) {
-                return updatedTask;
+        return matchResult(await updateTask(tasks, task.id, task.status, task.name),
+            (task) => {
+                // If update was successful, integrate the updated task into the state
+                setTasks(prevTasks =>
+                    prevTasks.map(t => (t.id === task.id ? task : t))
+                );
+                return Ok(task);
+            },
+            (error) => {
+                console.error("Failed to update task: ", error);
+                return Err(error);
             }
-
-            // If update was successful, integrate the updated task into the state
-            setTasks(prevTasks =>
-                prevTasks.map(task => (task.id === updatedTask.data!.id ? updatedTask.data! : task))
-            );
-
-            return Ok(task);
-        } catch (error) {
-            console.error("Failed to update task status:", error);
-            return Err(error as Error);
-        }
+        );
     };
 
     const openModalKeyboardButton = "n";
