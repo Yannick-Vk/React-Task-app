@@ -38,6 +38,8 @@ export default function TaskTable(props: Props) {
 
         if (result.success) {
             closeModal();
+        } else {
+            console.log(result.error);
         }
     };
 

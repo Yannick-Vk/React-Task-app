@@ -9,6 +9,7 @@ import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
+import type {Result} from "~/lib/util";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -117,6 +118,10 @@ export default function Home() {
         }
     }
 
+    const updateTask = (): Result<Task, Error> => {
+        return {success: false, error: new Error("Oopsie floopsie")};
+    };
+
     const openModalKeyboardButton = "n";
 
     useEffect(() => {
@@ -174,7 +179,8 @@ export default function Home() {
                         <CreateTask createNewTask={addTask} />
                     </div>
                 </Modal>
-                <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler} />
+                <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
+                           updateTask={updateTask} />
             </div>
         </main>
     );
