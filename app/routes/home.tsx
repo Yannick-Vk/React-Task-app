@@ -9,7 +9,7 @@ import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
-import {Err, Ok, type Result} from "~/lib/util";
+import {Err, None, Ok, type Option, type Result, Some} from "~/lib/util";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -49,26 +49,26 @@ export default function Home() {
 
     /// Add a task to the list of tasks async
     /// Returns either an error or undefined when there are no errors
-    const addTask = async (taskName: string, status?: Status): Promise<ZodError | undefined> => {
+    const addTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
         const result = await addNewTask(tasks, taskName, status);
 
         // On a successful addition, close the modal and update the tasks with the data property
         if (result.success) {
             closeModal();
             setTasks(result.data);
-            return undefined; // Return undefined/no error
+            return None; // Return undefined/no error
         }
 
         // When there is an error, use the ZodError or create a new one
         if (result.error instanceof ZodError) {
-            return result.error;
+            return Some(result.error);
         } else {
             // Convert generic Error to ZodError for CreateTask to display
-            return new ZodError([{
+            return Some(new ZodError([{
                 code: "custom",
                 path: ["name"], // Assuming it's a general form error, attach to 'name' for display
                 message: result.error.message || "An unknown error occurred while adding the task."
-            }]);
+            }]));
         }
     }
 

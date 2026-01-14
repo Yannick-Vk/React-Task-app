@@ -3,9 +3,10 @@ import Button from "~/components/ui/Button";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import {z, ZodError} from "zod";
 import {Status} from "~/GraphQL/generated";
+import type {Option} from "~/lib/util";
 
 export interface Props {
-    createNewTask: (taskName: string, status?: Status) => Promise<ZodError | undefined>;
+    createNewTask: (taskName: string, status?: Status) => Promise<Option<ZodError>>;
 }
 
 type FormErrors = {
@@ -24,8 +25,8 @@ export default function CreateTask(props: Props) {
         setIsLoading(true);
         const result = await props.createNewTask(name, status);
         setIsLoading(false);
-        if (result) {
-            setErrors(z.flattenError(result).fieldErrors as FormErrors);
+        if (result.some) {
+            setErrors(z.flattenError(result.value).fieldErrors as FormErrors);
         } else {
             setName("");
             setErrors(null);
