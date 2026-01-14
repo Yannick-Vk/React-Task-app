@@ -66,6 +66,10 @@ export default function TaskTable(props: Props) {
         });
     };
 
+    const reset = () => {
+
+    };
+
     return (
         <>
             <Table columns={[
@@ -94,8 +98,9 @@ export default function TaskTable(props: Props) {
                     <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
                                         className={"bg-slate-800 text-white focus:border-pink-300"}
                                         onChange={onStatusChange} />
-                    <div>
-                        <Button onClick={updateTask}>Change status</Button>
+                    <div className={"mt-5"}>
+                        <Button onClick={updateTask}>Update task</Button>
+                        <Button onClick={reset}>Reset</Button>
                     </div>
                 </div>
             </Modal>
