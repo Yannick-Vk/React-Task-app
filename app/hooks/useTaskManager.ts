@@ -10,25 +10,35 @@ export function useTaskManager() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchTasks = async () => {
             try {
                 setLoading(true);
                 const result = await getTasks();
 
-                matchResult(result,
-                    (tasks) => setTasks(tasks),
-                    (err) => setError(err.message),
-                );
+                if (isMounted) {
+                    matchResult(result,
+                        (tasks) => setTasks(tasks),
+                        (err) => setError(err.message),
+                    );
+                }
             } catch (err) {
-                setError("Failed to load tasks.");
-                console.error(err);
+                if (isMounted) {
+                    setError("Failed to load tasks.");
+                    console.error(err);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
-        fetchTasks().then(_ => {
-            // Do nothing
-        });
+        void fetchTasks();
+
+        return () => {
+            isMounted = false;
+        }
     }, []);
 
     const addTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
