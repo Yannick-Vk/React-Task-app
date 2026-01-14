@@ -5,7 +5,7 @@ import React, {useRef, useState} from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import Modal from "~/components/ui/Modal";
 import InputField from "~/components/ui/InputField";
-import type {Result} from "~/lib/util";
+import {compareTask, type Result} from "~/lib/util";
 
 export interface Props {
     data: Task[];
@@ -44,7 +44,7 @@ export default function TaskTable(props: Props) {
     const updateTask = async () => {
         if (!selectedTask) return;
 
-        if (selectedTask === originalTask.current) {
+        if (compareTask(selectedTask, originalTask.current)) {
             setError(new Error("No changes found."));
             return;
         }

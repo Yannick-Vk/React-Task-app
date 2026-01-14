@@ -1,4 +1,4 @@
-﻿import {Status} from "~/GraphQL/generated";
+﻿import {Status, type Task} from "~/GraphQL/generated";
 
 export function MapStatusEnum(value: Status): string {
     switch (value) {
@@ -11,6 +11,11 @@ export function MapStatusEnum(value: Status): string {
         default:
             return value;
     }
+}
+
+export const compareTask = (a: Task | null | undefined, b: Task | null | undefined) => {
+    if (!a || !b) return false;
+    return a.name === b.name && a.status === b.status;
 }
 
 export type Result<T, E> = { success: true, data: T } | { success: false, error: E };
