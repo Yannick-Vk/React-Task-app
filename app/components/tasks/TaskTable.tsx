@@ -53,7 +53,8 @@ export default function TaskTable(props: Props) {
             <Modal title={`Edit task: '${selectedTask?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
                     <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""} />
-                    <TaskTypesSelectBox name={"Status"} value={selectedTask?.status} />
+                    <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
+                                        className={"bg-slate-800 text-white focus:border-pink-300"} />
                     <Button onClick={() => {
                     }}>Change status</Button>
                 </div>
