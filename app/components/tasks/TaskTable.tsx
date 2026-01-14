@@ -22,6 +22,7 @@ export default function TaskTable(props: Props) {
     // Since you're setting the original title only once when the modal opens and never changing it again,
     // useRef is a slightly better semantic fit. It signals to future developers (including yourself) that this value is a reference, not a reactive piece of state.
     const originalTask = useRef<Task | null>(null);
+    const [error, setError] = useState<Error | null>(null);
 
     const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
@@ -41,12 +42,19 @@ export default function TaskTable(props: Props) {
     const updateTask = async () => {
         if (!selectedTask) return;
 
+        if (selectedTask === originalTask.current) {
+            setError(new Error("No changes found."));
+            return;
+        }
+
         const result = await props.updateTask(selectedTask);
 
         if (result.success) {
             closeModal();
+            setError(null);
         } else {
             console.log(result.error);
+            setError(result.error);
         }
     };
 
@@ -103,6 +111,9 @@ export default function TaskTable(props: Props) {
                     <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
                                         className={"bg-slate-800 text-white focus:border-pink-300"}
                                         onChange={onStatusChange} />
+                    <div>
+                        {error && <span className={"text-red-500"}>{error.message}</span>}
+                    </div>
                     <div className={"mt-5 flex flex-row gap-5"}>
                         <Button onClick={updateTask}>Save changes</Button>
                         <Button onClick={reset}>Reset</Button>

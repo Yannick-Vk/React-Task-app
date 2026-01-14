@@ -9,7 +9,7 @@ import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
-import type {Result} from "~/lib/util";
+import {type Result} from "~/lib/util";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -95,12 +95,12 @@ export default function Home() {
         setTasks(optimisticTasks); // Immediate update
 
         try {
-            const updatedTask = await updateTask(tasks, id, newStatusValue); // Returns updated task or undefined
+            const updatedTask = await updateTask(tasks, id, newStatusValue, originalTask.name); // Returns updated task or undefined
 
-            if (updatedTask) {
+            if (updatedTask.success && updatedTask.data !== undefined && updatedTask.data !== null) {
                 // If update was successful, integrate the updated task into the state
                 setTasks(prevTasks =>
-                    prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
+                    prevTasks.map(task => (task.id === updatedTask.data!.id ? updatedTask.data! : task))
                 );
             } else {
                 // If update failed (updatedTask is undefined), revert to original task
@@ -122,12 +122,15 @@ export default function Home() {
         try {
             const updatedTask = await updateTask(tasks, task.id, task.status, task.name);
 
-            if (updatedTask) {
-                // If update was successful, integrate the updated task into the state
-                setTasks(prevTasks =>
-                    prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
-                );
+            if (!updatedTask.success || updatedTask.data === undefined) {
+                return updatedTask;
             }
+
+            // If update was successful, integrate the updated task into the state
+            setTasks(prevTasks =>
+                prevTasks.map(task => (task.id === updatedTask.data!.id ? updatedTask.data! : task))
+            );
+
 
             return {success: true, data: task};
 

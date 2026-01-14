@@ -86,12 +86,15 @@ export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => 
 }
 
 // Change a given task's status and name
-export const updateTask = async (tasks: Task[], id: string, newStatus: Status, newName?: string): Promise<Task | undefined> => {
+export const updateTask = async (tasks: Task[], id: string, newStatus: Status, newName: string): Promise<Result<Task, Error>> => {
     try {
         const taskToUpdate = tasks.find(task => task.id === id);
         if (!taskToUpdate) {
             console.error(`Task with id ${id} not found.`);
-            return undefined; // Return original tasks if not found
+            return {success: false, error: new Error(`Task with id ${id} not found.`)};
+        }
+        if (newName.trim().length == 0) {
+            return {success: false, error: new Error(`The task's new name cannot be empty`)};
         }
 
         const {data} = await client.mutate<UpdateTaskMutation>({
@@ -99,17 +102,21 @@ export const updateTask = async (tasks: Task[], id: string, newStatus: Status, n
             variables: { // Pass variables to the mutation
                 task: {
                     id: id,
-                    name: newName !== undefined ? newName.trim() : taskToUpdate.name, // Use newName if provided, otherwise keep existing name
-                    status: newStatus, // Use the newStatus
+                    name: newName,
+                    status: newStatus
                 }
             },
         });
 
-        return data?.updateTask || undefined;
+        if (!data) {
+            return {success: false, error: new Error("No data was given.")};
+        }
+
+        return {success: true, data: data.updateTask!};
 
     } catch (error) {
         console.error("Error updating task:", error);
-        return undefined; // Return undefined on error
+        return {success: false, error: error as Error};
     }
 }
 
