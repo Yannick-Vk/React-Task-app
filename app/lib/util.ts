@@ -52,3 +52,14 @@ export const matchOption = <T, U>(
 ): U => {
     return option.some ? onSome(option.value) : onNone();
 }
+
+export const strToErr = <T = never>(str: string): Result<T, Error> =>
+    Err(new Error(str))
+
+export const toError = (err: unknown): Error => {
+    return (err instanceof Error) ? err : new Error(String(err));
+};
+
+export const toErr = (err: unknown): Result<never, Error> => {
+    return Err(toError(err));
+};
