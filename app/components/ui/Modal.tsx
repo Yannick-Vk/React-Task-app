@@ -15,20 +15,47 @@ export default function Modal(props: Props) {
     useEffect(() => {
         if (!props.isOpen) return;
 
+        const modal = modalContentRef.current;
+        if (!modal) return;
+
+        const focusableElements = modal.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 props.onClose();
+                return; // Stop other keys from activating
+            }
+
+            // Prevent tabs from leaving the modal
+            // If on the first element go to last element
+            // If on the last element go back to the first
+            // Else the default will be used
+            if (event.key === 'Tab') {
+                if (event.shiftKey) { // Shift+Tab
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        event.preventDefault();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        event.preventDefault();
+                    }
+                }
             }
         };
 
         document.addEventListener('keydown', handleKeyDown);
 
-        // Focus the first focusable element in the modal
-        const focusableElements = modalContentRef.current?.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusableElements && focusableElements.length > 0) {
-            (focusableElements[1] as HTMLElement).focus();
+        // Focus the second focusable element (the input) in the modal
+        if (focusableElements.length > 1) {
+            focusableElements[1].focus();
+        } else if (firstElement) {
+            firstElement.focus();
         }
 
         return () => {
