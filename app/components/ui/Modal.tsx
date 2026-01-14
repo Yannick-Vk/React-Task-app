@@ -1,4 +1,4 @@
-﻿import React, {useEffect} from "react";
+﻿import React, {useEffect, useRef} from "react";
 import ButtonRaw from "~/components/ui/raw/ButtonRaw";
 
 export interface Props {
@@ -10,6 +10,7 @@ export interface Props {
 }
 
 export default function Modal(props: Props) {
+    const modalContentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!props.isOpen) return;
@@ -21,6 +22,14 @@ export default function Modal(props: Props) {
         };
 
         document.addEventListener('keydown', handleKeyDown);
+
+        // Focus the first focusable element in the modal
+        const focusableElements = modalContentRef.current?.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements && focusableElements.length > 0) {
+            (focusableElements[1] as HTMLElement).focus();
+        }
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
@@ -37,7 +46,8 @@ export default function Modal(props: Props) {
 
                     {/* Modal content container */}
                     <div className="flex items-center justify-center min-h-screen">
-                        <div className="w-11/12 md:w-1/2 bg-slate-800 p-5 rounded-lg shadow-lg relative z-50">
+                        <div ref={modalContentRef}
+                             className="w-11/12 md:w-1/2 bg-slate-800 p-5 rounded-lg shadow-lg relative z-50">
                             <div className="flex items-center gap-5 justify-between mb-3">
                                 <span className="font-bold text-lg">{props.title}</span>
                                 <ButtonRaw onClick={props.onClose}
