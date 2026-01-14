@@ -18,16 +18,22 @@ export default function TaskTable(props: Props) {
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
-    }
+    };
 
     const openModal = (task: Task) => {
         setSelectedTask(task);
         setIsModalOpen(true);
-    }
+    };
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedTask(null);
-    }
+    };
+
+    const updateTask = (task: Task | null) => {
+        if (!task) return;
+
+        console.dir(task);
+    };
 
     return (
         <>
@@ -52,11 +58,13 @@ export default function TaskTable(props: Props) {
             </Table>
             <Modal title={`Edit task: '${selectedTask?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
-                    <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""} />
+                    <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""} onChange={() => {
+                    }} />
                     <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
                                         className={"bg-slate-800 text-white focus:border-pink-300"} />
-                    <Button onClick={() => {
-                    }}>Change status</Button>
+                    <div>
+                        <Button onClick={() => updateTask(selectedTask)}>Change status</Button>
+                    </div>
                 </div>
             </Modal>
         </>
