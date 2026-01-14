@@ -18,7 +18,6 @@ export default function TaskTable(props: Props) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-    const [title, setTitle] = useState("");
     const [originalTask, setOriginalTask] = useState<Task | null>(null);
 
     const changeStatus = (id: string, status: Status) => {
@@ -28,12 +27,10 @@ export default function TaskTable(props: Props) {
     const openModal = (task: Task) => {
         setSelectedTask(task);
         setOriginalTask(task);
-        setTitle(task.name);
         setIsModalOpen(true);
     };
     const closeModal = () => {
         setIsModalOpen(false);
-        setTitle("");
         setSelectedTask(null);
         setOriginalTask(null);
     };
@@ -94,7 +91,7 @@ export default function TaskTable(props: Props) {
                     </tr>
                 ))}
             </Table>
-            <Modal title={`Edit task: '${title}'`} isOpen={isModalOpen} onClose={closeModal}>
+            <Modal title={`Edit task: '${originalTask?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
                     <p>Update the task, click 'esc' or the close button to cancel. Press reset to go back to the
                         original state.</p>
