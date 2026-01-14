@@ -26,7 +26,8 @@ export default function TaskTypesSelectBox(props: Props) {
     return (
         <>
             <select
-                className={twMerge(props.className, "block p-3 mt-2 border-2 border-slate-300 rounded-sm w-full bg-slate-200 focus:outline-none")}
+                className={twMerge("block p-3 mt-2 border-2 border-slate-300 rounded-sm w-full bg-slate-200 focus:outline-none",
+                    props.className)}
                 name={props.name} id={props.name} onChange={changeStatus} value={selectedKeyFromValue}>
                 {Object.keys(Status).map(
                     (key) => (
