@@ -99,7 +99,7 @@ export const updateTask = async (tasks: Task[], id: string, newStatus: Status, n
             variables: { // Pass variables to the mutation
                 task: {
                     id: id,
-                    name: newName !== undefined ? newName : taskToUpdate.name, // Use newName if provided, otherwise keep existing name
+                    name: newName !== undefined ? newName.trim() : taskToUpdate.name, // Use newName if provided, otherwise keep existing name
                     status: newStatus, // Use the newStatus
                 }
             },
