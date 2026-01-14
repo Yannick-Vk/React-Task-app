@@ -5,11 +5,13 @@ import React, {useState} from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import Modal from "~/components/ui/Modal";
 import InputField from "~/components/ui/InputField";
+import type {Result} from "~/lib/util";
 
 export interface Props {
     data: Task[];
     removeTask: (id: string) => void;
     changeStatus: (id: string, status: Status) => void;
+    updateTask: (task: Task) => Result<Task, Error>;
 }
 
 export default function TaskTable(props: Props) {
@@ -29,10 +31,26 @@ export default function TaskTable(props: Props) {
         setSelectedTask(null);
     };
 
-    const updateTask = (task: Task | null) => {
-        if (!task) return;
+    const updateTask = () => {
+        if (!selectedTask) return;
 
-        console.dir(task);
+        const result = props.updateTask(selectedTask);
+
+        if (result.success) {
+            closeModal();
+        }
+    };
+
+    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newName = e.target.value;
+        if (newName === selectedTask?.name) return;
+
+        setSelectedTask(previous => {
+            if (!previous) return null;
+
+            return {...previous, name: newName};
+        })
+
     };
 
     return (
@@ -58,12 +76,12 @@ export default function TaskTable(props: Props) {
             </Table>
             <Modal title={`Edit task: '${selectedTask?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
-                    <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""} onChange={() => {
-                    }} />
+                    <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""}
+                                onChange={onNameChange} />
                     <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
                                         className={"bg-slate-800 text-white focus:border-pink-300"} />
                     <div>
-                        <Button onClick={() => updateTask(selectedTask)}>Change status</Button>
+                        <Button onClick={updateTask}>Change status</Button>
                     </div>
                 </div>
             </Modal>
