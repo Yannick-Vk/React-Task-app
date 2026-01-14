@@ -85,8 +85,8 @@ export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => 
     }
 }
 
-// Change a given task's status
-export const changeStatus = async (tasks: Task[], id: string, newStatus: Status, newName?: string): Promise<Task | undefined> => {
+// Change a given task's status and name
+export const updateTask = async (tasks: Task[], id: string, newStatus: Status, newName?: string): Promise<Task | undefined> => {
     try {
         const taskToUpdate = tasks.find(task => task.id === id);
         if (!taskToUpdate) {

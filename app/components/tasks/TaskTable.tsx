@@ -11,7 +11,7 @@ export interface Props {
     data: Task[];
     removeTask: (id: string) => void;
     changeStatus: (id: string, status: Status) => void;
-    updateTask: (task: Task) => Result<Task, Error>;
+    updateTask: (task: Task) => Promise<Result<Task, Error>>;
 }
 
 export default function TaskTable(props: Props) {
@@ -35,10 +35,10 @@ export default function TaskTable(props: Props) {
         setSelectedTask(null);
     };
 
-    const updateTask = () => {
+    const updateTask = async () => {
         if (!selectedTask) return;
 
-        const result = props.updateTask(selectedTask);
+        const result = await props.updateTask(selectedTask);
 
         if (result.success) {
             closeModal();

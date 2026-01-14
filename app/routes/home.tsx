@@ -4,7 +4,7 @@ import CreateTask from "~/components/tasks/CreateTask";
 import {useEffect, useState} from "react";
 import Modal from "~/components/ui/Modal";
 import Button from "~/components/ui/Button"; // Import Button component
-import {addNewTask, changeStatus, getTasks, removeTask} from "~/services/TaskService";
+import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
 import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
@@ -95,7 +95,7 @@ export default function Home() {
         setTasks(optimisticTasks); // Immediate update
 
         try {
-            const updatedTask = await changeStatus(tasks, id, newStatusValue); // Returns updated task or undefined
+            const updatedTask = await updateTask(tasks, id, newStatusValue); // Returns updated task or undefined
 
             if (updatedTask) {
                 // If update was successful, integrate the updated task into the state
@@ -118,8 +118,23 @@ export default function Home() {
         }
     }
 
-    const updateTask = (): Result<Task, Error> => {
-        return {success: false, error: new Error("Oopsie floopsie")};
+    const updateTaskHandler = async (task: Task): Promise<Result<Task, Error>> => {
+        try {
+            const updatedTask = await updateTask(tasks, task.id, task.status, task.name);
+
+            if (updatedTask) {
+                // If update was successful, integrate the updated task into the state
+                setTasks(prevTasks =>
+                    prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
+                );
+            }
+
+            return {success: true, data: task};
+
+        } catch (error) {
+            console.error("Failed to update task status:", error);
+            return {success: false, error: error as Error};
+        }
     };
 
     const openModalKeyboardButton = "n";
@@ -180,7 +195,7 @@ export default function Home() {
                     </div>
                 </Modal>
                 <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
-                           updateTask={updateTask} />
+                           updateTask={updateTaskHandler} />
             </div>
         </main>
     );
