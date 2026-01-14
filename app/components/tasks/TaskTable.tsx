@@ -18,16 +18,20 @@ export default function TaskTable(props: Props) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [title, setTitle] = useState("");
+
     const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
     };
 
     const openModal = (task: Task) => {
         setSelectedTask(task);
+        setTitle(task.name);
         setIsModalOpen(true);
     };
     const closeModal = () => {
         setIsModalOpen(false);
+        setTitle("");
         setSelectedTask(null);
     };
 
@@ -76,7 +80,7 @@ export default function TaskTable(props: Props) {
                     </tr>
                 ))}
             </Table>
-            <Modal title={`Edit task: '${selectedTask?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
+            <Modal title={`Edit task: '${title}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
                     <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""}
                                 onChange={onNameChange} />
