@@ -4,6 +4,7 @@ import type {Status, Task} from "~/GraphQL/generated"
 import React, {useState} from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import Modal from "~/components/ui/Modal";
+import InputField from "~/components/ui/InputField";
 
 export interface Props {
     data: Task[];
@@ -19,7 +20,7 @@ export default function TaskTable(props: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => {
-        setTitle("");
+        setTitle("Title");
         setIsModalOpen(true);
     }
     const closeModal = () => setIsModalOpen(false);
@@ -49,6 +50,7 @@ export default function TaskTable(props: Props) {
             </Table>
             <Modal title={`Edit task: '${title}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
+                    <InputField label={"Task name"} name={"name"} value={title} />
                     <TaskTypesSelectBox name={"Status"} />
                     <Button onClick={() => {
                     }}>Change status</Button>
