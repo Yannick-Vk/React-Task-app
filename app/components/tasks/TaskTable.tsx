@@ -14,18 +14,20 @@ export interface Props {
 
 export default function TaskTable(props: Props) {
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
     }
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = () => {
-        setTitle("Title");
+    const openModal = (task: Task) => {
+        setSelectedTask(task);
         setIsModalOpen(true);
     }
-    const closeModal = () => setIsModalOpen(false);
-
-    const [title, setTitle] = useState("");
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedTask(null);
+    }
 
     return (
         <>
@@ -43,15 +45,15 @@ export default function TaskTable(props: Props) {
                         </td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
-                            <Button onClick={openModal}>Edit task</Button>
+                            <Button onClick={() => openModal(item)}>Edit task</Button>
                         </td>
                     </tr>
                 ))}
             </Table>
-            <Modal title={`Edit task: '${title}'`} isOpen={isModalOpen} onClose={closeModal}>
+            <Modal title={`Edit task: '${selectedTask?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
                 <div className="flex flex-col gap-3">
-                    <InputField label={"Task name"} name={"name"} value={title} />
-                    <TaskTypesSelectBox name={"Status"} />
+                    <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""} />
+                    <TaskTypesSelectBox name={"Status"} value={selectedTask?.status} />
                     <Button onClick={() => {
                     }}>Change status</Button>
                 </div>
