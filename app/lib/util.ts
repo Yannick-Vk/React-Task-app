@@ -1,4 +1,5 @@
 ﻿import {Status, type Task} from "~/GraphQL/generated";
+import {ZodError} from "zod";
 
 export function MapStatusEnum(value: Status): string {
     switch (value) {
@@ -63,3 +64,17 @@ export const toError = (err: unknown): Error => {
 export const toErr = (err: unknown): Result<never, Error> => {
     return Err(toError(err));
 };
+
+// Transforms an error or zodError into a zodError
+export const toZodError = (err: ZodError | Error, name: string): ZodError => {
+    return new ZodError([{
+        code: "custom",
+        path: [name],
+        message: err.message || "An unknown error occurred."
+    }]);
+}
+
+// Transforms an error or zodError into a some
+export const toZodSome = (err: ZodError | Error, name: string): Option<ZodError> => {
+    return (err instanceof ZodError) ? Some(err) : Some(toZodError(err, name));
+}

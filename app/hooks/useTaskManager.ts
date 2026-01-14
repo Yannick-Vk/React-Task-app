@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Status, type Task} from "~/GraphQL/generated";
 import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
-import {Err, matchResult, None, Ok, type Option, type Result, Some} from "~/lib/util";
+import {Err, matchResult, None, Ok, type Option, type Result, toZodSome} from "~/lib/util";
 import {ZodError} from "zod";
 
 export function useTaskManager() {
@@ -50,13 +50,7 @@ export function useTaskManager() {
                 return None;
             },
             (error) => {
-                return error instanceof ZodError ?
-                    Some(error) :
-                    Some(new ZodError([{
-                        code: "custom",
-                        path: ["name"],
-                        message: error.message || "An unknown error occurred while adding the task."
-                    }]));
+                return toZodSome(error, "name")
             }
         );
     }
