@@ -17,7 +17,7 @@ export function useTaskManager() {
 
                 matchResult(result,
                     (tasks) => setTasks(tasks),
-                    (err) => setError(err.message)
+                    (err) => setError(err.message),
                 );
             } catch (err) {
                 setError("Failed to load tasks.");
@@ -26,7 +26,7 @@ export function useTaskManager() {
                 setLoading(false);
             }
         };
-        fetchTasks();
+        const _result = fetchTasks();
     }, []);
 
     const addTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
