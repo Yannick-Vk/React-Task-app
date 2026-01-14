@@ -15,6 +15,10 @@ export default function TaskTable(props: Props) {
     const changeStatus = (id: string, status: Status) => {
         props.changeStatus(id, status);
     }
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     return (
         <>
