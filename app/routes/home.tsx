@@ -4,11 +4,12 @@ import CreateTask from "~/components/tasks/CreateTask";
 import {useEffect, useState} from "react";
 import Modal from "~/components/ui/Modal";
 import Button from "~/components/ui/Button"; // Import Button component
-import {addNewTask, changeStatus, getTasks, removeTask} from "~/services/TaskService";
+import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
 import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
+import {type Result} from "~/lib/util";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -94,12 +95,12 @@ export default function Home() {
         setTasks(optimisticTasks); // Immediate update
 
         try {
-            const updatedTask = await changeStatus(tasks, id, newStatusValue); // Returns updated task or undefined
+            const updatedTask = await updateTask(tasks, id, newStatusValue, originalTask.name); // Returns updated task or undefined
 
-            if (updatedTask) {
+            if (updatedTask.success && updatedTask.data !== undefined && updatedTask.data !== null) {
                 // If update was successful, integrate the updated task into the state
                 setTasks(prevTasks =>
-                    prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
+                    prevTasks.map(task => (task.id === updatedTask.data!.id ? updatedTask.data! : task))
                 );
             } else {
                 // If update failed (updatedTask is undefined), revert to original task
@@ -116,6 +117,28 @@ export default function Home() {
             // Optionally, show an error message to the user
         }
     }
+
+    const updateTaskHandler = async (task: Task): Promise<Result<Task, Error>> => {
+        try {
+            const updatedTask = await updateTask(tasks, task.id, task.status, task.name);
+
+            if (!updatedTask.success || updatedTask.data === undefined) {
+                return updatedTask;
+            }
+
+            // If update was successful, integrate the updated task into the state
+            setTasks(prevTasks =>
+                prevTasks.map(task => (task.id === updatedTask.data!.id ? updatedTask.data! : task))
+            );
+
+
+            return {success: true, data: task};
+
+        } catch (error) {
+            console.error("Failed to update task status:", error);
+            return {success: false, error: error as Error};
+        }
+    };
 
     const openModalKeyboardButton = "n";
 
@@ -174,7 +197,8 @@ export default function Home() {
                         <CreateTask createNewTask={addTask} />
                     </div>
                 </Modal>
-                <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler} />
+                <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
+                           updateTask={updateTaskHandler} />
             </div>
         </main>
     );
