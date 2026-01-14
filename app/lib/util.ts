@@ -14,3 +14,11 @@ export function MapStatusEnum(value: Status): string {
 }
 
 export type Result<T, E> = { success: true, data: T } | { success: false, error: E };
+
+export const Ok = <T, E = never>(data: T): Result<T, E> => ({
+    success: true, data,
+});
+
+export const Err = <E, T = never>(error: E): Result<T, E> => ({
+    success: false, error,
+});
