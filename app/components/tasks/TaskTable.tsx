@@ -51,12 +51,19 @@ export default function TaskTable(props: Props) {
         const newName = e.target.value;
         if (newName === selectedTask?.name) return;
 
-        setSelectedTask(previous => {
-            if (!previous) return null;
+        setSelectedTask(prevState => {
+            if (!prevState) return null;
 
-            return {...previous, name: newName};
-        })
+            return {...prevState, name: newName};
+        });
+    };
 
+    const onStatusChange = (newStatus: Status) => {
+        setSelectedTask(prevState => {
+            if (!prevState) return null;
+
+            return {...prevState, status: newStatus};
+        });
     };
 
     return (
@@ -85,7 +92,8 @@ export default function TaskTable(props: Props) {
                     <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""}
                                 onChange={onNameChange} />
                     <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
-                                        className={"bg-slate-800 text-white focus:border-pink-300"} />
+                                        className={"bg-slate-800 text-white focus:border-pink-300"}
+                                        onChange={onStatusChange} />
                     <div>
                         <Button onClick={updateTask}>Change status</Button>
                     </div>
