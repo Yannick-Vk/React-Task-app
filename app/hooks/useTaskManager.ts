@@ -50,8 +50,17 @@ export function useTaskManager() {
     }
 
     const removeTaskHandler = async (id: string) => {
-        const result = await removeTask(tasks, id);
-        setTasks(result);
+        const result = await removeTask(id); // Call the service, which now returns Result<string, Error>
+
+        matchResult(result,
+            (deletedId) => { // onOk: Filter out the deleted task locally
+                setTasks(prevTasks => prevTasks.filter(task => task.id !== deletedId));
+            },
+            (err) => { // onErr: Set the error state
+                console.error("Failed to remove task:", err);
+                setError(err.message);
+            }
+        );
     }
 
     const changeStatusHandler = async (id: string, newStatusValue: Status) => {

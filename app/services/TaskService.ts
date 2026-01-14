@@ -58,7 +58,7 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
 }
 
 // Remove a task by its id
-export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => {
+export const removeTask = async (id: string): Promise<Result<string, Error>> => {
     try {
         await client.mutate<DeleteTaskMutation>({
             mutation: DeleteTaskDocument,
@@ -67,17 +67,11 @@ export const removeTask = async (tasks: Task[], id: string): Promise<Task[]> => 
             },
         });
 
-        const fetchedTasks = await client.query<GetTasksQuery>({
-            query: GetTasksDocument,
-            fetchPolicy: 'network-only', // Ensure fresh data after deletion
-        });
-
-        return fetchedTasks.data?.tasks || [];
+        return Ok(id); // Return the ID of the successfully deleted task
 
     } catch (error) {
         console.error("Error removing task:", error);
-        // Return the tasks without the deletion
-        return tasks;
+        return toErr(error); // Return an Err result on failure
     }
 }
 
