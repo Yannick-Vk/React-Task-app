@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, {useEffect} from "react";
 import ButtonRaw from "~/components/ui/raw/ButtonRaw";
 
 export interface Props {
@@ -11,12 +11,29 @@ export interface Props {
 
 export default function Modal(props: Props) {
 
+    useEffect(() => {
+        if (!props.isOpen) return;
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                props.onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [props.isOpen, props.onClose]);
+
     return (
         <>
             {!props.isOpen ? null : (
                 <div className="fixed inset-0 z-50 overflow-y-auto">
                     {/* Background overlay */}
-                    <div className="fixed inset-0 bg-zinc-800 opacity-80" aria-hidden="true"></div>
+                    <div className="fixed inset-0 bg-zinc-800 opacity-80" aria-hidden="true"
+                         onClick={props.onClose}></div>
 
                     {/* Modal content container */}
                     <div className="flex items-center justify-center min-h-screen">
