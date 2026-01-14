@@ -32,11 +32,13 @@ export default function TaskTable(props: Props) {
         setSelectedTask(task);
         originalTask.current = task;
         setIsModalOpen(true);
+        setError(null);
     };
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedTask(null);
         originalTask.current = null;
+        setError(null);
     };
 
     const updateTask = async () => {
