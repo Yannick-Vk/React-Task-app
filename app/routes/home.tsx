@@ -47,7 +47,7 @@ export default function Home() {
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
-            if (event.key === openModalKeyboardButton) {
+            if (event.key.trim().toLowerCase() === openModalKeyboardButton) {
                 event.preventDefault();
                 isModalOpen ? closeModal() : openModal();
             }
