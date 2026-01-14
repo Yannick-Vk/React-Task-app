@@ -26,7 +26,9 @@ export function useTaskManager() {
                 setLoading(false);
             }
         };
-        const _result = fetchTasks();
+        fetchTasks().then(_ => {
+            // Do nothing
+        });
     }, []);
 
     const addTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
