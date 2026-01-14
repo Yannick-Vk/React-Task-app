@@ -1,6 +1,7 @@
 ﻿import {Status} from "~/GraphQL/generated"
 import React from "react";
 import {MapStatusEnum} from "~/lib/util";
+import {twMerge} from "tailwind-merge";
 
 export interface Props {
     name: string;
@@ -25,8 +26,7 @@ export default function TaskTypesSelectBox(props: Props) {
     return (
         <>
             <select
-                className={(props.className ?? "") +
-                    " block p-3 mt-2 border-2 border-slate-300 rounded-sm w-full bg-slate-200 focus:outline-none "}
+                className={twMerge(props.className, "block p-3 mt-2 border-2 border-slate-300 rounded-sm w-full bg-slate-200 focus:outline-none")}
                 name={props.name} id={props.name} onChange={changeStatus} value={selectedKeyFromValue}>
                 {Object.keys(Status).map(
                     (key) => (
