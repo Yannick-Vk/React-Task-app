@@ -28,6 +28,14 @@ export const Err = <E, T = never>(error: E): Result<T, E> => ({
     success: false, error,
 });
 
+export const matchResult = <T, E, U>(
+    result: Result<T, E>,
+    onOk: (data: T) => U,
+    onErr: (error: E) => U,
+): U => {
+    return result.success ? onOk(result.data) : onErr(result.error);
+};
+
 export type Option<T> =
     | { some: true; value: T }
     | { some: false; }
@@ -36,3 +44,11 @@ export const Some = <T>(value: T): Option<T> => ({
     some: true, value,
 });
 export const None: Option<never> = {some: false};
+
+export const matchOption = <T, U>(
+    option: Option<T>,
+    onSome: (value: T) => U,
+    onNone: () => U,
+): U => {
+    return option.some ? onSome(option.value) : onNone();
+}
