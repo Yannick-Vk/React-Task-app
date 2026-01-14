@@ -12,6 +12,7 @@
 } from "~/GraphQL/generated";
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
+import type {Result} from "~/lib/util";
 
 const TaskSchema = z.object({
     id: z.string(),
@@ -19,11 +20,10 @@ const TaskSchema = z.object({
     status: z.enum(Status), // DO NOT CHANGE THIS - user instruction
 });
 
-// A result type either has the updated list of tasks or an error
-type AddTaskResult = { success: true; data: Task[] } | { success: false; error: Error | ZodError }; // Allow general Error
-
 // Add a new task to the list, returns the list or an error
-export const addNewTask = async (tasks: Task[], taskName: string, status?: Status): Promise<AddTaskResult> => {
+// A result type either has the updated list of tasks or an error
+// Allow general Error
+export const addNewTask = async (tasks: Task[], taskName: string, status?: Status): Promise<Result<Task[], Error | ZodError>> => {
     // Validate Task
     const schemaResult = TaskSchema.safeParse({
         id: "",
@@ -114,8 +114,7 @@ export const changeStatus = async (tasks: Task[], id: string, newStatus: Status,
 }
 
 // Get all tasks
-type getTasksResult = { success: true; data: Task[] } | { success: false; error: Error };
-export const getTasks = async (): Promise<getTasksResult> => {
+export const getTasks = async (): Promise<Result<Task[], Error>> => {
     try {
         const {data} = await client.query<GetTasksQuery>({
             query: GetTasksDocument,

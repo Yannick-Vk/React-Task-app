@@ -12,3 +12,5 @@ export function MapStatusEnum(value: Status): string {
             return value;
     }
 }
+
+export type Result<T, E> = { success: true, data: T } | { success: false, error: E };
