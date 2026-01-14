@@ -7,6 +7,7 @@ import Button from "~/components/ui/Button"; // Import Button component
 import {addNewTask, changeStatus, getTasks, removeTask} from "~/services/TaskService";
 import {Status, type Task} from "~/GraphQL/generated";
 import {ZodError} from "zod";
+import AlertBox from "~/components/ui/AlertBox";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -28,8 +29,12 @@ export default function Home() {
         const fetchTasks = async () => {
             try {
                 setLoading(true);
-                const fetchedTasks = await getTasks();
-                setTasks(fetchedTasks);
+                const result = await getTasks();
+                if (result.success) {
+                    setTasks(result.data);
+                } else {
+                    setError(result.error.message);
+                }
             } catch (err) {
                 setError("Failed to load tasks.");
                 console.error(err);
@@ -121,8 +126,8 @@ export default function Home() {
 
     if (error) {
         return (
-            <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
-                <p className="text-red-500">{error}</p>
+            <main>
+                <AlertBox variant={"danger"} message={error} className={"mt-16"}></AlertBox>
             </main>
         );
     }

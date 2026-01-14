@@ -114,14 +114,15 @@ export const changeStatus = async (tasks: Task[], id: string, newStatus: Status,
 }
 
 // Get all tasks
-export const getTasks = async (): Promise<Task[]> => {
+type getTasksResult = { success: true; data: Task[] } | { success: false; error: Error };
+export const getTasks = async (): Promise<getTasksResult> => {
     try {
         const {data} = await client.query<GetTasksQuery>({
             query: GetTasksDocument,
         });
-        return data?.tasks || [];
+        return {success: true, data: data?.tasks || []};
     } catch (error) {
         console.error("Error fetching tasks:", error);
-        return [];
+        return {success: false, error: error as Error};
     }
 }
