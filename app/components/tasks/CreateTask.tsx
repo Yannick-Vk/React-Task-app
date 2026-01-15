@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, {useState} from "react";
 import Button from "~/components/ui/Button";
 import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import {z, ZodError} from "zod";
@@ -7,6 +7,7 @@ import {fromUndefined, matchOption, type Option} from "~/lib/util";
 import InputField from "~/components/ui/InputField";
 import TaskPrioritySelectBox from "~/components/tasks/TaskPrioritySelectBox";
 import type {UpdateTaskDTO} from "~/dto/taskDTOs";
+import {DateTime} from "luxon";
 
 export interface Props {
     createNewTask: (dto: UpdateTaskDTO) => Promise<Option<ZodError>>;
@@ -18,9 +19,13 @@ type FormErrors = {
 }
 
 export default function CreateTask(props: Props) {
+    // Form data
     const [name, setName] = React.useState("");
     const [status, setStatus] = React.useState<Status>(Status.Ready);
     const [priority, setPriority] = React.useState<Priority>(Priority.None);
+    const [dueDate, setDueDate] = React.useState<DateTime | undefined>(undefined);
+    const [description, setDescription] = useState<string>("");
+    // Generic
     const [errors, setErrors] = React.useState<FormErrors | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -30,9 +35,9 @@ export default function CreateTask(props: Props) {
         const result = await props.createNewTask({
             name: fromUndefined(name),
             status: fromUndefined(status),
-            description: fromUndefined<string>(undefined),
+            description: fromUndefined(description),
             priority: fromUndefined(priority),
-            dueDate: fromUndefined<Date>(undefined),
+            dueDate: fromUndefined(dueDate?.toJSDate()),
         });
         setIsLoading(false);
 
@@ -52,29 +57,37 @@ export default function CreateTask(props: Props) {
         }
     }
 
+    const handleDueDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.target.value ? setDueDate(DateTime.fromISO(e.target.value)) : setDueDate(undefined);
+    };
+
     return (
         <>
             <form className="pt-8 pb-4">
                 <div className={"flex flex-col gap-4"}>
-                    <div>
-                        <InputField label="Task Name" name="name" value={name} onChange={handleNameChange}
-                                    error={errors?.name} />
-                    </div>
-                    <div>
-                        <TaskStatusSelectBox label="Task Status" className={"focus:border-pink-300 bg-slate-800"}
-                                             name="status"
-                                             value={status} error={undefined}
-                                             onChange={setStatus} />
-                    </div>
-                    <div>
-                        <TaskPrioritySelectBox label="Task Priority" className={"focus:border-pink-300 bg-slate-800"}
-                                               name="priority"
-                                               value={priority} error={undefined}
+
+                    <InputField label="Task Name" name="name" value={name} onChange={handleNameChange}
+                                error={errors?.name} />
+
+                    <InputField label="Description" name="description" value={description} error={undefined}
+                                onChange={() => {
+                                }} />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <TaskStatusSelectBox label="Status" className={"focus:border-pink-300 bg-slate-800"}
+                                             name="status" value={status} error={undefined} onChange={setStatus} />
+
+                        <TaskPrioritySelectBox label="Priority" className={"focus:border-pink-300 bg-slate-800"}
+                                               name="priority" value={priority} error={undefined}
                                                onChange={setPriority} />
                     </div>
+
+                    <InputField label={"Due-date"} name={"due-date"} type="date"
+                                value={dueDate?.toISODate() ?? ""} error={undefined} onChange={handleDueDateChange} />
+
+                    <Button onClick={handleSubmit} className="block mt-5" type="submit"
+                            disabled={isLoading}>Create new Task</Button>
                 </div>
-                <Button onClick={handleSubmit} className="block mt-5" type="submit"
-                        disabled={isLoading}>Create new Task</Button>
             </form>
         </>
     );
