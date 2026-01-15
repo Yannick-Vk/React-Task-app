@@ -1,4 +1,4 @@
-﻿import React, {useState} from "react";
+﻿import React, {useRef, useState} from "react";
 import {twMerge} from "tailwind-merge";
 
 export interface Props {
@@ -10,15 +10,15 @@ export interface Props {
 export default function Tooltip(props: Props) {
 
     const [isVisible, setIsVisible] = useState(false);
-    let hideTimeout: string | number | NodeJS.Timeout | undefined;
+    const hideTimeout = useRef<number | undefined>(undefined);
 
     const showTooltip = () => {
-        clearTimeout(hideTimeout);
+        clearTimeout(hideTimeout.current);
         setIsVisible(true);
     }
 
     const hideTooltip = () => {
-        hideTimeout = window.setTimeout(() => {
+        hideTimeout.current = window.setTimeout(() => {
             setIsVisible(false);
         }, 100);
     }
@@ -32,7 +32,7 @@ export default function Tooltip(props: Props) {
                 <div
                     className={twMerge(
                         "absolute bottom-full mb-2",
-                        "left-1/2 -translate-x-1/2 transform w-full max-w-10/12",
+                        "left-1/2 -translate-x-1/2 transform w-max max-w-md",
                         "bg-gray-800 text-white text-xs rounded-md px-5 py-2 z-10",
                         props.className
                     )}>
