@@ -38,13 +38,14 @@ export const matchResult = <T, E, U>(
 };
 
 export type Option<T> =
-    | { some: true; value: T }
-    | { some: false; }
+    | { some: true; value: T, toVanilla: () => T }
+    | { some: false; toVanilla: () => undefined }
+    ;
 
 export const Some = <T>(value: T): Option<T> => ({
-    some: true, value,
+    some: true, value, toVanilla: () => value
 });
-export const None: Option<never> = {some: false};
+export const None: Option<never> = {some: false, toVanilla: () => undefined};
 
 export const matchOption = <T, U>(
     option: Option<T>,
