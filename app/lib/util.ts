@@ -68,7 +68,7 @@ export const toErr = (err: unknown): Result<never, Error> => {
 
 // Transforms an error or zodError into a zodError
 export const toZodError = (err: ZodError | Error, name: string): ZodError => {
-    return new ZodError([{
+    return err instanceof ZodError ? err : new ZodError([{
         code: "custom",
         path: [name],
         message: err.message || "An unknown error occurred."
