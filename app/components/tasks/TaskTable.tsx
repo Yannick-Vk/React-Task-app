@@ -8,6 +8,7 @@ import InputField from "~/components/ui/InputField";
 import {type Result} from "~/lib/util";
 import {useEditTaskModal} from "~/hooks/useEditTaskModal";
 import {DateTime} from "luxon"
+import Badge, {BadgeVariant} from "~/components/ui/Badge";
 
 export interface Props {
     data: Task[];
@@ -32,6 +33,19 @@ export default function TaskTable(props: Props) {
         updateTaskCallback: props.updateTask
     }); // Pass the update function into the hook
 
+    const mapPriorityToVariant = (priority: Priority): BadgeVariant => {
+        switch (priority) {
+            case Priority.High:
+                return BadgeVariant.error;
+            case Priority.Low:
+                return BadgeVariant.gray;
+            case Priority.Medium:
+                return BadgeVariant.warning;
+            case Priority.None:
+                return BadgeVariant.gray;
+        }
+    }
+
     return (
         <>
             <Table columns={[
@@ -51,7 +65,8 @@ export default function TaskTable(props: Props) {
                             <TaskTypesSelectBox name="" value={item.status} className={"bg-slate-200"}
                                                 onChange={(e) => props.changeStatus(item.id, e)}></TaskTypesSelectBox>
                         </td>
-                        <td className={"p-3 text-center"}>{item.priority}</td>
+                        <td className={"p-3 text-center"}><Badge
+                            variant={mapPriorityToVariant(item.priority)}>{item.priority}</Badge></td>
                         <td className={"p-3 text-center"}>{item.description}</td>
                         <td className={"p-3 text-center"}>{DateTime.fromISO(item.dueDate).toRelative()}</td>
                         <td className={"p-3 text-center"}>{DateTime.fromISO(item.created).toRelative()}</td>
