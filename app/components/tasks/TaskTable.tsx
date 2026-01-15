@@ -1,16 +1,15 @@
 ﻿import Table from "~/components/ui/Table";
 import Button from "~/components/ui/Button";
-import {Priority, type Status, type Task} from "~/GraphQL/generated"
+import {type Maybe, Priority, type Status, type Task} from "~/GraphQL/generated"
 import React from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import Modal from "~/components/ui/Modal";
 import InputField from "~/components/ui/InputField";
-import {matchOption, type Result} from "~/lib/util";
+import {matchOption, type Result, truncateString} from "~/lib/util";
 import {useEditTaskModal} from "~/hooks/useEditTaskModal";
 import {DateTime} from "luxon"
 import Badge, {BadgeVariant} from "~/components/ui/Badge";
 import Tooltip from "~/components/ui/Tooltip";
-import type {Maybe} from "@envelop/types";
 
 export interface Props {
     data: Task[];
@@ -61,11 +60,15 @@ export default function TaskTable(props: Props) {
 
     const descriptionTooltip = (optionalDescription: Maybe<string> | undefined): React.ReactNode => {
         return matchOption(optionalDescription,
-            (desc) => (
-                <Tooltip content={"NO CONTENT"}>
-                    {desc}
-                </Tooltip>
-            ),
+            (desc) => {
+                const truncated = truncateString(desc, 40);
+
+                return (
+                    <Tooltip content={desc} className="text-lg">
+                        <span className="cursor-default">{truncated}</span>
+                    </Tooltip>
+                )
+            },
             () => (<span className="cursor-default">-</span>),
         );
     }
