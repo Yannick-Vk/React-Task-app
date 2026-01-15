@@ -8,6 +8,7 @@ export interface Props<TEnum extends Record<string, string>> {
     value: TEnum[keyof TEnum];
     onChange: (value: TEnum[keyof TEnum]) => void;
     mapEnumToLabel: (value: TEnum[keyof TEnum]) => string;
+    order?: (keyof TEnum)[]; // Optional order to display the Enum
 }
 
 export default function EnumSelectBox<TEnum extends Record<string, string>>(props: Props<TEnum>) {
@@ -20,16 +21,17 @@ export default function EnumSelectBox<TEnum extends Record<string, string>>(prop
     // If parent supplied a TaskType value, convert it to the corresponding enum key string
     const selectedKeyFromValue = (Object.keys(props.enum).find((k) => props.enum[k as keyof typeof props.enum] === props.value) ?? "");
 
+    const keysToRender = props.order ?? Object.keys(props.enum); // Use order if provided or default
+
     return (
         <>
             <select
                 className={twMerge("block p-3 mt-2 border-2 border-slate-300 rounded-sm w-full bg-slate-200 focus:outline-none",
                     props.className)}
                 name={props.name} id={props.name} onChange={handleOnChange} value={selectedKeyFromValue}>
-                {Object.keys(props.enum).map(
-                    (key) => (
-                        <option key={key} value={key}
-                                className={""}>{props.mapEnumToLabel(props.enum[key as keyof typeof props.enum])}</option>)
+                {keysToRender.map((key) => (
+                    <option key={String(key)} value={String(key)} className={""}>
+                        {props.mapEnumToLabel(props.enum[key as keyof typeof props.enum])}</option>)
                 )}
             </select>
         </>

@@ -26,7 +26,8 @@ export default function TaskStatusSelectBox(props: Props) {
     return (
         <>
             <EnumSelectBox name={props.name} enum={Status} mapEnumToLabel={mapEnum} value={props.value}
-                           className={props.className} onChange={props.onChange} />
+                           className={props.className} onChange={props.onChange}
+                           order={["Ready", "InProgress", "Done"]} />
         </>
     );
 }

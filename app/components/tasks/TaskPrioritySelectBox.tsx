@@ -28,7 +28,8 @@ export default function TaskPrioritySelectBox(props: Props) {
     return (
         <>
             <EnumSelectBox name={props.name} enum={Priority} mapEnumToLabel={MapEnum} value={props.value}
-                           className={props.className} onChange={props.onChange} />
+                           className={props.className} onChange={props.onChange}
+                           order={["None", "Low", "Medium", "High"]} />
         </>
     );
 }
