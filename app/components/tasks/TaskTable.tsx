@@ -67,10 +67,14 @@ export default function TaskTable(props: Props) {
                         </td>
                         <td className={"p-3 text-center"}><Badge
                             variant={mapPriorityToVariant(item.priority)}>{item.priority}</Badge></td>
-                        <td className={"p-3 text-center"}>{item.description}</td>
-                        <td className={"p-3 text-center"}>{DateTime.fromISO(item.dueDate).toRelative()}</td>
+                        <td className={"p-3 text-center"}>{item.description ?? "-"}</td>
+                        <td className={"p-3 text-center"}>
+                            {item.dueDate ? DateTime.fromISO(item.dueDate).toRelative() : "-"}
+                        </td>
                         <td className={"p-3 text-center"}>{DateTime.fromISO(item.created).toRelative()}</td>
-                        <td className={"p-3 text-center"}>{DateTime.fromISO(item.updated).toRelative()}</td>
+                        <td className={"p-3 text-center"}>
+                            {item.updated ? DateTime.fromISO(item.updated).toRelative() : "-"}
+                        </td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
                             <Button onClick={() => openModal(item)}>Edit task</Button>
