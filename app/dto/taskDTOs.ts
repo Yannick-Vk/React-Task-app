@@ -8,3 +8,11 @@ export interface UpdateTaskDTO {
     priority: Option<Priority>,
     dueDate: Option<Date>,
 }
+
+export interface AddTaskDTO {
+    name: string,
+    status: Option<Status>,
+    description: Option<string>,
+    priority: Option<Priority>,
+    dueDate: Option<Date>,
+}

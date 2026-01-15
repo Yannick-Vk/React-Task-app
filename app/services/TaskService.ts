@@ -14,7 +14,7 @@
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
 import {Err, Ok, type Result, strToErr, toErr} from "~/lib/util";
-import type {UpdateTaskDTO} from "~/dto/taskDTOs";
+import type {AddTaskDTO} from "~/dto/taskDTOs";
 
 const TaskSchema = z.object({
     id: z.string().optional(), // id is optional for new tasks
@@ -28,10 +28,10 @@ const TaskSchema = z.object({
 // Add a new task to the list, returns the list or an error
 // A result type either has the updated list of tasks or an error
 // Allow general Error
-export const addNewTask = async (tasks: Task[], dto: UpdateTaskDTO): Promise<Result<Task[], Error | ZodError>> => {
+export const addNewTask = async (tasks: Task[], dto: AddTaskDTO): Promise<Result<Task[], Error | ZodError>> => {
     // Validate Task
     const schemaResult = TaskSchema.safeParse({
-        name: dto.name.toVanilla(),
+        name: dto.name,
         status: dto.status.toVanilla(),
         dueDate: dto.dueDate.toVanilla(),
         priority: dto.priority.toVanilla(),

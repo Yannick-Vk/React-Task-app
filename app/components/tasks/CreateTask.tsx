@@ -6,12 +6,12 @@ import {Priority, Status} from "~/GraphQL/generated";
 import {fromUndefined, matchOption, type Option} from "~/lib/util";
 import InputField from "~/components/ui/InputField";
 import TaskPrioritySelectBox from "~/components/tasks/TaskPrioritySelectBox";
-import type {UpdateTaskDTO} from "~/dto/taskDTOs";
+import type {AddTaskDTO} from "~/dto/taskDTOs";
 import {DateTime} from "luxon";
 import TextareaField from "~/components/ui/TextareaField";
 
 export interface Props {
-    createNewTask: (dto: UpdateTaskDTO) => Promise<Option<ZodError>>;
+    createNewTask: (dto: AddTaskDTO) => Promise<Option<ZodError>>;
 }
 
 type FormErrors = {
@@ -37,7 +37,7 @@ export default function CreateTask(props: Props) {
         e.preventDefault();
         setIsLoading(true);
         const result = await props.createNewTask({
-            name: fromUndefined(name),
+            name: name,
             status: fromUndefined(status),
             description: fromUndefined(description),
             priority: fromUndefined(priority),
