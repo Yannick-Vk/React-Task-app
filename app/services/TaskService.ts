@@ -31,9 +31,8 @@ const TaskSchema = z.object({
 export const addNewTask = async (tasks: Task[], dto: UpdateTaskDTO): Promise<Result<Task[], Error | ZodError>> => {
     // Validate Task
     const schemaResult = TaskSchema.safeParse({
-        id: "",
-        name: dto.name,
-        status: dto.status,
+        name: dto.name.toVanilla(),
+        status: dto.status.toVanilla(),
         dueDate: dto.dueDate.toVanilla(),
         priority: dto.priority.toVanilla(),
         description: dto.description.toVanilla(),
