@@ -42,7 +42,7 @@ export function useTaskManager() {
         }
     }, []);
 
-    const addTask = async (dto: AddTaskDTO): Promise<Option<ZodError>> => {
+    const addTask = async (dto: AddTaskDTO): Promise<Option<ZodError | Error>> => {
         const result = await addNewTask(tasks, dto);
 
         return matchResult(result,
@@ -51,7 +51,7 @@ export function useTaskManager() {
                 return None;
             },
             (error) => {
-                return Some(error as ZodError);
+                return Some(error);
             }
         );
     }

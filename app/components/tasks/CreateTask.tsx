@@ -9,9 +9,10 @@ import TaskPrioritySelectBox from "~/components/tasks/TaskPrioritySelectBox";
 import type {AddTaskDTO} from "~/dto/taskDTOs";
 import {DateTime} from "luxon";
 import TextareaField from "~/components/ui/TextareaField";
+import AlertBox from "~/components/ui/AlertBox";
 
 export interface Props {
-    createNewTask: (dto: AddTaskDTO) => Promise<Option<ZodError>>;
+    createNewTask: (dto: AddTaskDTO) => Promise<Option<ZodError | Error>>;
 }
 
 type FormErrors = {
@@ -31,6 +32,7 @@ export default function CreateTask(props: Props) {
     const [description, setDescription] = useState<string>("");
     // Generic
     const [errors, setErrors] = React.useState<FormErrors | null>(null);
+    const [genericError, setGenericError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -46,10 +48,20 @@ export default function CreateTask(props: Props) {
         setIsLoading(false);
 
         matchOption(result,
-            (val) => setErrors(z.flattenError(val).fieldErrors as FormErrors),
+            (val) => {
+                // Clear both errors
+                setErrors(null);
+                setGenericError(null);
+
+                (val instanceof ZodError) ?
+                    setErrors(z.flattenError(val).fieldErrors as FormErrors)
+                    : setGenericError(val.message)
+                ;
+            },
             () => {
                 setName("");
-                setErrors(null)
+                setErrors(null);
+                setGenericError(null);
             }
         );
     }
@@ -94,12 +106,12 @@ export default function CreateTask(props: Props) {
                                 value={dueDate?.toISODate() ?? ""} error={errors?.dueDate}
                                 onChange={handleDueDateChange} />
 
+                    {genericError && <AlertBox title="Unexpected error occured" variant="danger" message={genericError}
+                                               className={"w-full"} />}
+
                     <Button onClick={handleSubmit} className="block mt-5" type="submit"
                             disabled={isLoading}>Create new Task</Button>
 
-                    <div>
-                        <span className={"text-red-500"}></span>
-                    </div>
                 </div>
             </form>
         </>

@@ -34,7 +34,7 @@ export default function Home() {
     const closeModal = () => setIsModalOpen(false);
 
     // This function now connects the data logic (addTask) with the UI logic (closeModal)
-    const handleAddTask = async (dto: AddTaskDTO): Promise<Option<ZodError>> => {
+    const handleAddTask = async (dto: AddTaskDTO): Promise<Option<ZodError | Error>> => {
         const result = await addTask(dto);
 
         if (!result.some) { // If there is no error (`None`)
@@ -67,7 +67,10 @@ export default function Home() {
     if (error) {
         return (
             <main>
-                <AlertBox variant={"danger"} message={error} className={"mt-16"}></AlertBox>
+                <AlertBox variant="danger" message={error} className="mt-16"
+                          title="An error occurred while trying to load tasks">
+                    <p><a href="/" className="text-sky-500 underline">Refresh</a></p>
+                </AlertBox>
             </main>
         );
     }
