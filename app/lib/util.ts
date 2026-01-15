@@ -42,6 +42,10 @@ export type Option<T> =
     | { some: false; toVanilla: () => undefined }
     ;
 
+export const fromUndefined = <T>(value: T | undefined | null): Option<T> => {
+    return value ? Some(value) : None;
+};
+
 export const Some = <T>(value: T): Option<T> => ({
     some: true, value, toVanilla: () => value
 });
