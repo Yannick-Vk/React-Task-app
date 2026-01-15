@@ -5,7 +5,7 @@ export interface Props<TEnum extends Record<string, string>> {
     name: string;
     className?: string;
     enum: TEnum;
-    value?: TEnum[keyof TEnum];
+    value: TEnum[keyof TEnum];
     onChange: (value: TEnum[keyof TEnum]) => void;
     mapEnumToLabel: (value: TEnum[keyof TEnum]) => string;
 }
@@ -18,9 +18,7 @@ export default function EnumSelectBox<TEnum extends Record<string, string>>(prop
     }
 
     // If parent supplied a TaskType value, convert it to the corresponding enum key string
-    const selectedKeyFromValue = props.value
-        ? (Object.keys(props.enum).find((k) => props.enum[k as keyof typeof props.enum] === props.value) ?? "")
-        : undefined;
+    const selectedKeyFromValue = (Object.keys(props.enum).find((k) => props.enum[k as keyof typeof props.enum] === props.value) ?? "");
 
     return (
         <>

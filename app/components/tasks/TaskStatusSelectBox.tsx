@@ -5,7 +5,7 @@ import EnumSelectBox from "~/components/ui/EnumSelectBox";
 export interface Props {
     name: string;
     className?: string;
-    value?: Status; // controlled value (optional)
+    value: Status; // controlled value
     onChange: (value: Status) => void;
 }
 
@@ -25,8 +25,8 @@ export function mapEnum(value: Status): string {
 export default function TaskStatusSelectBox(props: Props) {
     return (
         <>
-            <EnumSelectBox name={props.name} enum={Status} mapEnumToLabel={mapEnum}
-                           className={props.className} onChange={props.onChange}></EnumSelectBox>
+            <EnumSelectBox name={props.name} enum={Status} mapEnumToLabel={mapEnum} value={props.value}
+                           className={props.className} onChange={props.onChange} />
         </>
     );
 }
