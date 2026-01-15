@@ -9,6 +9,7 @@ import {type Result} from "~/lib/util";
 import {useEditTaskModal} from "~/hooks/useEditTaskModal";
 import {DateTime} from "luxon"
 import Badge, {BadgeVariant} from "~/components/ui/Badge";
+import Tooltip from "~/components/ui/Tooltip";
 
 export interface Props {
     data: Task[];
@@ -67,13 +68,25 @@ export default function TaskTable(props: Props) {
                         </td>
                         <td className={"p-3 text-center"}><Badge
                             variant={mapPriorityToVariant(item.priority)}>{item.priority}</Badge></td>
-                        <td className={"p-3 text-center"}>{item.description ?? "-"}</td>
                         <td className={"p-3 text-center"}>
-                            {item.dueDate ? DateTime.fromISO(item.dueDate).toRelative() : "-"}
+                            <Tooltip content={"NO CONTENT"}>
+                                {item.description ?? "-"}
+                            </Tooltip>
                         </td>
-                        <td className={"p-3 text-center"}>{DateTime.fromISO(item.created).toRelative()}</td>
                         <td className={"p-3 text-center"}>
-                            {item.updated ? DateTime.fromISO(item.updated).toRelative() : "-"}
+                            <Tooltip content={"No content"}>
+                                {item.dueDate ? DateTime.fromISO(item.dueDate).toRelative() : "-"}
+                            </Tooltip>
+                        </td>
+                        <td className={"p-3 text-center"}>
+                            <Tooltip content={"No content"}>
+                                {DateTime.fromISO(item.created).toRelative()}
+                            </Tooltip>
+                        </td>
+                        <td className={"p-3 text-center"}>
+                            <Tooltip content={"No content"}>
+                                {item.updated ? DateTime.fromISO(item.updated).toRelative() : "-"}
+                            </Tooltip>
                         </td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
