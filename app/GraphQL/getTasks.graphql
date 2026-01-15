@@ -3,5 +3,9 @@ query GetTasks {
         id
         name
         status
+        description
+        priority
+        created
+        dueDate
     }
 }
