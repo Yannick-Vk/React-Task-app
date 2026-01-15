@@ -7,6 +7,7 @@ import Modal from "~/components/ui/Modal";
 import InputField from "~/components/ui/InputField";
 import {type Result} from "~/lib/util";
 import {useEditTaskModal} from "~/hooks/useEditTaskModal";
+import {DateTime} from "luxon"
 
 export interface Props {
     data: Task[];
@@ -52,9 +53,9 @@ export default function TaskTable(props: Props) {
                         </td>
                         <td className={"p-3 text-center"}>{item.priority}</td>
                         <td className={"p-3 text-center"}>{item.description}</td>
-                        <td className={"p-3 text-center"}>{item.dueDate}</td>
-                        <td className={"p-3 text-center"}>{item.created}</td>
-                        <td className={"p-3 text-center"}>{item.updated}</td>
+                        <td className={"p-3 text-center"}>{DateTime.fromISO(item.dueDate).toRelative()}</td>
+                        <td className={"p-3 text-center"}>{DateTime.fromISO(item.created).toRelative()}</td>
+                        <td className={"p-3 text-center"}>{DateTime.fromISO(item.updated).toRelative()}</td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
                             <Button onClick={() => openModal(item)}>Edit task</Button>
