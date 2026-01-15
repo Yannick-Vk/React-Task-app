@@ -5,7 +5,7 @@ import React from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import Modal from "~/components/ui/Modal";
 import InputField from "~/components/ui/InputField";
-import {type Result} from "~/lib/util";
+import {matchOption, type Result} from "~/lib/util";
 import {useEditTaskModal} from "~/hooks/useEditTaskModal";
 import {DateTime} from "luxon"
 import Badge, {BadgeVariant} from "~/components/ui/Badge";
@@ -47,6 +47,17 @@ export default function TaskTable(props: Props) {
         }
     }
 
+    const dateTooltip = (optionalDate: string | undefined): React.ReactNode => {
+        return matchOption(optionalDate,
+            (date) => (
+                <Tooltip content={DateTime.fromISO(date).toLocaleString()}>
+                    {DateTime.fromISO(date).toRelative()}
+                </Tooltip>
+            ),
+            () => (<span>-</span>),
+        );
+    }
+
     return (
         <>
             <Table columns={[
@@ -74,19 +85,13 @@ export default function TaskTable(props: Props) {
                             </Tooltip>
                         </td>
                         <td className={"p-3 text-center"}>
-                            <Tooltip content={"No content"}>
-                                {item.dueDate ? DateTime.fromISO(item.dueDate).toRelative() : "-"}
-                            </Tooltip>
+                            {dateTooltip(item.dueDate)}
                         </td>
                         <td className={"p-3 text-center"}>
-                            <Tooltip content={"No content"}>
-                                {DateTime.fromISO(item.created).toRelative()}
-                            </Tooltip>
+                            {dateTooltip(item.created)}
                         </td>
                         <td className={"p-3 text-center"}>
-                            <Tooltip content={"No content"}>
-                                {item.updated ? DateTime.fromISO(item.updated).toRelative() : "-"}
-                            </Tooltip>
+                            {dateTooltip(item.updated)}
                         </td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
