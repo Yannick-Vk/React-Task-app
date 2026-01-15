@@ -19,6 +19,12 @@ export const compareTask = (a: Task | null | undefined, b: Task | null | undefin
     return a.name === b.name && a.status === b.status;
 }
 
+export const truncateString = (str: string, maxLength: number): string => {
+    return str.length > maxLength
+        ? str.slice(0, maxLength) + "..."
+        : str;
+}
+
 export type Result<T, E> = { success: true, data: T } | { success: false, error: E };
 
 export const Ok = <T, E = never>(data: T): Result<T, E> => ({
