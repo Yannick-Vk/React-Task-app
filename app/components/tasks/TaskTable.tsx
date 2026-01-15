@@ -36,6 +36,11 @@ export default function TaskTable(props: Props) {
             <Table columns={[
                 {key: "title", header: "Title"},
                 {key: "status", header: "Status"},
+                {key: "priority", header: "Priority"},
+                {key: "description", header: "Description"},
+                {key: "due-date", header: "Due Date"},
+                {key: "created", header: "Created at"},
+                {key: "updated", header: "Last updated at"},
                 {key: "actions", header: "Actions"},
             ]}>
                 {props.data.map((item) => (
@@ -45,6 +50,11 @@ export default function TaskTable(props: Props) {
                             <TaskTypesSelectBox name="" value={item.status} className={"bg-slate-200"}
                                                 onChange={(e) => props.changeStatus(item.id, e)}></TaskTypesSelectBox>
                         </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
                             <Button onClick={() => openModal(item)}>Edit task</Button>
