@@ -4,6 +4,7 @@ import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import {z, ZodError} from "zod";
 import {Status} from "~/GraphQL/generated";
 import {matchOption, type Option} from "~/lib/util";
+import InputField from "~/components/ui/InputField";
 
 export interface Props {
     createNewTask: (taskName: string, status?: Status) => Promise<Option<ZodError>>;
@@ -47,10 +48,8 @@ export default function CreateTask(props: Props) {
             <form className="pt-8 pb-4">
                 <div className={"flex flex-col gap-4"}>
                     <div>
-                        <label htmlFor="name" className="block font-medium text-gray-300 mb-2">Task Name</label>
-                        <input value={name} onChange={handleNameChange} type="text" name="name" id="name"
-                               className={"rounded-sm border-2 border-slate-300 text-gray-300 p-3 w-full focus:outline-none focus:shadow-outline focus:border-pink-300"} />
-                        {errors?.name && <span className="text-red-500 text-sm">{errors.name[0]}</span>}
+                        <InputField label={"Task Name"} name="name" value={name} onChange={handleNameChange}
+                                    error={errors?.name} />
                     </div>
                     <div>
                         <label htmlFor="status" className="">Task status</label>
