@@ -2,9 +2,9 @@
 import type {Option} from "~/lib/util";
 
 export interface UpdateTaskDTO {
-    name: string,
-    status: Status,
+    name: Option<string>,
+    status: Option<Status>,
     description: Option<string>,
     priority: Option<Priority>,
-    dueDate: Option<Date>
+    dueDate: Option<Date>,
 }

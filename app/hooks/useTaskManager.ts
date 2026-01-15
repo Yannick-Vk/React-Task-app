@@ -3,6 +3,7 @@ import {Status, type Task} from "~/GraphQL/generated";
 import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
 import {Err, matchResult, None, Ok, type Option, type Result, toZodSome} from "~/lib/util";
 import {ZodError} from "zod";
+import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 
 export function useTaskManager() {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -41,8 +42,8 @@ export function useTaskManager() {
         }
     }, []);
 
-    const addTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
-        const result = await addNewTask(tasks, taskName, status);
+    const addTask = async (dto: UpdateTaskDTO): Promise<Option<ZodError>> => {
+        const result = await addNewTask(tasks, dto);
 
         return matchResult(result,
             (newTasks) => {
