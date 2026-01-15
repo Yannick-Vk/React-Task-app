@@ -1,6 +1,6 @@
 ﻿import Table from "~/components/ui/Table";
 import Button from "~/components/ui/Button";
-import type {Status, Task} from "~/GraphQL/generated"
+import {Priority, type Status, type Task} from "~/GraphQL/generated"
 import React from "react";
 import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
 import Modal from "~/components/ui/Modal";
@@ -50,11 +50,11 @@ export default function TaskTable(props: Props) {
                             <TaskTypesSelectBox name="" value={item.status} className={"bg-slate-200"}
                                                 onChange={(e) => props.changeStatus(item.id, e)}></TaskTypesSelectBox>
                         </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td className={"p-3 text-center"}>{item.priority}</td>
+                        <td className={"p-3 text-center"}>{item.description}</td>
+                        <td className={"p-3 text-center"}>{item.dueDate}</td>
+                        <td className={"p-3 text-center"}>{item.created}</td>
+                        <td className={"p-3 text-center"}>{item.updated}</td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
                             <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
                             <Button onClick={() => openModal(item)}>Edit task</Button>
