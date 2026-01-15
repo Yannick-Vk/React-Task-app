@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Status, type Task} from "~/GraphQL/generated";
 import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
-import {Err, matchResult, None, Ok, type Option, type Result, toZodSome} from "~/lib/util";
+import {Err, matchResult, None, Ok, type Option, type Result, Some} from "~/lib/util";
 import {ZodError} from "zod";
 import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 
@@ -51,7 +51,7 @@ export function useTaskManager() {
                 return None;
             },
             (error) => {
-                return toZodSome(error, "name")
+                return Some(error as ZodError);
             }
         );
     }

@@ -17,6 +17,9 @@ export interface Props {
 type FormErrors = {
     name?: string[];
     status?: string[];
+    dueDate?: string[];
+    priority?: string[];
+    description?: string[];
 }
 
 export default function CreateTask(props: Props) {
@@ -74,20 +77,22 @@ export default function CreateTask(props: Props) {
                     <InputField label="Task Name" name="name" value={name} onChange={handleNameChange}
                                 error={errors?.name} />
 
-                    <TextareaField label="Description" name="description" value={description} error={undefined}
+                    <TextareaField label="Description" name="description" value={description}
+                                   error={errors?.description}
                                    onChange={handleDescriptionChange} maxCharacters={500} />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <TaskStatusSelectBox label="Status" className={"focus:border-pink-300 bg-slate-800"}
-                                             name="status" value={status} error={undefined} onChange={setStatus} />
+                                             name="status" value={status} error={errors?.status} onChange={setStatus} />
 
                         <TaskPrioritySelectBox label="Priority" className={"focus:border-pink-300 bg-slate-800"}
-                                               name="priority" value={priority} error={undefined}
+                                               name="priority" value={priority} error={errors?.priority}
                                                onChange={setPriority} />
                     </div>
 
                     <InputField label={"Due-date"} name={"due-date"} type="date"
-                                value={dueDate?.toISODate() ?? ""} error={undefined} onChange={handleDueDateChange} />
+                                value={dueDate?.toISODate() ?? ""} error={errors?.dueDate}
+                                onChange={handleDueDateChange} />
 
                     <Button onClick={handleSubmit} className="block mt-5" type="submit"
                             disabled={isLoading}>Create new Task</Button>
