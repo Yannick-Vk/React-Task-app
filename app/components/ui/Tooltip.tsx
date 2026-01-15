@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, {useState} from "react";
 import {twMerge} from "tailwind-merge";
 
 export interface Props {
@@ -8,20 +8,37 @@ export interface Props {
 }
 
 export default function Tooltip(props: Props) {
+
+    const [isVisible, setIsVisible] = useState(false);
+    let hideTimeout: string | number | NodeJS.Timeout | undefined;
+
+    const showTooltip = () => {
+        clearTimeout(hideTimeout);
+        setIsVisible(true);
+    }
+
+    const hideTooltip = () => {
+        hideTimeout = window.setTimeout(() => {
+            setIsVisible(false);
+        }, 100);
+    }
+
     return (
-        <div className={"relative group"}>
+        <div className={"relative"} onMouseEnter={showTooltip} onMouseLeave={hideTooltip}>
             {props.children}
 
-            <div
-                className={twMerge(
-                    "absolute bottom-full mb-2 hidden group-hover:block",
-                    "left-1/2 -translate-x-1/2 transform w-max",
-                    "bg-gray-800 text-white text-xs rounded-md px-2 py-1",
-                    "pointer-events-none",
-                    props.className
-                )}>
-                {props.content}
-            </div>
+            {isVisible && (
+
+                <div
+                    className={twMerge(
+                        "absolute bottom-full mb-2",
+                        "left-1/2 -translate-x-1/2 transform w-full max-w-10/12",
+                        "bg-gray-800 text-white text-xs rounded-md px-5 py-2 z-10",
+                        props.className
+                    )}>
+                    {props.content}
+                </div>
+            )}
         </div>
     );
 }
