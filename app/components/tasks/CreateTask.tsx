@@ -2,9 +2,10 @@
 import Button from "~/components/ui/Button";
 import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import {z, ZodError} from "zod";
-import {Status} from "~/GraphQL/generated";
+import {Priority, Status} from "~/GraphQL/generated";
 import {matchOption, type Option} from "~/lib/util";
 import InputField from "~/components/ui/InputField";
+import TaskPrioritySelectBox from "~/components/tasks/TaskPrioritySelectBox";
 
 export interface Props {
     createNewTask: (taskName: string, status?: Status) => Promise<Option<ZodError>>;
@@ -18,6 +19,7 @@ type FormErrors = {
 export default function CreateTask(props: Props) {
     const [name, setName] = React.useState("");
     const [status, setStatus] = React.useState<Status>(Status.Ready);
+    const [priority, setPriority] = React.useState<Priority>(Priority.None);
     const [errors, setErrors] = React.useState<FormErrors | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
 
@@ -56,6 +58,12 @@ export default function CreateTask(props: Props) {
                         <TaskStatusSelectBox className={"focus:border-pink-300 bg-slate-800"} name="status"
                                              value={status}
                                              onChange={setStatus} />
+                    </div>
+                    <div>
+                        <label htmlFor="priority" className="">Task priority</label>
+                        <TaskPrioritySelectBox className={"focus:border-pink-300 bg-slate-800"} name="priority"
+                                               value={priority}
+                                               onChange={setPriority} />
                     </div>
                 </div>
                 <Button onClick={handleSubmit} className="block mt-5" type="submit"
