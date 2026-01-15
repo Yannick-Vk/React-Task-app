@@ -79,7 +79,7 @@ export default function Home() {
                 <p>Press the create task button to create a new task or press
                     '{openModalKeyboardButton.toUpperCase()}'.</p>
 
-                <Button onClick={openModal} className={"flex items-center gap-3 justify-center p-2"}>
+                <Button onClick={openModal} className={"flex items-center gap-3 justify-center"}>
                     Create a new Task
                     <KeyboardButtonIcon kb={openModalKeyboardButton.toUpperCase()} />
                 </Button>
