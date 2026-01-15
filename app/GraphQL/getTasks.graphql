@@ -7,5 +7,6 @@ query GetTasks {
         priority
         created
         dueDate
+        updated
     }
 }
