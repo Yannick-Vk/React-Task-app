@@ -2,6 +2,7 @@
 import React from "react";
 import EnumSelectBox from "~/components/ui/EnumSelectBox";
 import FormField from "~/components/ui/FormField";
+import {twMerge} from "tailwind-merge";
 
 export interface Props {
     name: string;
@@ -31,7 +32,8 @@ export default function TaskPrioritySelectBox(props: Props) {
 
     const enumSelectBox = (
         <EnumSelectBox name={props.name} enum={Priority} mapEnumToLabel={MapEnum} value={props.value}
-                       className={props.className} onChange={props.onChange}
+                       className={twMerge("focus:border-pink-300 hover:border-pink-300", props.className)}
+                       onChange={props.onChange}
                        order={["None", "Low", "Medium", "High"]} />
     );
 
