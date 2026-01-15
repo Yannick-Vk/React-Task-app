@@ -5,6 +5,7 @@
     type DeleteTaskMutation,
     GetTasksDocument,
     type GetTasksQuery,
+    Priority,
     Status,
     type Task,
     UpdateTaskDocument,
@@ -13,22 +14,29 @@
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
 import {Err, Ok, type Result, strToErr, toErr} from "~/lib/util";
+import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 
 const TaskSchema = z.object({
-    id: z.string(),
+    id: z.string().optional(), // id is optional for new tasks
     name: z.string().min(1, "Task name cannot be empty").trim(),
-    status: z.enum(Status), // DO NOT CHANGE THIS - user instruction
+    status: z.enum(Status),
+    priority: z.enum(Priority),
+    description: z.string().optional(), // Made optional
+    dueDate: z.coerce.date().optional(), // Made optional
 });
 
 // Add a new task to the list, returns the list or an error
 // A result type either has the updated list of tasks or an error
 // Allow general Error
-export const addNewTask = async (tasks: Task[], taskName: string, status?: Status): Promise<Result<Task[], Error | ZodError>> => {
+export const addNewTask = async (tasks: Task[], dto: UpdateTaskDTO): Promise<Result<Task[], Error | ZodError>> => {
     // Validate Task
     const schemaResult = TaskSchema.safeParse({
         id: "",
-        name: taskName,
-        status: status,
+        name: dto.name,
+        status: dto.status,
+        dueDate: dto.dueDate.toVanilla(),
+        priority: dto.priority.toVanilla(),
+        description: dto.description.toVanilla(),
     });
 
     if (!schemaResult.success) {
@@ -41,7 +49,10 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
             mutation: AddTaskDocument,
             variables: { // Pass variables to the mutation
                 name: schemaResult.data.name,
-                status: schemaResult.data.status
+                status: schemaResult.data.status,
+                dueDate: schemaResult.data.dueDate,
+                priority: schemaResult.data.priority,
+                description: schemaResult.data.description,
             },
         });
 
