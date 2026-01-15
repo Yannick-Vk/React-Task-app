@@ -6,7 +6,7 @@ export interface Props {
     name: string;
     className?: string;
     value?: Status; // controlled value (optional)
-    onChange?: (value: Status) => void;
+    onChange: (value: Status) => void;
 }
 
 export function mapEnum(value: Status): string {
@@ -26,7 +26,7 @@ export default function TaskStatusSelectBox(props: Props) {
     return (
         <>
             <EnumSelectBox name={props.name} enum={Status} mapEnumToLabel={mapEnum}
-                           className={props.className}></EnumSelectBox>
+                           className={props.className} onChange={props.onChange}></EnumSelectBox>
         </>
     );
 }
