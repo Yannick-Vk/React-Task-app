@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import Button from "~/components/ui/Button";
-import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
+import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import {z, ZodError} from "zod";
 import {Status} from "~/GraphQL/generated";
 import {matchOption, type Option} from "~/lib/util";
@@ -53,9 +53,9 @@ export default function CreateTask(props: Props) {
                     </div>
                     <div>
                         <label htmlFor="status" className="">Task status</label>
-                        <TaskTypesSelectBox className={"focus:border-pink-300 bg-slate-800"} name="status"
-                                            value={status}
-                                            onChange={setStatus} />
+                        <TaskStatusSelectBox className={"focus:border-pink-300 bg-slate-800"} name="status"
+                                             value={status}
+                                             onChange={setStatus} />
                     </div>
                 </div>
                 <Button onClick={handleSubmit} className="block mt-5" type="submit"

@@ -2,7 +2,7 @@
 import Button from "~/components/ui/Button";
 import {type Maybe, Priority, type Status, type Task} from "~/GraphQL/generated"
 import React from "react";
-import TaskTypesSelectBox from "~/components/tasks/TaskTypesSelectBox";
+import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import Modal from "~/components/ui/Modal";
 import InputField from "~/components/ui/InputField";
 import {matchOption, type Result, truncateString} from "~/lib/util";
@@ -89,8 +89,8 @@ export default function TaskTable(props: Props) {
                     <tr className={"bg-gray-200 even:bg-gray-300 text-black hover:bg-pink-200"} key={item.id}>
                         <td className={"p-3 text-center"}> {item.name} </td>
                         <td className={"p-3 text-center"}>
-                            <TaskTypesSelectBox name="" value={item.status} className={"bg-slate-200"}
-                                                onChange={(e) => props.changeStatus(item.id, e)}></TaskTypesSelectBox>
+                            <TaskStatusSelectBox name="" value={item.status} className={"bg-slate-200"}
+                                                 onChange={(e) => props.changeStatus(item.id, e)}></TaskStatusSelectBox>
                         </td>
                         <td className={"p-3 text-center"}><Badge
                             variant={mapPriorityToVariant(item.priority)}>{item.priority}</Badge></td>
@@ -119,9 +119,9 @@ export default function TaskTable(props: Props) {
                         original state.</p>
                     <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""}
                                 onChange={onNameChange} />
-                    <TaskTypesSelectBox name={"Status"} value={selectedTask?.status}
-                                        className={"bg-slate-800 text-white focus:border-pink-300"}
-                                        onChange={onStatusChange} />
+                    <TaskStatusSelectBox name={"Status"} value={selectedTask?.status}
+                                         className={"bg-slate-800 text-white focus:border-pink-300"}
+                                         onChange={onStatusChange} />
                     <div>
                         {error && <span className={"text-red-500"}>{error.message}</span>}
                     </div>
