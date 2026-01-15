@@ -14,12 +14,16 @@ public class Mutation {
 
     private IDbContextFactory<ApplicationDbContext> _contextFactory { get; }
 
-    public async Task<Task> AddTask(string name, Status? status) {
+    public async Task<Task> AddTask(string name, Status? status, Priority? priority, string? description,
+        DateTime? dueDate) {
         await using var context = await _contextFactory.CreateDbContextAsync();
         var task = new Task {
             Id = Guid.NewGuid(),
             Name = name,
             Status = status ?? Status.Ready,
+            Description = description,
+            DueDate = dueDate,
+            Priority = priority ?? default,
         };
 
         context.Tasks.Add(task);
@@ -46,7 +50,7 @@ public class Mutation {
         var task = await context.Tasks.FindAsync(updatedTask.Id);
         if (task is null) return null;
 
-        task.Update(updatedTask.Name, updatedTask.Status);
+        task.Update(updatedTask);
 
         await context.SaveChangesAsync();
         return task;
