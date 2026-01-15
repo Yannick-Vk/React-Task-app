@@ -8,6 +8,7 @@ import InputField from "~/components/ui/InputField";
 import TaskPrioritySelectBox from "~/components/tasks/TaskPrioritySelectBox";
 import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 import {DateTime} from "luxon";
+import TextareaField from "~/components/ui/TextareaField";
 
 export interface Props {
     createNewTask: (dto: UpdateTaskDTO) => Promise<Option<ZodError>>;
@@ -61,6 +62,10 @@ export default function CreateTask(props: Props) {
         e.target.value ? setDueDate(DateTime.fromISO(e.target.value)) : setDueDate(undefined);
     };
 
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setDescription(e.target.value);
+    }
+
     return (
         <>
             <form className="pt-8 pb-4">
@@ -69,9 +74,8 @@ export default function CreateTask(props: Props) {
                     <InputField label="Task Name" name="name" value={name} onChange={handleNameChange}
                                 error={errors?.name} />
 
-                    <InputField label="Description" name="description" value={description} error={undefined}
-                                onChange={() => {
-                                }} />
+                    <TextareaField label="Description" name="description" value={description} error={undefined}
+                                   onChange={handleDescriptionChange} maxCharacters={500} />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <TaskStatusSelectBox label="Status" className={"focus:border-pink-300 bg-slate-800"}
