@@ -75,7 +75,7 @@ export default function CreateTask(props: Props) {
                 <div className={"flex flex-col gap-4"}>
 
                     <InputField label="Task Name" name="name" value={name} onChange={handleNameChange}
-                                error={errors?.name} />
+                                error={errors?.name} required={true} />
 
                     <TextareaField label="Description" name="description" value={description}
                                    error={errors?.description}
@@ -96,6 +96,10 @@ export default function CreateTask(props: Props) {
 
                     <Button onClick={handleSubmit} className="block mt-5" type="submit"
                             disabled={isLoading}>Create new Task</Button>
+
+                    <div>
+                        <span className={"text-red-500"}></span>
+                    </div>
                 </div>
             </form>
         </>

@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import {twMerge} from "tailwind-merge";
+import FormField from "~/components/ui/FormField";
 
 export interface Props<TEnum extends Record<string, string>> {
     name: string;
@@ -9,6 +10,9 @@ export interface Props<TEnum extends Record<string, string>> {
     onChange: (value: TEnum[keyof TEnum]) => void;
     mapEnumToLabel: (value: TEnum[keyof TEnum]) => string;
     order?: (keyof TEnum)[]; // Optional order to display the Enum
+    required: boolean | undefined;
+    label?: string;
+    error: string[] | undefined;
 }
 
 export default function EnumSelectBox<TEnum extends Record<string, string>>(props: Props<TEnum>) {
@@ -23,17 +27,23 @@ export default function EnumSelectBox<TEnum extends Record<string, string>>(prop
 
     const keysToRender = props.order ?? Object.keys(props.enum); // Use order if provided or default
 
-    return (
-        <>
-            <select
-                className={twMerge("block p-3 mt-2 border-2 border-slate-300 rounded-sm w-full bg-slate-200 focus:outline-none",
-                    props.className)}
-                name={props.name} id={props.name} onChange={handleOnChange} value={selectedKeyFromValue}>
-                {keysToRender.map((key) => (
-                    <option key={String(key)} value={String(key)} className={""}>
-                        {props.mapEnumToLabel(props.enum[key as keyof typeof props.enum])}</option>)
-                )}
-            </select>
-        </>
+    const selectBox = (
+        <select
+            className={twMerge("block p-3 mt-2 border-2 border-slate-300 rounded-sm w-full bg-slate-200 focus:outline-none",
+                props.className)}
+            name={props.name} id={props.name} onChange={handleOnChange} value={selectedKeyFromValue}>
+            {keysToRender.map((key) => (
+                <option key={String(key)} value={String(key)} className={""}>
+                    {props.mapEnumToLabel(props.enum[key as keyof typeof props.enum])}</option>)
+            )}
+        </select>
+    );
+
+    return props.label ? (
+        <FormField label={props.label} name={props.name} error={props.error} required={props.required}>
+            {selectBox}
+        </FormField>
+    ) : (
+        selectBox
     );
 }

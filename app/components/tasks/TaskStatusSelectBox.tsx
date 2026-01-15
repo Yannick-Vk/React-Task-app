@@ -1,7 +1,6 @@
 ﻿import {Status} from "~/GraphQL/generated"
 import React from "react";
 import EnumSelectBox from "~/components/ui/EnumSelectBox";
-import FormField from "~/components/ui/FormField";
 import {twMerge} from "tailwind-merge";
 
 export interface Props {
@@ -11,6 +10,7 @@ export interface Props {
     onChange: (value: Status) => void;
     label?: string;
     error: string[] | undefined;
+    required?: boolean;
 }
 
 export function mapEnum(value: Status): string {
@@ -27,19 +27,10 @@ export function mapEnum(value: Status): string {
 }
 
 export default function TaskStatusSelectBox(props: Props) {
-
-    const enumSelectBox = (
-        <EnumSelectBox name={props.name} enum={Status} mapEnumToLabel={mapEnum} value={props.value}
+    return (
+        <EnumSelectBox name={props.name} enum={Status} mapEnumToLabel={mapEnum} value={props.value} error={props.error}
                        className={twMerge("focus:border-pink-300 hover:border-pink-300", props.className)}
-                       onChange={props.onChange}
+                       onChange={props.onChange} required={props.required}
                        order={["Ready", "InProgress", "Done"]} />
-    );
-
-    return props.label ? (
-        <FormField label={props.label} name={props.name} error={props.error}>
-            {enumSelectBox}
-        </FormField>
-    ) : (
-        enumSelectBox
     );
 }

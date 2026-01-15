@@ -10,6 +10,7 @@ export interface Props {
     error: string[] | undefined;
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
     maxCharacters: number;
+    required?: boolean;
 }
 
 export default function TextareaField(props: Props) {
@@ -24,7 +25,7 @@ export default function TextareaField(props: Props) {
 
     return (
         <>
-            <FormField label={props.label} name={props.name} error={props.error}>
+            <FormField label={props.label} name={props.name} error={props.error} required={props.required}>
                 <textarea id={props.name} value={props.value} name={props.name} onChange={onChange}
                           maxLength={props.maxCharacters}
                           className={twMerge("rounded-sm border-2 border-slate-300 text-gray-300 p-3 w-full h-max focus:outline-none focus:shadow-outline focus:border-pink-300 hover:border-pink-300", props.className)} />
