@@ -52,11 +52,15 @@ export const Some = <T>(value: T): Option<T> => ({
 export const None: Option<never> = {some: false, toVanilla: () => undefined};
 
 export const matchOption = <T, U>(
-    option: Option<T>,
+    option: Option<T> | T | undefined | null,
     onSome: (value: T) => U,
     onNone: () => U,
 ): U => {
-    return option.some ? onSome(option.value) : onNone();
+    if (option && typeof option === "object" && 'some' in option) {
+        return option.some ? onSome(option.value) : onNone();
+    } else {
+        return option ? onSome(option as T) : onNone();
+    }
 }
 
 export const strToErr = <T = never>(str: string): Result<T, Error> =>
