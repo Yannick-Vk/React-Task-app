@@ -10,6 +10,7 @@ import {useEditTaskModal} from "~/hooks/useEditTaskModal";
 import {DateTime} from "luxon"
 import Badge, {BadgeVariant} from "~/components/ui/Badge";
 import Tooltip from "~/components/ui/Tooltip";
+import type {Maybe} from "@envelop/types";
 
 export interface Props {
     data: Task[];
@@ -54,7 +55,18 @@ export default function TaskTable(props: Props) {
                     {DateTime.fromISO(date).toRelative()}
                 </Tooltip>
             ),
-            () => (<span>-</span>),
+            () => (<span className="cursor-default">-</span>),
+        );
+    }
+
+    const descriptionTooltip = (optionalDescription: Maybe<string> | undefined): React.ReactNode => {
+        return matchOption(optionalDescription,
+            (desc) => (
+                <Tooltip content={"NO CONTENT"}>
+                    {desc}
+                </Tooltip>
+            ),
+            () => (<span className="cursor-default">-</span>),
         );
     }
 
@@ -80,9 +92,7 @@ export default function TaskTable(props: Props) {
                         <td className={"p-3 text-center"}><Badge
                             variant={mapPriorityToVariant(item.priority)}>{item.priority}</Badge></td>
                         <td className={"p-3 text-center"}>
-                            <Tooltip content={"NO CONTENT"}>
-                                {item.description ?? "-"}
-                            </Tooltip>
+                            {descriptionTooltip(item.description)}
                         </td>
                         <td className={"p-3 text-center"}>
                             {dateTooltip(item.dueDate)}
