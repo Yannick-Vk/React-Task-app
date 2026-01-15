@@ -1,6 +1,6 @@
 ﻿import Table from "~/components/ui/Table";
 import Button from "~/components/ui/Button";
-import {type Maybe, Priority, type Status, type Task} from "~/GraphQL/generated"
+import {type Maybe, Priority, Status, type Task} from "~/GraphQL/generated"
 import React from "react";
 import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import Modal from "~/components/ui/Modal";
@@ -89,7 +89,8 @@ export default function TaskTable(props: Props) {
                     <tr className={"bg-gray-200 even:bg-gray-300 text-black hover:bg-pink-200"} key={item.id}>
                         <td className={"p-3 text-center"}> {item.name} </td>
                         <td className={"p-3 text-center"}>
-                            <TaskStatusSelectBox name="" value={item.status} className={"bg-slate-200"}
+                            <TaskStatusSelectBox name={item.name} value={item.status} className={"bg-slate-200"}
+                                                 error={undefined}
                                                  onChange={(e) => props.changeStatus(item.id, e)}></TaskStatusSelectBox>
                         </td>
                         <td className={"p-3 text-center"}><Badge
@@ -118,8 +119,8 @@ export default function TaskTable(props: Props) {
                     <p>Update the task, click 'esc' or the close button to cancel. Press reset to go back to the
                         original state.</p>
                     <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""}
-                                onChange={onNameChange} />
-                    <TaskStatusSelectBox name={"Status"} value={selectedTask?.status}
+                                onChange={onNameChange} error={undefined} />
+                    <TaskStatusSelectBox name={"Status"} value={selectedTask?.status ?? Status.Ready} error={undefined}
                                          className={"bg-slate-800 text-white focus:border-pink-300"}
                                          onChange={onStatusChange} />
                     <div>

@@ -1,12 +1,15 @@
 ﻿import {Priority} from "~/GraphQL/generated"
 import React from "react";
 import EnumSelectBox from "~/components/ui/EnumSelectBox";
+import FormField from "~/components/ui/FormField";
 
 export interface Props {
     name: string;
     className?: string;
     value: Priority; // controlled value (optional)
     onChange: (value: Priority) => void;
+    error: string[] | undefined;
+    label?: string;
 }
 
 export function MapEnum(value: Priority): string {
@@ -25,11 +28,18 @@ export function MapEnum(value: Priority): string {
 }
 
 export default function TaskPrioritySelectBox(props: Props) {
-    return (
-        <>
-            <EnumSelectBox name={props.name} enum={Priority} mapEnumToLabel={MapEnum} value={props.value}
-                           className={props.className} onChange={props.onChange}
-                           order={["None", "Low", "Medium", "High"]} />
-        </>
+
+    const enumSelectBox = (
+        <EnumSelectBox name={props.name} enum={Priority} mapEnumToLabel={MapEnum} value={props.value}
+                       className={props.className} onChange={props.onChange}
+                       order={["None", "Low", "Medium", "High"]} />
+    );
+
+    return props.label ? (
+        <FormField label={props.label} name={props.name} error={props.error}>
+            {enumSelectBox}
+        </FormField>
+    ) : (
+        enumSelectBox
     );
 }

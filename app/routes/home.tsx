@@ -9,7 +9,7 @@ import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
 import {useTaskManager} from "~/hooks/useTaskManager";
 import {type Option} from "~/lib/util";
 import type {ZodError} from "zod";
-import type {Status} from "~/GraphQL/generated";
+import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -34,8 +34,8 @@ export default function Home() {
     const closeModal = () => setIsModalOpen(false);
 
     // This function now connects the data logic (addTask) with the UI logic (closeModal)
-    const handleAddTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
-        const result = await addTask(taskName, status);
+    const handleAddTask = async (dto: UpdateTaskDTO): Promise<Option<ZodError>> => {
+        const result = await addTask(dto);
 
         if (!result.some) { // If there is no error (`None`)
             closeModal();
