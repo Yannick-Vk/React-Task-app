@@ -14,7 +14,7 @@
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
 import {Err, Ok, type Result, strToErr, toErr} from "~/lib/util";
-import type {AddTaskDTO} from "~/dto/taskDTOs";
+import type {AddTaskDTO, UpdateTaskDTO} from "~/dto/taskDTOs";
 
 const TaskSchema = z.object({
     id: z.string().optional(), // id is optional for new tasks
@@ -85,31 +85,32 @@ export const removeTask = async (id: string): Promise<Result<string, Error>> => 
     }
 }
 
-// Change a given task's status and name
-export const updateTask = async (tasks: Task[], id: string, newStatus: Status, newName: string): Promise<Result<Task, Error>> => {
+
+export const updateTask = async (updatedTask: UpdateTaskDTO): Promise<Result<Task, Error>> => {
     try {
-        const taskToUpdate = tasks.find(task => task.id === id);
-        if (!taskToUpdate) {
-            console.error(`Task with id ${id} not found.`);
-            return strToErr(`Task with id ${id} not found.`);
-        }
-        if (newName.trim().length == 0) {
-            return strToErr(`The task's new name cannot be empty`);
+        const taskForMutation = {
+            id: updatedTask.id,
+            name: updatedTask.name.toVanilla(),
+            status: updatedTask.status.toVanilla(),
+            dueDate: updatedTask.dueDate.toVanilla(),
+            priority: updatedTask.priority.toVanilla(),
+            description: updatedTask.description.toVanilla(),
+        };
+
+        const schemaResult = TaskSchema.safeParse(taskForMutation);
+
+        if (!schemaResult.success) {
+            return Err(schemaResult.error);
         }
 
         const {data} = await client.mutate<UpdateTaskMutation>({
             mutation: UpdateTaskDocument,
             variables: { // Pass variables to the mutation
-                task: {
-                    id: id,
-                    name: newName,
-                    status: newStatus
-                }
+                task: taskForMutation,
             },
         });
 
-        return data ? Ok(data.updateTask!)
-            : strToErr("No data was given.");
+        return data ? Ok(data.updateTask!) : strToErr("No data was given.");
 
     } catch (error) {
         console.error("Error updating task:", error);

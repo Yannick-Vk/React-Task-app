@@ -60,9 +60,9 @@ export default function CreateTask(props: Props) {
         const result = await props.createNewTask({
             name: name,
             status: fromUndefined(status),
-            description: fromUndefined(description),
+            dueDate: fromUndefined(dueDate),
             priority: fromUndefined(priority),
-            dueDate: fromUndefined(dueDate?.toJSDate()),
+            description: fromUndefined(description),
         });
         setIsLoading(false);
 
@@ -118,8 +118,8 @@ export default function CreateTask(props: Props) {
                                                onChange={setPriority} />
                     </div>
 
-                    <InputField label={"Due-date"} name={"due-date"} type="date"
-                                value={dueDate?.toISODate() ?? ""} error={errors?.dueDate}
+                    <InputField label={"Due-date"} name={"due-date"} type="datetime-local"
+                                value={dueDate?.toFormat("yyyy-LL-dd'T'HH:mm") ?? ""} error={errors?.dueDate}
                                 onChange={handleDueDateChange} />
 
                     {genericError && <AlertBox title="Unexpected error occured" variant="danger" message={genericError}

@@ -11,7 +11,7 @@
     - [ ] **Frontend Service Layer (`app/services/TaskService.ts`):**
         - [x] Update the Zod validation schema to include the new fields.
         - [x] Update the `addNewTask` function signature and logic.
-        - [ ] Refactor and update the `updateTask` function to handle partial updates with the new fields.
+      - [x] Refactor and update the `updateTask` function to handle partial updates with the new fields.
     - [ ] **Frontend Hooks (`app/hooks/useTaskManager.ts`):**
         - [x] Update the `addTask` function to pass the new task data.
         - [ ] Update the `updateTaskHandler` to pass the updated task data.
@@ -29,8 +29,8 @@
                 - [x] Integrate `Tooltip.tsx` to show the full `description` on hover, while truncating the text in the
                   cell.
         - [ ] **Edit Task Modal (from `useEditTaskModal.ts`):**
-            - [ ] Add form inputs to edit the new fields.
-            - [ ] Update the modal's state and submission logic.
+            - [x] Add form inputs to edit the new fields.
+            - [x] Update the modal's state and submission logic.
 - [ ] Filter tasks by status/prioriy/due-date
 - [ ] Add search
 - [x] Create a confirm delete modal

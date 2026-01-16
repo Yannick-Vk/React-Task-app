@@ -8,19 +8,15 @@ import TaskPrioritySelectBox from "~/components/tasks/TaskPrioritySelectBox";
 import AlertBox from "~/components/ui/AlertBox";
 import {useStateWithReset} from "~/hooks/useStateWithReset";
 import {DateTime} from "luxon";
+import type {UpdateTaskDTO} from "~/dto/taskDTOs";
+import {fromUndefined, type Result} from "~/lib/util";
 
 export interface Props {
     className?: string;
     error: Error | null;
     selectedTask: Task | null;
 
-    // Handle Changes
-    onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onStatusChange: (newStatus: Status) => void;
-
-    // Buttons
-    updateTask: () => void;
-    reset: () => void;
+    onSave: (updatedTask: UpdateTaskDTO) => Promise<Result<Task, Error>>;
 }
 
 type FormErrors = {
@@ -64,7 +60,20 @@ export default function EditTask(props: Props) {
         setDescription(originalTask?.description);
     }
 
-    const updateTask = () => {}
+    const updateTask = () => {
+        if (!props.selectedTask) return; // Make sure that a task is selected
+
+        const updatedTask: UpdateTaskDTO = {
+            id: props.selectedTask.id,
+            name: fromUndefined(name),
+            status: fromUndefined(status),
+            dueDate: fromUndefined(dueDate),
+            priority: fromUndefined(priority),
+            description: fromUndefined(description),
+        }
+
+        props.onSave(updatedTask);
+    }
 
     return (
         <div className="flex flex-col gap-3">
@@ -87,8 +96,8 @@ export default function EditTask(props: Props) {
                                        onChange={setPriority} />
             </div>
 
-            <InputField label={"Due-date"} name={"due-date"} type="date"
-                        value={dueDate?.toISODate() ?? ""} error={errors?.dueDate}
+            <InputField label={"Due-date"} name={"due-date"} type="datetime-local"
+                        value={dueDate?.toFormat("yyyy-LL-dd'T'HH:mm") ?? ""} error={errors?.dueDate}
                         onChange={handleDueDateChange} />
 
             {genericError && <AlertBox title="Unexpected error occured" variant="danger" message={genericError}

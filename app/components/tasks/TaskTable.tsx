@@ -128,9 +128,8 @@ export default function TaskTable(props: Props) {
             </Table>
             <Modal title={`Edit task: '${originalTask?.current?.name}'`} isOpen={isUpdateModalOpen}
                    onClose={closeUpdateModal}>
-                <EditTask error={updateError} selectedTask={selectedTaskToUpdate} onNameChange={onNameChange}
-                          onStatusChange={onStatusChange}
-                          updateTask={updateTask} reset={reset} />
+                <EditTask error={updateError} selectedTask={selectedTaskToUpdate}
+                          onSave={updateTask} />
             </Modal>
             <ConfirmModal title={`Confirm deletion of task '${selectedTaskToDelete?.name ?? "UNKNOWN"}'`}
                           isOpen={isDeleteModalOpen} onClose={closeDeleteModal} onConfirm={onConfirmDelete}

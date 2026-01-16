@@ -1,6 +1,6 @@
 ﻿import React, {useRef, useState} from "react";
 import type {Status, Task} from "~/GraphQL/generated";
-import {compareTask, matchResult, type Result} from "~/lib/util";
+import {compareTask, Err, matchResult, type Result, strToErr} from "~/lib/util";
 
 export interface Props {
     updateTaskCallback: (task: Task) => Promise<Result<Task, Error>>
@@ -46,12 +46,13 @@ export function useEditTaskModal(props: Props) {
         setSelectedTask(originalTask.current);
     };
 
-    const updateTask = async () => {
-        if (!selectedTask) return;
+    const updateTask = async (): Promise<Result<Task, Error>> => {
+        if (!selectedTask) return strToErr("No task was selected");
 
         if (compareTask(selectedTask, originalTask.current)) {
-            setError(new Error("No changes found."));
-            return;
+            const err = new Error("No changes found.");
+            setError(err);
+            return Err(err);
         }
 
         // It now calls the function that was passed into the hook
@@ -67,6 +68,8 @@ export function useEditTaskModal(props: Props) {
                 setError(error);
             },
         );
+
+        return result;
     };
 
     return {
