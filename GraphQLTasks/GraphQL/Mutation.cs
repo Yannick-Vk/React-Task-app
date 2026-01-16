@@ -22,7 +22,7 @@ public class Mutation {
             Name = name,
             Status = status ?? Status.Ready,
             Description = description,
-            DueDate = dueDate,
+            DueDate = dueDate?.ToUniversalTime(),
             Priority = priority ?? default,
         };
 
@@ -49,6 +49,10 @@ public class Mutation {
         await using var context = await _contextFactory.CreateDbContextAsync();
         var task = await context.Tasks.FindAsync(updatedTask.Id);
         if (task is null) return null;
+
+        if (updatedTask.DueDate.HasValue) {
+            updatedTask.DueDate = updatedTask.DueDate.Value.ToUniversalTime();
+        }
 
         task.Update(updatedTask);
 

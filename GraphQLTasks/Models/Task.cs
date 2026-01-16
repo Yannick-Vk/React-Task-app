@@ -8,7 +8,7 @@ public class Task {
     [StringLength(512)] public string? Description { get; set; }
     public Status Status { get; set; } = Status.Ready;
     public Priority Priority { get; set; } = Priority.None;
-    public DateTime Created { get; set; } = DateTime.Now;
+    public DateTime Created { get; set; } = DateTime.UtcNow;
     public DateTime? Updated { get; set; }
     public DateTime? DueDate { get; set; }
 
@@ -21,7 +21,7 @@ public class Task {
 
         if (updatedTask.Name is not null || updatedTask.Status is not null || updatedTask.Description is not null ||
             updatedTask.Priority is not null || updatedTask.DueDate is not null) {
-            Updated = DateTime.Now;
+            Updated = DateTime.UtcNow;
         }
     }
 }
