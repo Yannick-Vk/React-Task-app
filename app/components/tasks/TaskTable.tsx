@@ -4,12 +4,12 @@ import {type Maybe, Priority, Status, type Task} from "~/GraphQL/generated"
 import React from "react";
 import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import Modal from "~/components/ui/Modal";
-import InputField from "~/components/ui/InputField";
 import {matchOption, type Result, truncateString} from "~/lib/util";
 import {useEditTaskModal} from "~/hooks/useEditTaskModal";
 import {DateTime} from "luxon"
 import Badge, {BadgeVariant} from "~/components/ui/Badge";
 import Tooltip from "~/components/ui/Tooltip";
+import EditTask from "~/components/tasks/EditTask";
 
 export interface Props {
     data: Task[];
@@ -115,22 +115,9 @@ export default function TaskTable(props: Props) {
                 ))}
             </Table>
             <Modal title={`Edit task: '${originalTask?.current?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
-                <div className="flex flex-col gap-3">
-                    <p>Update the task, click 'esc' or the close button to cancel. Press reset to go back to the
-                        original state.</p>
-                    <InputField label={"Task name"} name={"name"} value={selectedTask?.name ?? ""}
-                                onChange={onNameChange} error={undefined} />
-                    <TaskStatusSelectBox name={"Status"} value={selectedTask?.status ?? Status.Ready} error={undefined}
-                                         className={"bg-slate-800 text-white focus:border-pink-300"}
-                                         onChange={onStatusChange} />
-                    <div>
-                        {error && <span className={"text-red-500"}>{error.message}</span>}
-                    </div>
-                    <div className={"mt-5 flex flex-row gap-5"}>
-                        <Button onClick={updateTask}>Save changes</Button>
-                        <Button onClick={reset}>Reset</Button>
-                    </div>
-                </div>
+                <EditTask error={error} selectedTask={selectedTask} onNameChange={onNameChange}
+                          onStatusChange={onStatusChange}
+                          updateTask={updateTask} reset={reset} />
             </Modal>
         </>
     );
