@@ -10,6 +10,8 @@ import {DateTime} from "luxon"
 import Badge, {BadgeVariant} from "~/components/ui/Badge";
 import Tooltip from "~/components/ui/Tooltip";
 import EditTask from "~/components/tasks/EditTask";
+import ConfirmModal from "~/components/ui/ConfirmModal";
+import {useDeleteTaskModal} from "~/hooks/useDeleteTaskModal";
 
 export interface Props {
     data: Task[];
@@ -20,19 +22,28 @@ export interface Props {
 
 export default function TaskTable(props: Props) {
     const {
-        isModalOpen,
-        selectedTask,
-        error,
-        originalTask,
-        openModal,
-        closeModal,
-        onNameChange,
-        onStatusChange,
-        reset,
-        updateTask,
+        isModalOpen: isUpdateModalOpen,
+        selectedTask: selectedTaskToUpdate,
+        error: updateError,
+        originalTask: originalTask,
+        openModal: openUpdateModal,
+        closeModal: closeUpdateModal,
+        onNameChange: onNameChange,
+        onStatusChange: onStatusChange,
+        reset: reset,
+        updateTask: updateTask,
     } = useEditTaskModal({
         updateTaskCallback: props.updateTask
     }); // Pass the update function into the hook
+
+    const {
+        selectedTask: selectedTaskToDelete,
+        error: deleteError,
+        openModal: openDeleteModal,
+        closeModal: closeDeleteModal,
+        isModalOpen: isDeleteModalOpen,
+        onConfirm: onConfirmDelete,
+    } = useDeleteTaskModal({deleteTaskCallback: props.removeTask}); // Pass the callback
 
     const mapPriorityToVariant = (priority: Priority): BadgeVariant => {
         switch (priority) {
@@ -108,17 +119,22 @@ export default function TaskTable(props: Props) {
                             {dateTooltip(item.updated)}
                         </td>
                         <td className={"flex flex-row gap-3 justify-center p-3 text-center"}>
-                            <Button onClick={() => props.removeTask(item.id)}>Remove task</Button>
-                            <Button onClick={() => openModal(item)}>Edit task</Button>
+                            <Button onClick={() => openDeleteModal(item)}>Remove task</Button>
+                            <Button onClick={() => openUpdateModal(item)}>Edit task</Button>
                         </td>
                     </tr>
                 ))}
             </Table>
-            <Modal title={`Edit task: '${originalTask?.current?.name}'`} isOpen={isModalOpen} onClose={closeModal}>
-                <EditTask error={error} selectedTask={selectedTask} onNameChange={onNameChange}
+            <Modal title={`Edit task: '${originalTask?.current?.name}'`} isOpen={isUpdateModalOpen}
+                   onClose={closeUpdateModal}>
+                <EditTask error={updateError} selectedTask={selectedTaskToUpdate} onNameChange={onNameChange}
                           onStatusChange={onStatusChange}
                           updateTask={updateTask} reset={reset} />
             </Modal>
+            <ConfirmModal title={`Confirm deletion of task '${selectedTaskToDelete?.name ?? "UNKNOWN"}'`}
+                          isOpen={isDeleteModalOpen} onClose={closeDeleteModal} onConfirm={onConfirmDelete}>
+                <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+            </ConfirmModal>
         </>
     );
 }
