@@ -1,6 +1,8 @@
 # ToDo List
 
-- [ ] ## Expand Tasks
+## Expand Tasks
+
+- [ ] Expand Tasks
     - [x] Update backend GraphQL `Task` type with `description`, `priority`, `created`, and `dueDate`.
     - [x] Update backend mutations (`addTask`, `updateTask`) to handle new fields.
     - [x] Update `getTasks.graphql`, `addTask.graphql`, and `updateTask.graphql` to include new fields in queries and
