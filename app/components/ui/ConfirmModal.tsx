@@ -9,6 +9,7 @@ export interface Props {
     onClose: () => void;
     children: React.ReactNode;
     onConfirm: () => void;
+    disabled: boolean;
 }
 
 export default function ConfirmModal(props: Props) {
@@ -19,7 +20,7 @@ export default function ConfirmModal(props: Props) {
                     {props.children}
                 </div>
                 <div className={"flex flex-row gap-3 mt-5 text-center"}>
-                    <Button onClick={props.onConfirm}>Confirm</Button>
+                    <Button onClick={props.onConfirm} disabled={props.disabled}>Confirm</Button>
                     <Button onClick={props.onClose}>Cancel</Button>
                 </div>
             </Modal>

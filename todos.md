@@ -31,6 +31,5 @@
             - [ ] Update the modal's state and submission logic.
 - [ ] Filter tasks by status/prioriy/due-date
 - [ ] Add search
-- [ ] Create a confirm delete modal
+- [x] Create a confirm delete modal
 - [ ] create a disabled state when a task is being deleted
-

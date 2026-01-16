@@ -15,7 +15,7 @@ import {useDeleteTaskModal} from "~/hooks/useDeleteTaskModal";
 
 export interface Props {
     data: Task[];
-    removeTask: (id: string) => void;
+    removeTask: (id: string) => Promise<Result<string, Error>>;
     changeStatus: (id: string, status: Status) => void;
     updateTask: (task: Task) => Promise<Result<Task, Error>>;
 }
@@ -43,6 +43,7 @@ export default function TaskTable(props: Props) {
         closeModal: closeDeleteModal,
         isModalOpen: isDeleteModalOpen,
         onConfirm: onConfirmDelete,
+        isDeleting: isDeleting,
     } = useDeleteTaskModal({deleteTaskCallback: props.removeTask}); // Pass the callback
 
     const mapPriorityToVariant = (priority: Priority): BadgeVariant => {
@@ -132,8 +133,10 @@ export default function TaskTable(props: Props) {
                           updateTask={updateTask} reset={reset} />
             </Modal>
             <ConfirmModal title={`Confirm deletion of task '${selectedTaskToDelete?.name ?? "UNKNOWN"}'`}
-                          isOpen={isDeleteModalOpen} onClose={closeDeleteModal} onConfirm={onConfirmDelete}>
+                          isOpen={isDeleteModalOpen} onClose={closeDeleteModal} onConfirm={onConfirmDelete}
+                          disabled={isDeleting}>
                 <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+                {deleteError && (<span className="text-red-500">{deleteError.name}</span>)}
             </ConfirmModal>
         </>
     );
