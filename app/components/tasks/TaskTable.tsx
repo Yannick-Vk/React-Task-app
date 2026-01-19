@@ -60,7 +60,7 @@ export default function TaskTable(props: Props) {
     const dateTooltip = (optionalDate: string | undefined): React.ReactNode => {
         return toOption(optionalDate).match(
             (date) => (
-                <Tooltip content={DateTime.fromISO(date).toLocaleString()}>
+                <Tooltip content={DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}>
                     {DateTime.fromISO(date).toRelative()}
                 </Tooltip>
             ),
