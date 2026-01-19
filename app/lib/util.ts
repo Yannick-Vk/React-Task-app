@@ -43,34 +43,48 @@ interface OptionBase<T> {
     some: boolean;
     value: T | undefined;
     toVanilla: () => T | undefined;
+    orDefault: (defaultValue: T) => T;
+    map: <U>(fn: (val: T) => U) => Option<U>;
 }
 
 export interface Some<T> extends OptionBase<T> {
     some: true;
     value: T;
     toVanilla: () => T;
+    orDefault: (defaultValue: T) => T;
+    map: <U>(fn: (val: T) => U) => Some<U>;
 }
 
 export interface None extends OptionBase<never> {
     some: false;
+    value: undefined;
     toVanilla: () => undefined;
+    orDefault: <T>(defaultValue: T) => T;
+    map: <U>(fn: (val: never) => U) => None;
 }
 
 export const Some = <T>(value: T): Some<T> => {
     return {
         some: true, value,
         toVanilla: () => value,
+        orDefault: () => value,
+        map: <U>(fn: (val: T) => U): Some<U> => Some(fn(value)),
     };
 }
 
 export const None = (): None => {
-    return {some: false, value: undefined, toVanilla: () => undefined};
+    return {
+        some: false, value: undefined,
+        toVanilla: () => undefined,
+        orDefault: <T>(defaultValue: T) => defaultValue,
+        map: <U>(fn: (val: never) => U): None => None(),
+    };
 }
 
 // Converts a value that may be undefined or null into an Option type
 // Falsy values like 0, "" or false are considered valid Some values
 export const fromUndefined = <T>(value: T | undefined | null): Option<T> => {
-    return (value !== null && value !== undefined) ? Some(value) : None();
+    return (value !== null && value !== undefined) ? Some(value as T) : None();
 };
 
 export const matchOption = <T, U>(
@@ -83,21 +97,6 @@ export const matchOption = <T, U>(
     } else {
         return option ? onSome(option as T) : onNone();
     }
-}
-
-export const optionOrDefault = <T>(option: Option<T> | T | undefined | null, defaultValue: T): T => {
-    return matchOption(option,
-        (val) => val,
-        () => defaultValue
-    );
-}
-
-// Apply a function to the value inside the option if it exists
-export const mapOption = <T, U>(option: Option<T>, fn: (value: T) => U): Option<U> => {
-    return matchOption(option,
-        (val): Option<U> => Some(fn(val)),
-        () => None()
-    );
 }
 
 /// Errors
