@@ -12,12 +12,13 @@ import Tooltip from "~/components/ui/Tooltip";
 import EditTask from "~/components/tasks/EditTask";
 import ConfirmModal from "~/components/ui/ConfirmModal";
 import {useDeleteTaskModal} from "~/hooks/useDeleteTaskModal";
+import type {UpdateStatusDTO, UpdateTaskDTO} from "~/dto/taskDTOs";
 
 export interface Props {
     data: Task[];
     removeTask: (id: string) => Promise<Result<string, Error>>;
-    changeStatus: (id: string, status: Status) => void;
-    updateTask: (task: Task) => Promise<Result<Task, Error>>;
+    changeStatus: (task: UpdateStatusDTO) => void;
+    updateTask: (task: UpdateTaskDTO) => Promise<Result<Task, Error>>;
 }
 
 export default function TaskTable(props: Props) {
@@ -103,7 +104,10 @@ export default function TaskTable(props: Props) {
                         <td className={"p-3 text-center"}>
                             <TaskStatusSelectBox name={item.name} value={item.status} className={"bg-slate-200"}
                                                  error={undefined}
-                                                 onChange={(e) => props.changeStatus(item.id, e)}></TaskStatusSelectBox>
+                                                 onChange={(newStatus) => props.changeStatus({
+                                                     id: item.id,
+                                                     status: newStatus
+                                                 })}></TaskStatusSelectBox>
                         </td>
                         <td className={"p-3 text-center"}><Badge
                             variant={mapPriorityToVariant(item.priority)}>{item.priority}</Badge></td>

@@ -1,5 +1,5 @@
 ﻿import {Priority, Status} from "~/GraphQL/generated";
-import type {Option} from "~/lib/util";
+import {None, type Option, Some} from "~/lib/util";
 import type {DateTime} from "luxon";
 
 export interface UpdateTaskDTO {
@@ -9,6 +9,22 @@ export interface UpdateTaskDTO {
     description: Option<string>,
     priority: Option<Priority>,
     dueDate: Option<DateTime>,
+}
+
+export interface UpdateStatusDTO {
+    id: string;
+    status: Status;
+}
+
+export const statusUpdateToFullDTO = (task: UpdateStatusDTO): UpdateTaskDTO => {
+    return {
+        id: task.id,
+        name: None(),
+        status: Some(task.status),
+        description: None(),
+        priority: None(),
+        dueDate: None(),
+    }
 }
 
 export interface AddTaskDTO {

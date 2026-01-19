@@ -1,9 +1,10 @@
 ﻿import React, {useRef, useState} from "react";
 import type {Status, Task} from "~/GraphQL/generated";
-import {compareTask, Err, matchResult, type Result, strToErr} from "~/lib/util";
+import {compareTask, Err, matchOption, matchResult, None, type Option, type Result, Some, strToErr} from "~/lib/util";
+import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 
 export interface Props {
-    updateTaskCallback: (task: Task) => Promise<Result<Task, Error>>
+    updateTaskCallback: (task: UpdateTaskDTO) => Promise<Result<Task, Error>>
 }
 
 export function useEditTaskModal(props: Props) {
@@ -56,7 +57,14 @@ export function useEditTaskModal(props: Props) {
         }
 
         // It now calls the function that was passed into the hook
-        const result = await props.updateTaskCallback(selectedTask);
+        const result = await props.updateTaskCallback({
+            id: selectedTask.id,
+            name: Some(selectedTask.name),
+            status: Some(selectedTask.status),
+            dueDate: Some(selectedTask.dueDate),
+            priority: Some(selectedTask.priority),
+            description: matchOption(selectedTask.description, (v): Option<string> => Some(v), () => None()),
+        });
 
         matchResult(result,
             () => { // onSuccess

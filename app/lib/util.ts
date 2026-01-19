@@ -37,22 +37,40 @@ export const matchResult = <T, E, U>(
 };
 
 /// Option type
-export type Option<T> =
-    | { some: true; value: T, toVanilla: () => T; }
-    | { some: false; toVanilla: () => undefined; }
-    ;
+export type Option<T> = Some<T> | None;
+
+interface OptionBase<T> {
+    some: boolean;
+    value: T | undefined;
+    toVanilla: () => T | undefined;
+}
+
+export interface Some<T> extends OptionBase<T> {
+    some: true;
+    value: T;
+    toVanilla: () => T;
+}
+
+export interface None extends OptionBase<never> {
+    some: false;
+    toVanilla: () => undefined;
+}
+
+export const Some = <T>(value: T): Some<T> => {
+    return {
+        some: true, value,
+        toVanilla: () => value,
+    };
+}
+
+export const None = (): None => {
+    return {some: false, value: undefined, toVanilla: () => undefined};
+}
 
 // Converts a value that may be undefined or null into an Option type
 // Falsy values like 0, "" or false are considered valid Some values
 export const fromUndefined = <T>(value: T | undefined | null): Option<T> => {
-    return (value !== null && value !== undefined) ? Some(value) : None;
-};
-
-export const Some = <T>(value: T): Option<T> => ({
-    some: true, value, toVanilla: () => value,
-});
-export const None: Option<never> = {
-    some: false, toVanilla: () => undefined,
+    return (value !== null && value !== undefined) ? Some(value) : None();
 };
 
 export const matchOption = <T, U>(
@@ -77,8 +95,8 @@ export const optionOrDefault = <T>(option: Option<T> | T | undefined | null, def
 // Apply a function to the value inside the option if it exists
 export const mapOption = <T, U>(option: Option<T>, fn: (value: T) => U): Option<U> => {
     return matchOption(option,
-        (val) => Some(fn(val)),
-        () => None
+        (val): Option<U> => Some(fn(val)),
+        () => None()
     );
 }
 

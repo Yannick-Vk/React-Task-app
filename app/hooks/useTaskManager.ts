@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
-import {Status, type Task} from "~/GraphQL/generated";
+import {type Task} from "~/GraphQL/generated";
 import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
 import {Err, matchResult, None, Ok, type Option, type Result, Some} from "~/lib/util";
 import {ZodError} from "zod";
-import type {AddTaskDTO} from "~/dto/taskDTOs";
+import {type AddTaskDTO, statusUpdateToFullDTO, type UpdateStatusDTO, type UpdateTaskDTO} from "~/dto/taskDTOs";
 
 export function useTaskManager() {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -48,9 +48,9 @@ export function useTaskManager() {
         return matchResult(result,
             (newTasks) => {
                 setTasks(newTasks);
-                return None;
+                return None();
             },
-            (error) => {
+            (error): Option<ZodError | Error> => {
                 return Some(error);
             }
         );
@@ -67,41 +67,41 @@ export function useTaskManager() {
         return result;
     }
 
-    const changeStatusHandler = async (id: string, newStatusValue: Status) => {
-        const taskIndex = tasks.findIndex(task => task.id === id);
+    const changeStatusHandler = async (updatedTask: UpdateStatusDTO) => {
+        const taskIndex = tasks.findIndex(task => task.id === updatedTask.id);
         if (taskIndex === -1) {
-            console.error(`Task with id ${id} not found.`);
+            console.error(`Task with id ${updatedTask.id} not found.`);
             return;
         }
         const originalTask = tasks[taskIndex];
 
         const optimisticTasks = tasks.map(task =>
-            task.id === id ? {...task, status: newStatusValue} : task
+            task.id === updatedTask.id ? {...task, status: updatedTask.status} : task
         );
         setTasks(optimisticTasks);
 
         try {
-            matchResult(await updateTask(tasks, id, newStatusValue, originalTask.name),
+            matchResult(await updateTask(statusUpdateToFullDTO(updatedTask)),
                 (updatedTask) => setTasks(prevTasks =>
                     prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
                 ),
                 (error) => { // Revert changes
                     console.error("Failed to update task status:", error)
                     setTasks(prevTasks =>
-                        prevTasks.map(task => (task.id === id ? originalTask : task))
+                        prevTasks.map(task => (task.id === updatedTask.id ? originalTask : task))
                     );
                 }
             );
         } catch (error) {
             console.error("Failed to update task status:", error);
             setTasks(prevTasks =>
-                prevTasks.map(task => (task.id === id ? originalTask : task))
+                prevTasks.map(task => (task.id === updatedTask.id ? originalTask : task))
             );
         }
     }
 
-    const updateTaskHandler = async (task: Task): Promise<Result<Task, Error>> => {
-        return matchResult(await updateTask(tasks, task.id, task.status, task.name),
+    const updateTaskHandler = async (task: UpdateTaskDTO): Promise<Result<Task, Error>> => {
+        return matchResult(await updateTask(task),
             (updatedTask) => {
                 setTasks(prevTasks =>
                     prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t))
