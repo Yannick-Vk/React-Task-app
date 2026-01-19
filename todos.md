@@ -35,3 +35,5 @@
 - [ ] Add search
 - [x] Create a confirm delete modal
 - [ ] create a disabled state when a task is being deleted
+- [ ] Fix tooltip date display not having the time
+- 
