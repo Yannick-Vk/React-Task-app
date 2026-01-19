@@ -1,4 +1,4 @@
-﻿import {useRef, useState} from "react";
+﻿import {useState} from "react";
 import type {Task} from "~/GraphQL/generated";
 import {type Result} from "~/lib/util";
 import type {UpdateTaskDTO} from "~/dto/taskDTOs";
@@ -12,18 +12,15 @@ export function useEditTaskModal(props: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [error, setError] = useState<Error | null>(null);
-    const originalTask = useRef<Task | null>(null);
 
     const openModal = (task: Task) => {
         setSelectedTask(task);
-        originalTask.current = task;
         setIsModalOpen(true);
         setError(null);
     };
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedTask(null);
-        originalTask.current = null;
         setError(null);
     };
 
@@ -50,7 +47,7 @@ export function useEditTaskModal(props: Props) {
         isModalOpen,
         selectedTask,
         error,
-        originalTask,
+        isSaving,
         openModal,
         closeModal,
         updateTask: onSave

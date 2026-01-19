@@ -13,7 +13,7 @@ export enum BadgeVariant {
 
 export default function Badge(props: Props) {
 
-    let variant = "";
+    let variant: string;
     switch (props.variant) {
         case BadgeVariant.gray:
             variant = "bg-zinc-500 text-white";

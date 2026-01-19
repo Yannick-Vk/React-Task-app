@@ -9,7 +9,7 @@ import AlertBox from "~/components/ui/AlertBox";
 import {useStateWithReset} from "~/hooks/useStateWithReset";
 import {DateTime} from "luxon";
 import type {UpdateTaskDTO} from "~/dto/taskDTOs";
-import {type Result, toOption} from "~/lib/util";
+import {compareTask, type Result, toOption} from "~/lib/util";
 
 export interface Props {
     className?: string;
@@ -17,6 +17,7 @@ export interface Props {
     selectedTask: Task | null;
 
     onSave: (updatedTask: UpdateTaskDTO) => Promise<Result<Task, Error>>;
+    isSaving: boolean;
 }
 
 type FormErrors = {
@@ -35,10 +36,9 @@ export default function EditTask(props: Props) {
     const [dueDate, setDueDate] = useState<DateTime | undefined>(props.selectedTask?.dueDate ? DateTime.fromISO(props.selectedTask.dueDate) : undefined);
     const [description, setDescription] = useState(props.selectedTask?.description);
     // Generic
-    const [errors, setErrors, resetError] = useStateWithReset<FormErrors | null>(null);
-    const [genericError, setGenericError, resetGenericError] = useStateWithReset<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [originalTask, setOriginalTask] = useState(props.selectedTask);
+    const [errors] = useStateWithReset<FormErrors | null>(null);
+    const [genericError] = useStateWithReset<string | null>(null);
+    const [originalTask] = useState(props.selectedTask);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value);
@@ -55,13 +55,14 @@ export default function EditTask(props: Props) {
     const reset = (): void => {
         setName(originalTask?.name);
         setStatus(originalTask?.status);
-        setDueDate(originalTask?.dueDate);
+        setDueDate(originalTask?.dueDate ? DateTime.fromISO(originalTask.dueDate) : undefined);
         setPriority(originalTask?.priority);
         setDescription(originalTask?.description);
     }
 
     const updateTask = () => {
         if (!props.selectedTask) return; // Make sure that a task is selected
+
 
         const updatedTask: UpdateTaskDTO = {
             id: props.selectedTask.id,
@@ -70,6 +71,10 @@ export default function EditTask(props: Props) {
             dueDate: toOption(dueDate),
             priority: toOption(priority),
             description: toOption(description),
+        }
+
+        if (compareTask(updatedTask, props.selectedTask)) {
+            return; // No changes made
         }
 
         props.onSave(updatedTask);
@@ -103,8 +108,8 @@ export default function EditTask(props: Props) {
             {genericError && <AlertBox title="Unexpected error occured" variant="danger" message={genericError}
                                        className={"w-full"} />}
             <div className={"mt-5 flex flex-row gap-5"}>
-                <Button onClick={updateTask}>Save changes</Button>
-                <Button onClick={reset}>Reset</Button>
+                <Button onClick={updateTask} disabled={props.isSaving}>Save changes</Button>
+                <Button onClick={reset} disabled={props.isSaving}>Reset</Button>
             </div>
         </div>
     );

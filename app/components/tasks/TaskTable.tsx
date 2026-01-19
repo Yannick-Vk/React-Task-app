@@ -26,10 +26,10 @@ export default function TaskTable(props: Props) {
         isModalOpen: isUpdateModalOpen,
         selectedTask: selectedTaskToUpdate,
         error: updateError,
-        originalTask: originalTask,
         openModal: openUpdateModal,
         closeModal: closeUpdateModal,
         updateTask: updateTask,
+        isSaving: isTaskSaving,
     } = useEditTaskModal({
         updateTaskCallback: props.updateTask
     }); // Pass the update function into the hook
@@ -130,10 +130,10 @@ export default function TaskTable(props: Props) {
                     </tr>
                 ))}
             </Table>
-            <Modal title={`Edit task: '${originalTask?.current?.name}'`} isOpen={isUpdateModalOpen}
+            <Modal title={`Edit task: '${selectedTaskToUpdate?.name}'`} isOpen={isUpdateModalOpen}
                    onClose={closeUpdateModal}>
                 <EditTask error={updateError} selectedTask={selectedTaskToUpdate}
-                          onSave={updateTask} />
+                          onSave={updateTask} isSaving={isTaskSaving} />
             </Modal>
             <ConfirmModal title={`Confirm deletion of task '${selectedTaskToDelete?.name ?? "UNKNOWN"}'`}
                           isOpen={isDeleteModalOpen} onClose={closeDeleteModal} onConfirm={onConfirmDelete}
