@@ -29,9 +29,6 @@ export default function TaskTable(props: Props) {
         originalTask: originalTask,
         openModal: openUpdateModal,
         closeModal: closeUpdateModal,
-        onNameChange: onNameChange,
-        onStatusChange: onStatusChange,
-        reset: reset,
         updateTask: updateTask,
     } = useEditTaskModal({
         updateTaskCallback: props.updateTask
