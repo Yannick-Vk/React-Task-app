@@ -97,7 +97,7 @@ export const updateTask = async (updatedTask: UpdateTaskDTO): Promise<Result<Tas
             description: updatedTask.description.toVanilla(),
         };
 
-        const schemaResult = TaskSchema.safeParse(taskForMutation);
+        const schemaResult = TaskSchema.partial().safeParse(taskForMutation);
 
         if (!schemaResult.success) {
             return Err<Error, Task>(schemaResult.error);
