@@ -17,6 +17,7 @@ export interface Props {
     selectedTask: Task | null;
 
     onSave: (updatedTask: UpdateTaskDTO) => Promise<Result<Task, Error>>;
+    isSaving: boolean;
 }
 
 type FormErrors = {
@@ -107,8 +108,8 @@ export default function EditTask(props: Props) {
             {genericError && <AlertBox title="Unexpected error occured" variant="danger" message={genericError}
                                        className={"w-full"} />}
             <div className={"mt-5 flex flex-row gap-5"}>
-                <Button onClick={updateTask}>Save changes</Button>
-                <Button onClick={reset}>Reset</Button>
+                <Button onClick={updateTask} disabled={props.isSaving}>Save changes</Button>
+                <Button onClick={reset} disabled={props.isSaving}>Reset</Button>
             </div>
         </div>
     );

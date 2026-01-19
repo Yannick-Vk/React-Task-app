@@ -47,6 +47,7 @@ export function useEditTaskModal(props: Props) {
         isModalOpen,
         selectedTask,
         error,
+        isSaving,
         openModal,
         closeModal,
         updateTask: onSave
