@@ -39,7 +39,7 @@ export const addNewTask = async (tasks: Task[], dto: AddTaskDTO): Promise<Result
     });
 
     if (!schemaResult.success) {
-        return Err(schemaResult.error);
+        return Err<Error | ZodError<unknown>, Task[]>(schemaResult.error);
     }
 
     // Task validated, send to api
@@ -100,7 +100,7 @@ export const updateTask = async (updatedTask: UpdateTaskDTO): Promise<Result<Tas
         const schemaResult = TaskSchema.safeParse(taskForMutation);
 
         if (!schemaResult.success) {
-            return Err(schemaResult.error);
+            return Err<Error, Task>(schemaResult.error);
         }
 
         const {data} = await client.mutate<UpdateTaskMutation>({

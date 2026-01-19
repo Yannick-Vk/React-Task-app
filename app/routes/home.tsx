@@ -37,7 +37,7 @@ export default function Home() {
     const handleAddTask = async (dto: AddTaskDTO): Promise<Option<ZodError | Error>> => {
         const result = await addTask(dto);
 
-        if (!result.some) { // If there is no error (`None`)
+        if (!result.isSome) { // If there is no error (`None`)
             closeModal();
         }
         return result;

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {type Task} from "~/GraphQL/generated";
 import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
-import {Err, matchResult, None, Ok, type Option, type Result, Some} from "~/lib/util";
+import {Err, None, Ok, type Option, type Result, Some} from "~/lib/util";
 import {ZodError} from "zod";
 import {type AddTaskDTO, statusUpdateToFullDTO, type UpdateStatusDTO, type UpdateTaskDTO} from "~/dto/taskDTOs";
 
@@ -19,7 +19,7 @@ export function useTaskManager() {
                 const result = await getTasks();
 
                 if (isMounted) {
-                    matchResult(result,
+                    result.match(
                         (tasks) => setTasks(tasks),
                         (err) => setError(err.message),
                     );
@@ -45,7 +45,7 @@ export function useTaskManager() {
     const addTask = async (dto: AddTaskDTO): Promise<Option<ZodError | Error>> => {
         const result = await addNewTask(tasks, dto);
 
-        return matchResult(result,
+        return result.match(
             (newTasks) => {
                 setTasks(newTasks);
                 return None();
@@ -59,7 +59,7 @@ export function useTaskManager() {
     const removeTaskHandler = async (id: string): Promise<Result<string, Error>> => {
         const result = await removeTask(id);
 
-        matchResult(result,
+        result.match(
             (id) => setTasks(prevState => prevState.filter((task) => task.id !== id)),
             (err) => setError(err.message),
         );
@@ -81,7 +81,7 @@ export function useTaskManager() {
         setTasks(optimisticTasks);
 
         try {
-            matchResult(await updateTask(statusUpdateToFullDTO(updatedTask)),
+            (await updateTask(statusUpdateToFullDTO(updatedTask))).match(
                 (updatedTask) => setTasks(prevTasks =>
                     prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
                 ),
@@ -101,7 +101,7 @@ export function useTaskManager() {
     }
 
     const updateTaskHandler = async (task: UpdateTaskDTO): Promise<Result<Task, Error>> => {
-        return matchResult(await updateTask(task),
+        return (await updateTask(task)).match(
             (updatedTask) => {
                 setTasks(prevTasks =>
                     prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t))

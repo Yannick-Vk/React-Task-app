@@ -1,6 +1,6 @@
 ﻿import {useState} from "react";
 import type {Task} from "~/GraphQL/generated";
-import {matchResult, type Result} from "~/lib/util";
+import {type Result} from "~/lib/util";
 
 export interface Props {
     deleteTaskCallback: (id: string) => Promise<Result<string, Error>>;
@@ -32,13 +32,9 @@ export function useDeleteTaskModal(props: Props) {
 
         const result = await props.deleteTaskCallback(selectedTask.id);
 
-        matchResult(result,
-            () => {
-                closeModal();
-            },
-            (err) => {
-                setError(err);
-            },
+        result.match(
+            () => closeModal(),
+            (err) => setError(err),
         );
         setIsDeleting(false);
     };
