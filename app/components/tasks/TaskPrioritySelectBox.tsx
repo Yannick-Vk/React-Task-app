@@ -31,7 +31,7 @@ export function MapEnum(value: Priority): string {
 export default function TaskPrioritySelectBox(props: Props) {
     return (
         <EnumSelectBox name={props.name} enum={Priority} mapEnumToLabel={MapEnum} value={props.value}
-                       error={props.error}
+                       error={props.error} label={props.label}
                        className={twMerge("focus:border-pink-300 hover:border-pink-300", props.className)}
                        onChange={props.onChange} required={props.required}
                        order={["None", "Low", "Medium", "High"]} />

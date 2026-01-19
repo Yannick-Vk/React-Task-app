@@ -30,7 +30,7 @@ export default function TaskStatusSelectBox(props: Props) {
     return (
         <EnumSelectBox name={props.name} enum={Status} mapEnumToLabel={mapEnum} value={props.value} error={props.error}
                        className={twMerge("focus:border-pink-300 hover:border-pink-300", props.className)}
-                       onChange={props.onChange} required={props.required}
+                       onChange={props.onChange} required={props.required} label={props.label}
                        order={["Ready", "InProgress", "Done"]} />
     );
 }
