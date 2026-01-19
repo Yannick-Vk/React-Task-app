@@ -2,6 +2,7 @@
 
 interface OptionBase<T> {
     isSome: boolean;
+    isNone: boolean;
     value: T | undefined;
     toVanilla: () => T | undefined;
     orDefault: (defaultValue: T) => T;
@@ -14,7 +15,7 @@ interface OptionBase<T> {
         onNone: () => U,
     }): U;
 
-    match<U>(onSome: (val: T) => U, onNone: () => U): U;
+    match: <U>(onSome: (val: T) => U, onNone: () => U) => U;
 }
 
 export interface Some<T> extends OptionBase<T> {
@@ -39,7 +40,7 @@ export interface None extends OptionBase<never> {
 
 export const Some = <T>(value: T): Some<T> => {
     return {
-        isSome: true, value,
+        isSome: true, value, isNone: false,
         toVanilla: () => value,
         orDefault: () => value,
         map: <U>(fn: (val: T) => U): Some<U> => Some(fn(value)),
@@ -49,27 +50,27 @@ export const Some = <T>(value: T): Some<T> => {
         }): U => {
             return matcher.onSome(value);
         },
-        match: <U>(onSome: (val: T) => U, onNone: () => U): U => {
+        match: <U>(onSome: (val: T) => U, _onNone: () => U): U => {
             return onSome(value);
         },
-        expect: (message: string) => value,
-        unwrapOrElse: (fn: () => T) => value,
+        expect: (_message: string) => value,
+        unwrapOrElse: (_fn: () => T) => value,
     };
 }
 
 export const None = (): None => {
     return {
-        isSome: false, value: undefined,
+        isSome: false, value: undefined, isNone: true,
         toVanilla: () => undefined,
         orDefault: <T>(defaultValue: T) => defaultValue,
-        map: <U>(fn: (val: never) => U): None => None(),
+        map: <U>(_fn: (val: never) => U): None => None(),
         matchMap: <U>(matcher: {
             onSome: (val: never) => U;
             onNone: () => U;
         }): U => {
             return matcher.onNone();
         },
-        match: <U>(onSome: (val: never) => U, onNone: () => U): U => {
+        match: <U>(_onSome: (val: never) => U, onNone: () => U): U => {
             return onNone();
         },
         expect: message => {throw new Error(message);},
@@ -79,6 +80,11 @@ export const None = (): None => {
 
 // Converts a value that may be undefined or null into an Option type
 // Falsy values like 0, "" or false are considered valid Some values
-export const toOption = <T>(value: T | null | undefined): Option<T> => {
+export const toOption = <T>(value: T | Option<T> | null | undefined): Option<T> => {
+
+    if (value && typeof value === 'object' && 'isSome' in value) {
+        return value as Option<T>;
+    }
+
     return (value !== null && value !== undefined) ? Some(value as T) : None();
 }

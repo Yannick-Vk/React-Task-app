@@ -26,7 +26,6 @@ export default function TaskTable(props: Props) {
         isModalOpen: isUpdateModalOpen,
         selectedTask: selectedTaskToUpdate,
         error: updateError,
-        originalTask: originalTask,
         openModal: openUpdateModal,
         closeModal: closeUpdateModal,
         updateTask: updateTask,
@@ -130,7 +129,7 @@ export default function TaskTable(props: Props) {
                     </tr>
                 ))}
             </Table>
-            <Modal title={`Edit task: '${originalTask?.current?.name}'`} isOpen={isUpdateModalOpen}
+            <Modal title={`Edit task: '${selectedTaskToUpdate?.name}'`} isOpen={isUpdateModalOpen}
                    onClose={closeUpdateModal}>
                 <EditTask error={updateError} selectedTask={selectedTaskToUpdate}
                           onSave={updateTask} />

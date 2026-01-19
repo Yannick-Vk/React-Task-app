@@ -9,86 +9,86 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
-  UUID: { input: any; output: any; }
+    ID: { input: string; output: string; }
+    String: { input: string; output: string; }
+    Boolean: { input: boolean; output: boolean; }
+    Int: { input: number; output: number; }
+    Float: { input: number; output: number; }
+    DateTime: { input: any; output: any; }
+    UUID: { input: any; output: any; }
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
-  addTask: Task;
-  removeTask?: Maybe<Task>;
-  updateTask?: Maybe<Task>;
+    __typename?: 'Mutation';
+    addTask: Task;
+    removeTask?: Maybe<Task>;
+    updateTask?: Maybe<Task>;
 };
 
 
 export type MutationAddTaskArgs = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  dueDate?: InputMaybe<Scalars['DateTime']['input']>;
-  name: Scalars['String']['input'];
-  priority?: InputMaybe<Priority>;
-  status?: InputMaybe<Status>;
+    description?: InputMaybe<Scalars['String']['input']>;
+    dueDate?: InputMaybe<Scalars['DateTime']['input']>;
+    name: Scalars['String']['input'];
+    priority?: InputMaybe<Priority>;
+    status?: InputMaybe<Status>;
 };
 
 
 export type MutationRemoveTaskArgs = {
-  id: Scalars['UUID']['input'];
+    id: Scalars['UUID']['input'];
 };
 
 
 export type MutationUpdateTaskArgs = {
-  updatedTask: UpdateTaskDtoInput;
+    updatedTask: UpdateTaskDtoInput;
 };
 
 export enum Priority {
-  High = 'HIGH',
-  Low = 'LOW',
-  Medium = 'MEDIUM',
-  None = 'NONE'
+    High = 'HIGH',
+    Low = 'LOW',
+    Medium = 'MEDIUM',
+    None = 'NONE'
 }
 
 export type Query = {
-  __typename?: 'Query';
-  tasks: Array<Task>;
+    __typename?: 'Query';
+    tasks: Array<Task>;
 };
 
 export enum Status {
-  Done = 'DONE',
-  InProgress = 'IN_PROGRESS',
-  Ready = 'READY'
+    Done = 'DONE',
+    InProgress = 'IN_PROGRESS',
+    Ready = 'READY'
 }
 
 export type Task = {
-  __typename?: 'Task';
-  created: Scalars['DateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  dueDate?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['UUID']['output'];
-  name: Scalars['String']['output'];
-  priority: Priority;
-  status: Status;
-  updated?: Maybe<Scalars['DateTime']['output']>;
+    __typename?: 'Task';
+    created: Scalars['DateTime']['output'];
+    description?: Maybe<Scalars['String']['output']>;
+    dueDate?: Maybe<Scalars['DateTime']['output']>;
+    id: Scalars['UUID']['output'];
+    name: Scalars['String']['output'];
+    priority: Priority;
+    status: Status;
+    updated?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type UpdateTaskDtoInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  dueDate?: InputMaybe<Scalars['DateTime']['input']>;
-  id: Scalars['UUID']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
-  priority?: InputMaybe<Priority>;
-  status?: InputMaybe<Status>;
+    description?: InputMaybe<Scalars['String']['input']>;
+    dueDate?: InputMaybe<Scalars['DateTime']['input']>;
+    id: Scalars['UUID']['input'];
+    name?: InputMaybe<Scalars['String']['input']>;
+    priority?: InputMaybe<Priority>;
+    status?: InputMaybe<Status>;
 };
 
 export type AddTaskMutationVariables = Exact<{
-  name: Scalars['String']['input'];
-  status?: InputMaybe<Status>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  priority: Priority;
-  dueDate?: InputMaybe<Scalars['DateTime']['input']>;
+    name: Scalars['String']['input'];
+    status?: InputMaybe<Status>;
+    description?: InputMaybe<Scalars['String']['input']>;
+    priority: Priority;
+    dueDate?: InputMaybe<Scalars['DateTime']['input']>;
 }>;
 
 
@@ -107,7 +107,7 @@ export type AddTaskMutation = {
 };
 
 export type DeleteTaskMutationVariables = Exact<{
-  id: Scalars['UUID']['input'];
+    id: Scalars['UUID']['input'];
 }>;
 
 
@@ -135,7 +135,7 @@ export type GetTasksQuery = {
 };
 
 export type UpdateTaskMutationVariables = Exact<{
-  task: UpdateTaskDtoInput;
+    task: UpdateTaskDtoInput;
 }>;
 
 

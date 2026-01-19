@@ -28,22 +28,22 @@ export const Ok = <T, E = never>(data: T): Result<T, E> => {
         isOk: true,
         isErr: false,
         data,
-        match: <U>(onOk: (data: T) => U, onErr: (error: E) => U): U => {
+        match: <U>(onOk: (data: T) => U, _onErr: (error: E) => U): U => {
             return onOk(data);
         },
         mapOk: <U>(fn: (data: T) => U): Result<U, E> => {
             return Ok(fn(data));
         },
-        mapErr: <F>(fn: (error: E) => F): Result<T, F> => {
+        mapErr: <F>(_fn: (error: E) => F): Result<T, F> => {
             return Ok(data);
         },
         andThen: <U>(fn: (data: T) => Result<U, E>): Result<U, E> => {
             return fn(data);
         },
-        expect: (message: string): T => {
+        expect: (_message: string): T => {
             return data;
         },
-        unwrapOrElse: (fn: () => T): T => {
+        unwrapOrElse: (_fn: () => T): T => {
             return data;
         },
     }
@@ -54,16 +54,16 @@ export const Err = <E, T = never>(error: E): Result<T, E> => {
         isOk: false,
         isErr: true,
         error,
-        match: <U>(onOk: (data: T) => U, onErr: (error: E) => U): U => {
+        match: <U>(_onOk: (data: T) => U, onErr: (error: E) => U): U => {
             return onErr(error);
         },
-        mapOk: <U>(fn: (data: T) => U): Result<U, E> => {
+        mapOk: <U>(_fn: (data: T) => U): Result<U, E> => {
             return Err(error);
         },
         mapErr: <F>(fn: (error: E) => F): Result<T, F> => {
             return Err(fn(error));
         },
-        andThen: <U>(fn: (data: T) => Result<U, E>): Result<U, E> => {
+        andThen: <U>(_fn: (data: T) => Result<U, E>): Result<U, E> => {
             return Err(error);
         },
     }
