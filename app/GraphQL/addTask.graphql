@@ -1,7 +1,11 @@
-mutation AddTask($name: String!, $status: Status) {
-    addTask(name: $name, status: $status) {
+mutation AddTask($name: String!, $status: Status, $description: String, $priority: Priority!, $dueDate: DateTime) {
+    addTask(name: $name, status: $status, description: $description, priority: $priority, dueDate: $dueDate) {
         id
         name
         status
+        description
+        priority
+        created
+        dueDate
     }
 }

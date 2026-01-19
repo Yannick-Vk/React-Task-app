@@ -1,22 +1,26 @@
-﻿export interface Props {
+﻿import React from "react";
+import {twMerge} from "tailwind-merge";
+
+export interface Props {
     className?: string;
+    title: string;
     message: string;
     variant?: AlertBoxVariant;
-
+    children?: React.ReactNode;
 }
 
 export type AlertBoxVariant = "success" | "info" | "warning" | "danger" | undefined;
 
-const getAlertColor = (value: AlertBoxVariant) => {
+const getAlertColor = (value: AlertBoxVariant): string => {
     switch (value) {
         case "success":
-            return "text-emerald-800";
+            return "border-emerald-800";
         case "warning":
-            return "text-amber-600";
+            return "border-amber-400";
         case "danger":
-            return "text-red-600";
+            return "border-red-900";
         default:
-            return "";
+            return "border-zinc-700";
     }
 }
 
@@ -27,10 +31,11 @@ export default function AlertBox(props: Props) {
     return (
         <>
             <div
-                className={props.className + " w-max py-5 px-8 m-auto flex flex-col items-center justify-center bg-zinc-800 border-2 border-zinc-700 rounded-md"}>
-                <h1 className={"text-xl"}>An error occurred while trying to load tasks</h1>
-                <p className={alertColor + " text-lg"}>{props.message}</p>
-                <p><a href="/" className={"text-sky-500 underline"}>Refresh</a></p>
+                className={twMerge("w-max py-5 px-8 m-auto flex flex-col items-center justify-center rounded-md border-2 bg-zinc-800 text-white",
+                    alertColor, props.className)}>
+                <h1 className={"text-xl"}>{props.title}</h1>
+                <p className={"text-lg"}>{props.message}</p>
+                {props.children}
             </div>
         </>
     );

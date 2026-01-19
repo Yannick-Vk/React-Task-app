@@ -19,19 +19,17 @@ export default function Table<T extends Record<string, any>>(props: Props<T>) {
     const {columns, children} = props;
 
     return (
-        <>
-            <table className="table table-auto w-full border-2 border-slate-600">
-                <thead className="table-header-group bg-gray-400 text-black font-bold text-center">
-                <tr>
-                    {columns.map((col) => (
-                        <th key={String(col.key)} className={"p-3 " + (col.headerClassName ?? "")}>{col.header}</th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody>
-                {children}
-                </tbody>
-            </table>
-        </>
+        <table className="table table-auto w-full border-2 border-slate-600">
+            <thead className="table-header-group bg-gray-400 text-black font-bold text-center">
+            <tr>
+                {columns.map((col) => (
+                    <th key={String(col.key)} className={"p-3 " + (col.headerClassName ?? "")}>{col.header}</th>
+                ))}
+            </tr>
+            </thead>
+            <tbody>
+            {children}
+            </tbody>
+        </table>
     );
 }

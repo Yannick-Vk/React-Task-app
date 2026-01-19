@@ -1,13 +1,26 @@
 import {useEffect, useState} from "react";
-import {Status, type Task} from "~/GraphQL/generated";
+import {type Task} from "~/GraphQL/generated";
 import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskService";
-import {Err, matchResult, None, Ok, type Option, type Result, toZodSome} from "~/lib/util";
+import {Err, None, Ok, type Option, type Result, Some} from "~/lib/util";
 import {ZodError} from "zod";
+import {type AddTaskDTO, statusUpdateToFullDTO, type UpdateStatusDTO, type UpdateTaskDTO} from "~/dto/taskDTOs";
+import {DateTime} from "luxon";
 
 export function useTaskManager() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const sortTasks = (tasksToSort: Task[]): Task[] => {
+        return [...tasksToSort].sort((a, b) => {
+            const dateA = DateTime.fromISO(a.created);
+            const dateB = DateTime.fromISO(b.created);
+            if (dateA.toMillis() !== dateB.toMillis()) {
+                return dateA.toMillis() - dateB.toMillis();
+            }
+            return a.id.localeCompare(b.id); // Stable sort for identical creation dates
+        });
+    }
 
     useEffect(() => {
         let isMounted = true;
@@ -18,8 +31,8 @@ export function useTaskManager() {
                 const result = await getTasks();
 
                 if (isMounted) {
-                    matchResult(result,
-                        (tasks) => setTasks(tasks),
+                    result.match(
+                        (tasks) => setTasks(sortTasks(tasks)),
                         (err) => setError(err.message),
                     );
                 }
@@ -41,69 +54,66 @@ export function useTaskManager() {
         }
     }, []);
 
-    const addTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
-        const result = await addNewTask(tasks, taskName, status);
+    const addTask = async (dto: AddTaskDTO): Promise<Option<ZodError | Error>> => {
+        const result = await addNewTask(tasks, dto);
 
-        return matchResult(result,
+        return result.match(
             (newTasks) => {
                 setTasks(newTasks);
-                return None;
+                return None();
             },
-            (error) => {
-                return toZodSome(error, "name")
+            (error): Option<ZodError | Error> => {
+                return Some(error);
             }
         );
     }
 
-    const removeTaskHandler = async (id: string) => {
-        const result = await removeTask(id); // Call the service, which now returns Result<string, Error>
+    const removeTaskHandler = async (id: string): Promise<Result<string, Error>> => {
+        const result = await removeTask(id);
 
-        matchResult(result,
-            (deletedId) => { // onOk: Filter out the deleted task locally
-                setTasks(prevTasks => prevTasks.filter(task => task.id !== deletedId));
-            },
-            (err) => { // onErr: Set the error state
-                console.error("Failed to remove task:", err);
-                setError(err.message);
-            }
+        result.match(
+            (id) => setTasks(prevState => prevState.filter((task) => task.id !== id)),
+            (err) => setError(err.message),
         );
+
+        return result;
     }
 
-    const changeStatusHandler = async (id: string, newStatusValue: Status) => {
-        const taskIndex = tasks.findIndex(task => task.id === id);
+    const changeStatusHandler = async (updatedTask: UpdateStatusDTO) => {
+        const taskIndex = tasks.findIndex(task => task.id === updatedTask.id);
         if (taskIndex === -1) {
-            console.error(`Task with id ${id} not found.`);
+            console.error(`Task with id ${updatedTask.id} not found.`);
             return;
         }
         const originalTask = tasks[taskIndex];
 
         const optimisticTasks = tasks.map(task =>
-            task.id === id ? {...task, status: newStatusValue} : task
+            task.id === updatedTask.id ? {...task, status: updatedTask.status} : task
         );
         setTasks(optimisticTasks);
 
         try {
-            matchResult(await updateTask(tasks, id, newStatusValue, originalTask.name),
+            (await updateTask(statusUpdateToFullDTO(updatedTask))).match(
                 (updatedTask) => setTasks(prevTasks =>
                     prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
                 ),
                 (error) => { // Revert changes
                     console.error("Failed to update task status:", error)
                     setTasks(prevTasks =>
-                        prevTasks.map(task => (task.id === id ? originalTask : task))
+                        prevTasks.map(task => (task.id === updatedTask.id ? originalTask : task))
                     );
                 }
             );
         } catch (error) {
             console.error("Failed to update task status:", error);
             setTasks(prevTasks =>
-                prevTasks.map(task => (task.id === id ? originalTask : task))
+                prevTasks.map(task => (task.id === updatedTask.id ? originalTask : task))
             );
         }
     }
 
-    const updateTaskHandler = async (task: Task): Promise<Result<Task, Error>> => {
-        return matchResult(await updateTask(tasks, task.id, task.status, task.name),
+    const updateTaskHandler = async (task: UpdateTaskDTO): Promise<Result<Task, Error>> => {
+        return (await updateTask(task)).match(
             (updatedTask) => {
                 setTasks(prevTasks =>
                     prevTasks.map(t => (t.id === updatedTask.id ? updatedTask : t))

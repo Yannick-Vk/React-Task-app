@@ -1,12 +1,14 @@
-﻿import React, {useRef, useState} from "react";
-import type {Status, Task} from "~/GraphQL/generated";
-import {compareTask, matchResult, type Result} from "~/lib/util";
+﻿import {useRef, useState} from "react";
+import type {Task} from "~/GraphQL/generated";
+import {type Result} from "~/lib/util";
+import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 
 export interface Props {
-    updateTaskCallback: (task: Task) => Promise<Result<Task, Error>>
+    updateTaskCallback: (task: UpdateTaskDTO) => Promise<Result<Task, Error>>
 }
 
 export function useEditTaskModal(props: Props) {
+    const [isSaving, setIsSaving] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [error, setError] = useState<Error | null>(null);
@@ -25,39 +27,12 @@ export function useEditTaskModal(props: Props) {
         setError(null);
     };
 
-    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newName = e.target.value;
-        if (newName === selectedTask?.name) return;
+    const onSave = async (updatedTask: UpdateTaskDTO): Promise<Result<Task, Error>> => {
+        setIsSaving(true);
 
-        setSelectedTask(prevState => {
-            if (!prevState) return null;
-            return {...prevState, name: newName};
-        });
-    };
+        const result = await props.updateTaskCallback(updatedTask);
 
-    const onStatusChange = (newStatus: Status) => {
-        setSelectedTask(prevState => {
-            if (!prevState) return null;
-            return {...prevState, status: newStatus};
-        });
-    };
-
-    const reset = () => {
-        setSelectedTask(originalTask.current);
-    };
-
-    const updateTask = async () => {
-        if (!selectedTask) return;
-
-        if (compareTask(selectedTask, originalTask.current)) {
-            setError(new Error("No changes found."));
-            return;
-        }
-
-        // It now calls the function that was passed into the hook
-        const result = await props.updateTaskCallback(selectedTask);
-
-        matchResult(result,
+        result.match(
             () => { // onSuccess
                 closeModal();
                 setError(null);
@@ -67,6 +42,8 @@ export function useEditTaskModal(props: Props) {
                 setError(error);
             },
         );
+        setIsSaving(false);
+        return result;
     };
 
     return {
@@ -76,9 +53,6 @@ export function useEditTaskModal(props: Props) {
         originalTask,
         openModal,
         closeModal,
-        onNameChange,
-        onStatusChange,
-        reset,
-        updateTask
+        updateTask: onSave
     };
 }

@@ -9,7 +9,7 @@ import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
 import {useTaskManager} from "~/hooks/useTaskManager";
 import {type Option} from "~/lib/util";
 import type {ZodError} from "zod";
-import type {Status} from "~/GraphQL/generated";
+import type {AddTaskDTO} from "~/dto/taskDTOs";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -34,10 +34,10 @@ export default function Home() {
     const closeModal = () => setIsModalOpen(false);
 
     // This function now connects the data logic (addTask) with the UI logic (closeModal)
-    const handleAddTask = async (taskName: string, status?: Status): Promise<Option<ZodError>> => {
-        const result = await addTask(taskName, status);
+    const handleAddTask = async (dto: AddTaskDTO): Promise<Option<ZodError | Error>> => {
+        const result = await addTask(dto);
 
-        if (!result.some) { // If there is no error (`None`)
+        if (!result.isSome) { // If there is no error (`None`)
             closeModal();
         }
         return result;
@@ -67,7 +67,10 @@ export default function Home() {
     if (error) {
         return (
             <main>
-                <AlertBox variant={"danger"} message={error} className={"mt-16"}></AlertBox>
+                <AlertBox variant="danger" message={error} className="mt-16"
+                          title="An error occurred while trying to load tasks">
+                    <p><a href="/" className="text-sky-500 underline">Refresh</a></p>
+                </AlertBox>
             </main>
         );
     }
@@ -79,7 +82,7 @@ export default function Home() {
                 <p>Press the create task button to create a new task or press
                     '{openModalKeyboardButton.toUpperCase()}'.</p>
 
-                <Button onClick={openModal} className={"flex items-center gap-3 justify-center p-2"}>
+                <Button onClick={openModal} className={"flex items-center gap-3 justify-center"}>
                     Create a new Task
                     <KeyboardButtonIcon kb={openModalKeyboardButton.toUpperCase()} />
                 </Button>

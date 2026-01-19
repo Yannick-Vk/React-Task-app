@@ -5,6 +5,7 @@
     type DeleteTaskMutation,
     GetTasksDocument,
     type GetTasksQuery,
+    Priority,
     Status,
     type Task,
     UpdateTaskDocument,
@@ -13,26 +14,32 @@
 import {z, ZodError} from "zod";
 import {client} from "~/lib/apollo";
 import {Err, Ok, type Result, strToErr, toErr} from "~/lib/util";
+import type {AddTaskDTO, UpdateTaskDTO} from "~/dto/taskDTOs";
 
 const TaskSchema = z.object({
-    id: z.string(),
+    id: z.string().optional(), // id is optional for new tasks
     name: z.string().min(1, "Task name cannot be empty").trim(),
-    status: z.enum(Status), // DO NOT CHANGE THIS - user instruction
+    status: z.enum(Status),
+    priority: z.enum(Priority),
+    description: z.string().optional(), // Made optional
+    dueDate: z.coerce.date().optional(), // Made optional
 });
 
 // Add a new task to the list, returns the list or an error
 // A result type either has the updated list of tasks or an error
 // Allow general Error
-export const addNewTask = async (tasks: Task[], taskName: string, status?: Status): Promise<Result<Task[], Error | ZodError>> => {
+export const addNewTask = async (tasks: Task[], dto: AddTaskDTO): Promise<Result<Task[], Error | ZodError>> => {
     // Validate Task
     const schemaResult = TaskSchema.safeParse({
-        id: "",
-        name: taskName,
-        status: status,
+        name: dto.name,
+        status: dto.status.toVanilla(),
+        dueDate: dto.dueDate.toVanilla(),
+        priority: dto.priority.toVanilla(),
+        description: dto.description.toVanilla(),
     });
 
     if (!schemaResult.success) {
-        return Err(schemaResult.error);
+        return Err<Error | ZodError<unknown>, Task[]>(schemaResult.error);
     }
 
     // Task validated, send to api
@@ -41,7 +48,10 @@ export const addNewTask = async (tasks: Task[], taskName: string, status?: Statu
             mutation: AddTaskDocument,
             variables: { // Pass variables to the mutation
                 name: schemaResult.data.name,
-                status: schemaResult.data.status
+                status: schemaResult.data.status,
+                dueDate: schemaResult.data.dueDate,
+                priority: schemaResult.data.priority,
+                description: schemaResult.data.description,
             },
         });
 
@@ -75,31 +85,32 @@ export const removeTask = async (id: string): Promise<Result<string, Error>> => 
     }
 }
 
-// Change a given task's status and name
-export const updateTask = async (tasks: Task[], id: string, newStatus: Status, newName: string): Promise<Result<Task, Error>> => {
+
+export const updateTask = async (updatedTask: UpdateTaskDTO): Promise<Result<Task, Error>> => {
     try {
-        const taskToUpdate = tasks.find(task => task.id === id);
-        if (!taskToUpdate) {
-            console.error(`Task with id ${id} not found.`);
-            return strToErr(`Task with id ${id} not found.`);
-        }
-        if (newName.trim().length == 0) {
-            return strToErr(`The task's new name cannot be empty`);
+        const taskForMutation = {
+            id: updatedTask.id,
+            name: updatedTask.name.toVanilla(),
+            status: updatedTask.status.toVanilla(),
+            dueDate: updatedTask.dueDate.toVanilla(),
+            priority: updatedTask.priority.toVanilla(),
+            description: updatedTask.description.toVanilla(),
+        };
+
+        const schemaResult = TaskSchema.partial().safeParse(taskForMutation);
+
+        if (!schemaResult.success) {
+            return Err<Error, Task>(schemaResult.error);
         }
 
         const {data} = await client.mutate<UpdateTaskMutation>({
             mutation: UpdateTaskDocument,
             variables: { // Pass variables to the mutation
-                task: {
-                    id: id,
-                    name: newName,
-                    status: newStatus
-                }
+                task: taskForMutation,
             },
         });
 
-        return data ? Ok(data.updateTask!)
-            : strToErr("No data was given.");
+        return data ? Ok(data.updateTask!) : strToErr("No data was given.");
 
     } catch (error) {
         console.error("Error updating task:", error);

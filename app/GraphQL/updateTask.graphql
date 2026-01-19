@@ -1,5 +1,11 @@
 ﻿mutation updateTask($task: UpdateTaskDtoInput!) {
     updateTask(updatedTask: $task) {
-        id name status
+        id
+        name
+        status
+        description
+        priority
+        created
+        dueDate
     }
 }
