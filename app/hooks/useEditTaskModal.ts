@@ -1,6 +1,6 @@
 ﻿import React, {useRef, useState} from "react";
 import type {Status, Task} from "~/GraphQL/generated";
-import {compareTask, Err, matchOption, matchResult, None, type Option, type Result, Some, strToErr} from "~/lib/util";
+import {compareTask, Err, matchResult, type Result, Some, strToErr, toOption} from "~/lib/util";
 import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 
 export interface Props {
@@ -63,7 +63,7 @@ export function useEditTaskModal(props: Props) {
             status: Some(selectedTask.status),
             dueDate: Some(selectedTask.dueDate),
             priority: Some(selectedTask.priority),
-            description: matchOption(selectedTask.description, (v): Option<string> => Some(v), () => None()),
+            description: toOption(selectedTask.description),
         });
 
         matchResult(result,

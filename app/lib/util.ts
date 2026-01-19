@@ -45,6 +45,13 @@ interface OptionBase<T> {
     toVanilla: () => T | undefined;
     orDefault: (defaultValue: T) => T;
     map: <U>(fn: (val: T) => U) => Option<U>;
+
+    matchMap<U>(matcher: {
+        onSome: (val: T) => U,
+        onNone: () => U,
+    }): U;
+
+    match<U>(onSome: (val: T) => U, onNone: () => U): U;
 }
 
 export interface Some<T> extends OptionBase<T> {
@@ -53,6 +60,8 @@ export interface Some<T> extends OptionBase<T> {
     toVanilla: () => T;
     orDefault: (defaultValue: T) => T;
     map: <U>(fn: (val: T) => U) => Some<U>;
+
+    match<U>(onSome: (val: T) => U, onNone: () => U): U;
 }
 
 export interface None extends OptionBase<never> {
@@ -61,6 +70,8 @@ export interface None extends OptionBase<never> {
     toVanilla: () => undefined;
     orDefault: <T>(defaultValue: T) => T;
     map: <U>(fn: (val: never) => U) => None;
+
+    match<U>(onSome: (val: never) => U, onNone: () => U): U;
 }
 
 export const Some = <T>(value: T): Some<T> => {
@@ -69,6 +80,15 @@ export const Some = <T>(value: T): Some<T> => {
         toVanilla: () => value,
         orDefault: () => value,
         map: <U>(fn: (val: T) => U): Some<U> => Some(fn(value)),
+        matchMap: <U>(matcher: {
+            onSome: (val: T) => U;
+            onNone: () => U;
+        }): U => {
+            return matcher.onSome(value);
+        },
+        match: <U>(onSome: (val: T) => U, onNone: () => U): U => {
+            return onSome(value);
+        }
     };
 }
 
@@ -78,25 +98,22 @@ export const None = (): None => {
         toVanilla: () => undefined,
         orDefault: <T>(defaultValue: T) => defaultValue,
         map: <U>(fn: (val: never) => U): None => None(),
+        matchMap: <U>(matcher: {
+            onSome: (val: never) => U;
+            onNone: () => U;
+        }): U => {
+            return matcher.onNone();
+        },
+        match: <U>(onSome: (val: never) => U, onNone: () => U): U => {
+            return onNone();
+        }
     };
 }
 
 // Converts a value that may be undefined or null into an Option type
 // Falsy values like 0, "" or false are considered valid Some values
-export const fromUndefined = <T>(value: T | undefined | null): Option<T> => {
+export const toOption = <T>(value: T | null | undefined): Option<T> => {
     return (value !== null && value !== undefined) ? Some(value as T) : None();
-};
-
-export const matchOption = <T, U>(
-    option: Option<T> | T | undefined | null,
-    onSome: (value: T) => U,
-    onNone: () => U,
-): U => {
-    if (option && typeof option === "object" && 'some' in option) {
-        return option.some ? onSome(option.value) : onNone();
-    } else {
-        return option ? onSome(option as T) : onNone();
-    }
 }
 
 /// Errors

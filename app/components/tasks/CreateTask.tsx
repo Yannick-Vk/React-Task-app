@@ -3,7 +3,7 @@ import Button from "~/components/ui/Button";
 import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import {z, ZodError} from "zod";
 import {Priority, Status} from "~/GraphQL/generated";
-import {fromUndefined, matchOption, type Option} from "~/lib/util";
+import {type Option, toOption} from "~/lib/util";
 import InputField from "~/components/ui/InputField";
 import TaskPrioritySelectBox from "~/components/tasks/TaskPrioritySelectBox";
 import type {AddTaskDTO} from "~/dto/taskDTOs";
@@ -59,14 +59,14 @@ export default function CreateTask(props: Props) {
         setIsLoading(true);
         const result = await props.createNewTask({
             name: name,
-            status: fromUndefined(status),
-            dueDate: fromUndefined(dueDate),
-            priority: fromUndefined(priority),
-            description: fromUndefined(description),
+            status: toOption(status),
+            dueDate: toOption(dueDate),
+            priority: toOption(priority),
+            description: toOption(description),
         });
         setIsLoading(false);
 
-        matchOption(result,
+        result.match(
             (val) => {
                 // Clear both errors
                 resetErrors();
@@ -76,9 +76,7 @@ export default function CreateTask(props: Props) {
                     : setGenericError(val.message)
                 ;
             },
-            () => {
-                resetFormAndErrors();
-            }
+            () => resetFormAndErrors(),
         );
     }
 

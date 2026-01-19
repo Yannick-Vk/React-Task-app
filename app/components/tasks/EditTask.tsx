@@ -9,7 +9,7 @@ import AlertBox from "~/components/ui/AlertBox";
 import {useStateWithReset} from "~/hooks/useStateWithReset";
 import {DateTime} from "luxon";
 import type {UpdateTaskDTO} from "~/dto/taskDTOs";
-import {fromUndefined, type Result} from "~/lib/util";
+import {type Result, toOption} from "~/lib/util";
 
 export interface Props {
     className?: string;
@@ -65,11 +65,11 @@ export default function EditTask(props: Props) {
 
         const updatedTask: UpdateTaskDTO = {
             id: props.selectedTask.id,
-            name: fromUndefined(name),
-            status: fromUndefined(status),
-            dueDate: fromUndefined(dueDate),
-            priority: fromUndefined(priority),
-            description: fromUndefined(description),
+            name: toOption(name),
+            status: toOption(status),
+            dueDate: toOption(dueDate),
+            priority: toOption(priority),
+            description: toOption(description),
         }
 
         props.onSave(updatedTask);

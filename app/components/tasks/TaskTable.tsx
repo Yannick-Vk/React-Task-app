@@ -4,7 +4,7 @@ import {type Maybe, Priority, Status, type Task} from "~/GraphQL/generated"
 import React from "react";
 import TaskStatusSelectBox from "~/components/tasks/TaskStatusSelectBox";
 import Modal from "~/components/ui/Modal";
-import {matchOption, type Result, truncateString} from "~/lib/util";
+import {type Result, toOption, truncateString} from "~/lib/util";
 import {useEditTaskModal} from "~/hooks/useEditTaskModal";
 import {DateTime} from "luxon"
 import Badge, {BadgeVariant} from "~/components/ui/Badge";
@@ -61,7 +61,7 @@ export default function TaskTable(props: Props) {
     }
 
     const dateTooltip = (optionalDate: string | undefined): React.ReactNode => {
-        return matchOption(optionalDate,
+        return toOption(optionalDate).match(
             (date) => (
                 <Tooltip content={DateTime.fromISO(date).toLocaleString()}>
                     {DateTime.fromISO(date).toRelative()}
@@ -72,8 +72,8 @@ export default function TaskTable(props: Props) {
     }
 
     const descriptionTooltip = (optionalDescription: Maybe<string> | undefined): React.ReactNode => {
-        return matchOption(optionalDescription,
-            (desc) => {
+        return toOption(optionalDescription).match(
+            (desc: string) => {
                 const truncated = truncateString(desc, 40);
 
                 return (
