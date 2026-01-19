@@ -4,11 +4,23 @@ import {addNewTask, getTasks, removeTask, updateTask} from "~/services/TaskServi
 import {Err, None, Ok, type Option, type Result, Some} from "~/lib/util";
 import {ZodError} from "zod";
 import {type AddTaskDTO, statusUpdateToFullDTO, type UpdateStatusDTO, type UpdateTaskDTO} from "~/dto/taskDTOs";
+import {DateTime} from "luxon";
 
 export function useTaskManager() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const sortTasks = (tasksToSort: Task[]): Task[] => {
+        return [...tasksToSort].sort((a, b) => {
+            const dateA = DateTime.fromISO(a.created);
+            const dateB = DateTime.fromISO(b.created);
+            if (dateA.toMillis() !== dateB.toMillis()) {
+                return dateA.toMillis() - dateB.toMillis();
+            }
+            return a.id.localeCompare(b.id); // Stable sort for identical creation dates
+        });
+    }
 
     useEffect(() => {
         let isMounted = true;
@@ -20,7 +32,7 @@ export function useTaskManager() {
 
                 if (isMounted) {
                     result.match(
-                        (tasks) => setTasks(tasks),
+                        (tasks) => setTasks(sortTasks(tasks)),
                         (err) => setError(err.message),
                     );
                 }
