@@ -3,6 +3,9 @@ import type {UpdateTaskDTO} from "~/dto/taskDTOs";
 import {type Option} from "~/lib/util/Option";
 import {DateTime} from "luxon";
 
+export * from "./Priority";
+export * from "./Status";
+
 const dateTimeEqual = (dateA: any, dateB: any): boolean => {
     const a = getVanilla(dateA);
     const b = getVanilla(dateB);
@@ -53,3 +56,5 @@ export const compareTask = (a: Task | UpdateTaskDTO | null | undefined, b: Task 
         && A.description === B.description
         && dateTimeEqual(A.dueDate, B.dueDate);
 }
+
+

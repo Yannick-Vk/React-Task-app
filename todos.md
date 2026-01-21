@@ -38,4 +38,4 @@
 - [ ] Filter tasks by status/prioriy/due-date
 - [ ] Add search
 - [x] Create a confirm delete modal
-- [ ] create a disabled state when a task is being deleted
+- [x] create a disabled state when a task is being deleted

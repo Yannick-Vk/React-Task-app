@@ -10,6 +10,7 @@ import {useTaskManager} from "~/hooks/useTaskManager";
 import {type Option} from "~/lib/util";
 import type {ZodError} from "zod";
 import type {AddTaskDTO} from "~/dto/taskDTOs";
+import TaskFilters from "~/components/tasks/TaskFilters";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -92,6 +93,7 @@ export default function Home() {
                         <CreateTask createNewTask={handleAddTask} />
                     </div>
                 </Modal>
+                <TaskFilters />
                 <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
                            updateTask={updateTaskHandler} />
             </div>

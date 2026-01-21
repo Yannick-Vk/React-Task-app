@@ -1,7 +1,8 @@
 ﻿import {Priority} from "~/GraphQL/generated"
 import React from "react";
-import EnumSelectBox from "~/components/ui/EnumSelectBox";
+import GenericSelectBox from "~/components/ui/GenericSelectBox";
 import {twMerge} from "tailwind-merge";
+import {PriorityOptions} from "~/lib/util";
 
 export interface Props {
     name: string;
@@ -13,27 +14,12 @@ export interface Props {
     required?: boolean;
 }
 
-export function MapEnum(value: Priority): string {
-    switch (value) {
-        case Priority.None:
-            return "None";
-        case Priority.Low:
-            return "Low";
-        case Priority.Medium:
-            return "Medium";
-        case Priority.High:
-            return "High";
-        default:
-            return value;
-    }
-}
-
 export default function TaskPrioritySelectBox(props: Props) {
     return (
-        <EnumSelectBox name={props.name} enum={Priority} mapEnumToLabel={MapEnum} value={props.value}
-                       error={props.error} label={props.label}
-                       className={twMerge("focus:border-pink-300 hover:border-pink-300", props.className)}
-                       onChange={props.onChange} required={props.required}
-                       order={["None", "Low", "Medium", "High"]} />
+        <GenericSelectBox name={props.name} value={props.value} error={props.error} label={props.label}
+                          options={PriorityOptions}
+                          className={twMerge("focus:border-pink-300 hover:border-pink-300", props.className)}
+                          onChange={(newValue) => props.onChange(newValue as Priority)} required={props.required}
+        />
     );
 }
