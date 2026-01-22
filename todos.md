@@ -36,7 +36,8 @@
             - [x] Update the modal's state and submission logic.
           - [x] Refactor `useEditTaskModal.ts` to integrate with `EditTask.tsx` and `UpdateTaskDTO`.
 - [x] Filter tasks by priority
-- [ ] Filter tasks by status/due-date
+- [x] Filter tasks by status
+- [ ] Filter tasks by due-date
 - [ ] Add search
 - [x] Create a confirm delete modal
 - [x] create a disabled state when a task is being deleted

@@ -7,10 +7,11 @@ import Button from "~/components/ui/Button";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
 import {useTaskManager} from "~/hooks/useTaskManager";
-import {type Option, type PriorityWithAll} from "~/lib/util";
+import {type Option, type PriorityWithAll, type StatusWithAll} from "~/lib/util";
 import type {ZodError} from "zod";
 import type {AddTaskDTO} from "~/dto/taskDTOs";
 import TaskFilters from "~/components/tasks/TaskFilters";
+import {Priority, Status} from "~/GraphQL/generated";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -21,6 +22,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
     const [selectedPriority, setSelectedPriority] = useState<PriorityWithAll>("ALL");
+    const [selectedStatus, setSelectedStatus] = useState<StatusWithAll>("ALL");
     const {
         tasks,
         loading,
@@ -59,13 +61,22 @@ export default function Home() {
     }, [isModalOpen]);
 
     const filteredTasks = useMemo(() => {
-        if (selectedPriority === "ALL") return tasks;
+        let currentTasks = tasks;
 
-        return tasks.filter(task => task.priority === selectedPriority);
-    }, [tasks, selectedPriority]);
+        if (selectedStatus !== "ALL") {
+            currentTasks = currentTasks.filter((task) => task.status === selectedStatus as Status);
+        }
+
+        if (selectedPriority !== "ALL") {
+            currentTasks = currentTasks.filter((task) => task.priority === selectedPriority as Priority);
+        }
+
+        return currentTasks;
+    }, [tasks, selectedPriority, selectedStatus]);
 
     const handleResetFilters = () => {
         setSelectedPriority("ALL");
+        setSelectedStatus("ALL");
     }
 
     // Rendering
@@ -106,6 +117,7 @@ export default function Home() {
                     </div>
                 </Modal>
                 <TaskFilters priorityFilter={{value: selectedPriority, onChange: setSelectedPriority}}
+                             statusFilter={{value: selectedStatus, onChange: setSelectedStatus}}
                              onReset={handleResetFilters} />
                 <TaskTable data={filteredTasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
                            updateTask={updateTaskHandler} />

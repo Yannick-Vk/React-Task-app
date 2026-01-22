@@ -1,7 +1,8 @@
 ﻿import FilterPrioritySelect from "~/components/tasks/FilterPrioritySelect";
 import {twMerge} from "tailwind-merge";
-import type {PriorityWithAll} from "~/lib/util";
+import type {PriorityWithAll, StatusWithAll} from "~/lib/util";
 import Button from "~/components/ui/Button";
+import FilterStatusSelect from "~/components/tasks/FilterStatusSelect";
 
 export type Filter<T> = {
     value: T;
@@ -11,6 +12,7 @@ export type Filter<T> = {
 export interface Props {
     className?: string;
     priorityFilter: Filter<PriorityWithAll>;
+    statusFilter: Filter<StatusWithAll>;
     onReset: () => void;
 }
 
@@ -22,6 +24,10 @@ export default function TaskFilters(props: Props) {
                 <FilterPrioritySelect value={props.priorityFilter.value} onChange={props.priorityFilter.onChange}
                                       error={undefined}
                                       className={twMerge("bg-slate-800", props.className)} />
+                <FilterStatusSelect value={props.statusFilter.value} onChange={props.statusFilter.onChange}
+                                    error={undefined}
+                                    className={twMerge("bg-slate-800", props.className)} />
+
 
                 <Button className={""} onClick={props.onReset}>Reset</Button>
             </div>

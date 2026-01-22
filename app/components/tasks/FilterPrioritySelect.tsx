@@ -12,7 +12,7 @@ export interface Props {
 export default function FilterPrioritySelect(props: Props) {
     return (
         <>
-            <GenericSelectBox name={"priority"} value={props.value}
+            <GenericSelectBox name={"priority"} value={props.value} label={"Priority"}
                               onChange={(newValue) => props.onChange(newValue as PriorityWithAll)}
                               className={twMerge(props.className)}
                               required={false} error={props.error} options={PriorityOptionsWithAll}>
