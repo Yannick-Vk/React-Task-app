@@ -1,13 +1,13 @@
 import type {Route} from "./+types/home";
 import TaskTable from "~/components/tasks/TaskTable";
 import CreateTask from "~/components/tasks/CreateTask";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import Modal from "~/components/ui/Modal";
 import Button from "~/components/ui/Button";
 import AlertBox from "~/components/ui/AlertBox";
 import KeyboardButtonIcon from "~/components/ui/KeyboardButtonIcon";
 import {useTaskManager} from "~/hooks/useTaskManager";
-import {type Option} from "~/lib/util";
+import {type Option, type PriorityWithAll} from "~/lib/util";
 import type {ZodError} from "zod";
 import type {AddTaskDTO} from "~/dto/taskDTOs";
 import TaskFilters from "~/components/tasks/TaskFilters";
@@ -20,6 +20,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+    const [selectedPriority, setSelectedPriority] = useState<PriorityWithAll>("ALL");
     const {
         tasks,
         loading,
@@ -57,6 +58,13 @@ export default function Home() {
         return () => document.removeEventListener('keydown', handleKeyPress);
     }, [isModalOpen]);
 
+    const filteredTasks = useMemo(() => {
+        if (selectedPriority === "ALL") return tasks;
+
+        return tasks.filter(task => task.priority === selectedPriority);
+    }, [tasks, selectedPriority]);
+
+    // Rendering
     if (loading) {
         return (
             <main className="w-11/12 m-auto flex items-center justify-center pt-16 pb-4">
@@ -93,8 +101,8 @@ export default function Home() {
                         <CreateTask createNewTask={handleAddTask} />
                     </div>
                 </Modal>
-                <TaskFilters />
-                <TaskTable data={tasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
+                <TaskFilters value={selectedPriority} onChange={setSelectedPriority} />
+                <TaskTable data={filteredTasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
                            updateTask={updateTaskHandler} />
             </div>
         </main>

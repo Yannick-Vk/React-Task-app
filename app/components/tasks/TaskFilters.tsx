@@ -1,24 +1,19 @@
 ﻿import FilterPrioritySelect from "~/components/tasks/FilterPrioritySelect";
-import {Priority} from "~/GraphQL/generated";
 import {twMerge} from "tailwind-merge";
-import {useState} from "react";
+import type {PriorityWithAll} from "~/lib/util";
 
 export interface Props {
     className?: string;
+    value: PriorityWithAll;
+    onChange: (value: PriorityWithAll) => void;
 }
 
 export default function TaskFilters(props: Props) {
-    const [selectedPriority, setSelectedPriority] = useState<Priority | "ALL">(Priority.None);
-
-    const handlePriorityChange = (value: Priority | "ALL") => {
-        setSelectedPriority(value);
-    }
-
     return (
         <>
             <div>
                 {/* Task Filters Component */}
-                <FilterPrioritySelect value={selectedPriority} onChange={handlePriorityChange} error={undefined}
+                <FilterPrioritySelect value={props.value} onChange={props.onChange} error={undefined}
                                       className={twMerge("bg-slate-800", props.className)}></FilterPrioritySelect>
             </div>
         </>
