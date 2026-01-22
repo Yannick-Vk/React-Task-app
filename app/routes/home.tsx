@@ -105,7 +105,7 @@ export default function Home() {
                         <CreateTask createNewTask={handleAddTask} />
                     </div>
                 </Modal>
-                <TaskFilters priorityValue={selectedPriority} onChangePriority={setSelectedPriority}
+                <TaskFilters priorityFilter={{value: selectedPriority, onChange: setSelectedPriority}}
                              onReset={handleResetFilters} />
                 <TaskTable data={filteredTasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
                            updateTask={updateTaskHandler} />
