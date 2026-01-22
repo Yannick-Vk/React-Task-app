@@ -64,6 +64,10 @@ export default function Home() {
         return tasks.filter(task => task.priority === selectedPriority);
     }, [tasks, selectedPriority]);
 
+    const handleResetFilters = () => {
+        setSelectedPriority("ALL");
+    }
+
     // Rendering
     if (loading) {
         return (
@@ -101,7 +105,8 @@ export default function Home() {
                         <CreateTask createNewTask={handleAddTask} />
                     </div>
                 </Modal>
-                <TaskFilters value={selectedPriority} onChange={setSelectedPriority} />
+                <TaskFilters priorityValue={selectedPriority} onChangePriority={setSelectedPriority}
+                             onReset={handleResetFilters} />
                 <TaskTable data={filteredTasks} removeTask={removeTaskHandler} changeStatus={changeStatusHandler}
                            updateTask={updateTaskHandler} />
             </div>
