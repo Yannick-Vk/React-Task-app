@@ -80,36 +80,37 @@ export function useTaskManager() {
     }
 
     const changeStatusHandler = async (updatedTask: UpdateStatusDTO) => {
-        const taskIndex = tasks.findIndex(task => task.id === updatedTask.id);
-        if (taskIndex === -1) {
-            console.error(`Task with id ${updatedTask.id} not found.`);
+        const taskToUpdate = tasks.find(task => task.id === updatedTask.id);
+        if (!taskToUpdate) {
+            const message = `Task with id ${updatedTask.id} not found.`;
+            console.error(message);
+            setError(message);
             return;
         }
-        const originalTask = tasks[taskIndex];
 
-        const optimisticTasks = tasks.map(task =>
+        const fullUpdateDto: UpdateTaskDTO = statusUpdateToFullDTO(updatedTask);
+        const originalTask = taskToUpdate;
+
+        setTasks(prevTasks => prevTasks.map(task =>
             task.id === updatedTask.id ? {...task, status: updatedTask.status} : task
-        );
-        setTasks(optimisticTasks);
+        ));
 
-        try {
-            (await updateTask(statusUpdateToFullDTO(updatedTask))).match(
-                (updatedTask) => setTasks(prevTasks =>
-                    prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
-                ),
-                (error) => { // Revert changes
-                    console.error("Failed to update task status:", error)
-                    setTasks(prevTasks =>
-                        prevTasks.map(task => (task.id === updatedTask.id ? originalTask : task))
-                    );
-                }
-            );
-        } catch (error) {
-            console.error("Failed to update task status:", error);
-            setTasks(prevTasks =>
-                prevTasks.map(task => (task.id === updatedTask.id ? originalTask : task))
-            );
-        }
+        const result = await updateTaskHandler(fullUpdateDto);
+
+        result.match(
+            (updatedTask) => {
+                // Successfully updated, ensure state is in sync
+                setTasks(prevTasks => prevTasks.map(task => task.id === updatedTask.id ? updatedTask : task))
+            },
+            (error) => {
+                // Revert optimistic update on failure
+                console.error("Failed to update task status: ", error);
+                setTasks(prevTasks => prevTasks.map(task =>
+                    task.id === originalTask.id ? originalTask : task
+                ));
+                setError(error.message);
+            }
+        );
     }
 
     const updateTaskHandler = async (task: UpdateTaskDTO): Promise<Result<Task, Error>> => {
